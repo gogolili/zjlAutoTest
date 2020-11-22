@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiSecurityControlMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.role.MoiraiSecurityControl">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="descs" jdbcType="VARCHAR" property="descs"/>
+        <result column="real_field" jdbcType="VARCHAR" property="realField"/>
+    </resultMap>
+
+    <sql id="Base_Column_Select">
+    id, status, name, descs, real_field
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_security_control
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_security_control
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.role.MoiraiSecurityControl">
+        insert into moirai_security_control
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="descs != null">
+                descs,
+            </if>
+            <if test="realField != null">
+                real_field,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="descs != null">
+                #{descs,jdbcType=VARCHAR},
+            </if>
+            <if test="realField != null">
+                #{realField,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.role.MoiraiSecurityControl">
+        update moirai_security_control
+        <set>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="descs != null">
+                descs = #{descs,jdbcType=VARCHAR},
+            </if>
+            <if test="realField != null">
+                real_field = #{realField,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectListByCondition" parameterType="com.baiwang.moirai.model.role.MoiraiResourceSecurityCondition"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_security_control
+        <where>
+            <if test="status != null">
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="name != null">
+                and name LIKE CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="descs != null">
+                and descs = #{descs,jdbcType=VARCHAR}
+            </if>
+            <if test="realField != null">
+                and real_field = #{realField,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by id
+    </select>
+
+    <select id="selectByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_security_control
+        where name = #{name,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="getResourceSecurityList" parameterType="com.baiwang.moirai.model.role.MoiraiResourceSecurityCondition"
+            resultMap="BaseResultMap">
+        select
+        con.id, con.status, con.name, con.descs, con.real_field
+        from moirai_resource_security sec, moirai_security_control con
+        where sec.security_control_id = con.id
+        and sec.RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        <if test="resourceType != null">
+            and sec.resource_type = #{resourceType,jdbcType=VARCHAR}
+        </if>
+        order by con.id
+    </select>
+
+    <delete id="deleteResourceSecurity">
+        delete from moirai_resource_security
+        <where>
+            <if test="resourceId != null">
+                and resource_id = #{resourceId,jdbcType=BIGINT}
+            </if>
+            <if test="securityControlId != null">
+                and security_control_id = #{securityControlId,jdbcType=BIGINT}
+            </if>
+            <if test="resourceType != null">
+                and resource_type = #{resourceType,jdbcType=VARCHAR}
+            </if>
+            <if test="resourceId == null and securityControlId == null and resourceType == null">
+                and 1 = 2
+            </if>
+        </where>
+    </delete>
+
+    <insert id="insertResourceSecurity" parameterType="com.baiwang.moirai.model.role.MoiraiResourceSecurity">
+        insert into moirai_resource_security
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resourceId != null">
+                RESOURCE_ID,
+            </if>
+            <if test="securityControlId != null">
+                security_control_id,
+            </if>
+            <if test="resourceType != null">
+                resource_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resourceId != null">
+                #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="securityControlId != null">
+                #{securityControlId,jdbcType=BIGINT},
+            </if>
+            <if test="resourceType != null">
+                #{resourceType,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectResourceSecurity" parameterType="com.baiwang.moirai.model.role.MoiraiResourceSecurityCondition"
+            resultMap="BaseResultMap">
+        select
+        id, resource_id, security_control_id, resource_type
+        from moirai_resource_security
+        <where>
+            <if test="resourceId != null">
+                and RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+            </if>
+            <if test="securityControlId != null">
+                and security_control_id = #{securityControlId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryUnbindSecurity" parameterType="com.baiwang.moirai.model.role.MoiraiResourceSecurityCondition"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_security_control
+        where id not in (select security_control_id from moirai_resource_security where resource_id =
+        #{resourceId,jdbcType=BIGINT}
+        <if test="resourceType != null">
+            and resource_type = #{resourceType,jdbcType=VARCHAR}
+        </if>)
+        order by id
+    </select>
+</mapper>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiUserLoginHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.user.MoiraiUserLoginHistory">
+        <id column="ulh_id" property="ulhId" jdbcType="BIGINT"/>
+        <result column="tenant_id" property="tenantId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="org_id" property="orgId" jdbcType="BIGINT"/>
+        <result column="role_id" property="roleId" jdbcType="BIGINT"/>
+        <result column="login_time" property="loginTime" jdbcType="BIGINT"/>
+        <result column="creater" property="creater" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+        <result column="login_type" property="loginType" jdbcType="VARCHAR"/>
+        <result column="client_id" property="clientId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ulh_id, tenant_id, user_id, org_id, role_id, login_time, creater, create_time, login_type, client_id
+    </sql>
+
+    <!--查询最后一次登录机构-->
+    <select id="selectLastLogin" parameterType="com.baiwang.moirai.model.user.MoiraiUserLoginHistory"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user_login_history
+        <where>
+            <if test="ulhId != null and ulhId != ''">
+                and ulh_id = #{ulhId, jdbcType=BIGINT}
+            </if>
+            <if test="tenantId != null and tenantId != ''">
+                and tenant_id = #{tenantId, jdbcType=BIGINT}
+            </if>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId, jdbcType=BIGINT}
+            </if>
+            <if test="orgId != null and orgId != ''">
+                and org_id = #{orgId, jdbcType=BIGINT}
+            </if>
+            <if test="roleId != null and roleId != ''">
+                and role_id = #{roleId, jdbcType=BIGINT}
+            </if>
+            <if test="loginTime != null and loginTime != ''">
+                and login_time = #{loginTime, jdbcType=BIGINT}
+            </if>
+            <if test="creater != null and creater != ''">
+                and creater = #{creater, jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                and create_time = #{createTime, jdbcType=BIGINT}
+            </if>
+            <if test="loginType != null and loginType != ''">
+                and login_type = #{loginType, jdbcType=VARCHAR}
+            </if>
+            <if test="clientId != null and clientId != ''">
+                and client_id = #{clientId, jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by login_time
+    </select>
+
+    <!--插入最后一次登录-->
+    <insert id="insetLastLogin" parameterType="com.baiwang.moirai.model.user.MoiraiUserLoginHistory">
+        insert into moirai_user_login_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ulhId != null">
+                ulh_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="loginTime != null">
+                login_time,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="loginType != null">
+                login_type,
+            </if>
+            <if test="clientId != null">
+                client_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ulhId != null">
+                #{ulhId, jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId, jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId, jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId, jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                #{roleId, jdbcType=BIGINT},
+            </if>
+            <if test="loginTime != null">
+                #{loginTime, jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                #{creater, jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime, jdbcType=BIGINT},
+            </if>
+            <if test="loginType != null">
+                #{loginType, jdbcType=VARCHAR},
+            </if>
+            <if test="clientId != null">
+                #{clientId, jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!--更新登录时间-->
+    <update id="updateLastLogin" parameterType="com.baiwang.moirai.model.user.MoiraiUserLoginHistory">
+        update moirai_user_login_history
+        <set>
+            <if test="tenantId != null">
+               tenant_id = #{tenantId, jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+               user_id = #{userId, jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+               org_id = #{orgId, jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+               role_id = #{roleId, jdbcType=BIGINT},
+            </if>
+            <if test="loginTime != null">
+                login_time = #{loginTime, jdbcType=BIGINT},
+            </if>
+        </set>
+        where ulh_id = #{ulhId, jdbcType=BIGINT}
+    </update>
+
+    <select id="selectClientCount" parameterType="com.baiwang.moirai.model.user.MoiraiUserLoginHistoryCondition"
+            resultType="java.util.Map">
+        select oc.client_id clientId, oc.client_name clientName, count(1) userCount
+        from moirai_user_login_history lh left join moirai_oauth2_client oc on lh.client_id = oc.client_id
+        <where>
+            <if test="loginEndTime">
+                and login_time &lt; #{loginEndTime, jdbcType=BIGINT}
+            </if>
+            <if test="loginBeginTime">
+                and login_time &gt; #{loginBeginTime, jdbcType=BIGINT}
+            </if>
+        </where>
+        group by lh.client_id, oc.client_name
+    </select>
+
+    <!--查询最后一次登录机构-->
+    <select id="selectLoginList" parameterType="com.baiwang.moirai.model.user.MoiraiUserLoginHistoryCondition"
+            resultType="com.baiwang.moirai.model.user.MoiraiUserLoginHistoryCondition">
+        select lh.ulh_id ulhId, lh.login_type loginType, lh.login_time loginTime, lh.user_id userId, lh.tenant_id tenantId
+        from moirai_user_login_history lh
+        <if test="userAccount !=null and userAccount != ''">
+            left join moirai_user u on u.user_id = lh.user_id
+        </if>
+        <if test="(taxCode !=null and taxCode != '') or (tenantName !=null and tenantName != '')">
+            left join moirai_org o on lh.tenant_id = o.tenant_id and o.parent_org = 0
+        </if>
+        <where>
+            <if test="clientId !=null and clientId != ''">
+                and lh.client_id = #{clientId, jdbcType=VARCHAR}
+            </if>
+            <if test="clientId ==null or clientId == ''">
+                and lh.client_id is null
+            </if>
+            <if test="loginType !=null and loginType != ''">
+                and lh.loginType = #{loginType, jdbcType=VARCHAR}
+            </if>
+            <if test="loginEndTime !=null">
+                and lh.login_time &lt; #{loginEndTime, jdbcType=BIGINT}
+            </if>
+            <if test="loginBeginTime !=null">
+                and lh.login_time &gt; #{loginBeginTime, jdbcType=BIGINT}
+            </if>
+            <if test="userAccount !=null and userAccount != ''">
+                and u.user_account LIKE concat(#{userAccount,jdbcType=VARCHAR} , '%')
+            </if>
+            <if test="taxCode !=null and taxCode != ''">
+                and o.tax_code LIKE concat(#{taxCode,jdbcType=VARCHAR} , '%')
+            </if>
+            <if test="tenantName !=null and tenantName != ''">
+                and o.org_name LIKE concat(#{tenantName,jdbcType=VARCHAR} , '%')
+            </if>
+        </where>
+    </select>
+</mapper>

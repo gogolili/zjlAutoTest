@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <rootUrl>http://39.107.246.113:8004/</rootUrl>
+    <headers>
+        <!-- 配置为自己的参数 -->
+        <header name="content-type" value="application/json"></header>
+    </headers>
+    <params>
+    	<param name="test" value="value"></param>
+    </params>
+    <project_name>接口自动化测试报告demo</project_name>
+</root>

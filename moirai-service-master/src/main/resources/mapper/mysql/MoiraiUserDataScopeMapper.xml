@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiUserDataScopeMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.scale.MoiraiUserDataScope">
+        <id column="uds_id" property="udsId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="product_id" property="productId" jdbcType="BIGINT"/>
+        <result column="scope" property="scope" jdbcType="VARCHAR"/>
+        <result column="creater" property="creater" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+        <result column="product_name" property="productName" jdbcType="BIGINT"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    uds_id, user_id, product_id, scope, creater, create_time
+  </sql>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.baiwang.moirai.model.scale.MoiraiUserDataScopeExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from moirai_user_data_scope
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <delete id="deleteByExample" parameterType="com.baiwang.moirai.model.scale.MoiraiUserDataScopeExample">
+        delete from moirai_user_data_scope
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.scale.MoiraiUserDataScope">
+        insert into moirai_user_data_scope
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="udsId != null">
+                uds_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="scope != null">
+                scope,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="udsId != null">
+                #{udsId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="scope != null">
+                #{scope,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.scale.MoiraiUserDataScope">
+        update moirai_user_data_scope
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="scope != null">
+                scope = #{scope,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where uds_id = #{udsId,jdbcType=BIGINT}
+    </update>
+
+    <insert id="batchInsert" parameterType="map">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into moirai_user_data_scope
+        (uds_id, user_id, scope,
+        creater, create_time, product_id)
+        values
+        <foreach collection="records" item="item" index="index" separator=",">
+            (#{item.udsId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, #{item.scope,jdbcType=VARCHAR},
+            #{item.creater,jdbcType=VARCHAR}, #{item.createTime,jdbcType=BIGINT}, #{item.productId,jdbcType=BINARY})
+        </foreach>
+    </insert>
+
+    <!--查询产品对应的数据范围-->
+    <select id="selectProductDataScope" parameterType="com.baiwang.moirai.model.scale.MoiraiUserDataScope"
+            resultMap="BaseResultMap">
+        select scope.user_id, scope.uds_id, scope.creater, scope.create_time, scope.product_id, scope.scope, product.product_name as productName
+        from moirai_user_data_scope scope, moirai_product product
+        where scope.product_id = product.product_id
+        and scope.user_id = #{userId,jdbcType=BIGINT}
+        order by scope.product_id
+    </select>
+
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select uds_id,user_id,product_id,scope,creater,create_time
+        from moirai_user_data_scope
+        where user_id=#{userId,jdbcType=BIGINT}
+        limit 1
+    </select>
+</mapper>

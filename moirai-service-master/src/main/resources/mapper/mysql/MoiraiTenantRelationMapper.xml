@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiTenantRelationMapper">
+    <resultMap id="baseResultMap" type="com.baiwang.moirai.model.tenant.MoiraiTenantRelation">
+        <id column="ID" jdbcType="BIGINT" property="id"/>
+        <result column="UPPER_TENANT_ID" jdbcType="BIGINT" property="upperTenantId"/>
+        <result column="UPPER_TENANT_TYPE" jdbcType="VARCHAR" property="upperTenantType"/>
+        <result column="DOWN_TENANT_ID" jdbcType="BIGINT" property="downTenantId"/>
+        <result column="DOWN_TENANT_TYPE" jdbcType="VARCHAR" property="downTenantType"/>
+        <result column="UPPER_ORG_ID" jdbcType="BIGINT" property="upperOrgId"/>
+        <result column="DOWN_ORG_ID" jdbcType="BIGINT" property="downOrgId"/>
+        <result column="TENANT_RELATION" jdbcType="VARCHAR" property="tenantRelation"/>
+        <result column="USER_ACCOUNT" jdbcType="VARCHAR" property="userAccount"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="CREATE_NAME" jdbcType="VARCHAR" property="createName"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="UPDATE_NAME" jdbcType="VARCHAR" property="updateName"/>
+        <result column="USE_FLAG" jdbcType="CHAR" property="useFlag"/>
+        <result column="DEL_FLAG" jdbcType="CHAR" property="delFlag"/>
+    </resultMap>
+
+
+    <sql id="MoiraiTenantRelationMapper">
+        rel.ID, rel.UPPER_TENANT_ID, rel.UPPER_TENANT_TYPE, rel.DOWN_TENANT_ID, rel.DOWN_TENANT_TYPE,
+        rel.UPPER_ORG_ID, rel.DOWN_ORG_ID, rel.TENANT_RELATION, rel.USER_ACCOUNT,
+        DATE_FORMAT(rel.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS CREATE_TIME, rel.CREATE_NAME,
+        DATE_FORMAT(rel.UPDATE_TIME,'%Y-%m-%d %H:%i:%S') AS UPDATE_TIME, rel.UPDATE_NAME, rel.DEL_FLAG
+    </sql>
+
+    <!-- 查询上游租户下所有关联的下游租户 -->
+    <select id="selectDownTenant" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantRelation"
+            resultMap="baseResultMap">
+        SELECT DOWN_TENANT_ID, DOWN_ORG_ID
+        FROM moirai_tenant_rel
+        <where>
+            <if test="upperTenantId != null and upperTenantId != ''">
+                AND UPPER_TENANT_ID = #{upperTenantId,jdbcType=BIGINT}
+            </if>
+            <if test="upperOrgId != null and upperOrgId != ''">
+                AND UPPER_ORG_ID = #{upperOrgId,jdbcType=BIGINT}
+            </if>
+            AND DEL_FLAG = "N" AND USE_FLAG = "Y"
+        </where>
+        ORDER BY CREATE_TIME
+    </select>
+
+    <!-- 查询下游租户所有税号 -->
+    <select id="selectDownTaxCode" parameterType="java.util.List"
+            resultType="com.baiwang.moirai.model.tenant.MoiraiTenantRelationVo">
+        SELECT ten.DOWN_TENANT_ID AS downTenantId, ten.DOWN_TENANT_TYPE AS downTenantType, org.org_name AS orgName,
+        org.tax_code AS taxCode, ten.DOWN_ORG_ID AS orgId
+        FROM moirai_tenant_rel ten
+        LEFT JOIN moirai_org org ON org.org_id = ten.DOWN_ORG_ID
+        WHERE org.del_flag = "N" AND org.use_flag = "Y"
+        <if test="upperTenantId != null and upperTenantId != ''">
+            AND ten.UPPER_TENANT_ID = #{upperTenantId,jdbcType=BIGINT}
+        </if>
+        AND ten.DOWN_ORG_ID IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item.downOrgId,jdbcType=BIGINT}
+        </foreach>
+        ORDER BY ten.CREATE_TIME
+    </select>
+
+    <!-- 插入绑定关系 -->
+    <insert id="insertTenantRelation" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantRelation">
+        INSERT INTO moirai_tenant_rel (ID, UPPER_TENANT_ID, UPPER_TENANT_TYPE, DOWN_TENANT_ID, DOWN_TENANT_TYPE,
+        UPPER_ORG_ID, DOWN_ORG_ID, TENANT_RELATION, USER_ACCOUNT, CREATE_TIME, CREATE_NAME, UPDATE_TIME, UPDATE_NAME)
+        VALUES (#{id,jdbcType=BIGINT}, #{upperTenantId,jdbcType=BIGINT}, #{upperTenantType,jdbcType=VARCHAR}, #{downTenantId,jdbcType=BIGINT},
+        #{downTenantType,jdbcType=VARCHAR}, #{upperOrgId,jdbcType=BIGINT}, #{downOrgId,jdbcType=BIGINT}, #{tenantRelation,jdbcType=VARCHAR},
+        #{userAccount,jdbcType=VARCHAR},
+        NOW(), #{createName,jdbcType=VARCHAR}, NOW(), #{updateName,jdbcType=VARCHAR})
+    </insert>
+
+    <!-- 更新绑定关系 -->
+    <update id="updateTenantRelation" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantRelation">
+        UPDATE moirai_tenant_rel
+        <set>
+            <if test="upperTenantId != null and upperTenantId !=''">
+                UPPER_TENANT_ID = #{upperTenantId, jdbcType=BIGINT},
+            </if>
+            <if test="upperTenantType != null and upperTenantType !=''">
+                UPPER_TENANT_TYPE = #{upperTenantType, jdbcType=VARCHAR},
+            </if>
+            <if test="downTenantId != null and downTenantId !=''">
+                DOWN_TENANT_ID = #{downTenantId, jdbcType=BIGINT},
+            </if>
+            <if test="downTenantType != null and downTenantType !=''">
+                DOWN_TENANT_TYPE = #{downTenantType, jdbcType=VARCHAR},
+            </if>
+            <if test="upperOrgId != null and upperOrgId !=''">
+                UPPER_ORG_ID = #{upperOrgId, jdbcType=BIGINT},
+            </if>
+            <if test="downOrgId != null and downOrgId !=''">
+                DOWN_ORG_ID = #{downOrgId, jdbcType=BIGINT},
+            </if>
+            <if test="tenantRelation != null and tenantRelation !=''">
+                TENANT_RELATION = #{tenantRelation, jdbcType=VARCHAR},
+            </if>
+            <if test="userAccount != null and userAccount !=''">
+                USER_ACCOUNT = #{userAccount, jdbcType=VARCHAR},
+            </if>
+            <if test="updateName != null and updateName !=''">
+                UPDATE_NAME = #{updateName, jdbcType=VARCHAR},
+            </if>
+            <if test="useFlag != null and useFlag !=''">
+                USE_FLAG = #{useFlag, jdbcType=CHAR},
+            </if>
+            <if test="delFlag != null and delFlag !=''">
+                DEL_FLAG = #{delFlag, jdbcType=CHAR},
+            </if>
+            UPDATE_TIME = NOW(),
+        </set>
+        <where>
+            <if test="id != null and id != ''">
+                AND ID = #{id, jdbcType=BIGINT}
+            </if>
+        </where>
+    </update>
+
+    <!-- 查找绑定关系 -->
+    <select id="selectTenantRelation" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantRelation"
+            resultMap="baseResultMap">
+        SELECT ten.tenant_email AS tenantEmail, ten.tenant_phone AS tenantPhone, org.org_name AS orgName, ten.use_flag,
+        <include refid="MoiraiTenantRelationMapper"/>
+        FROM moirai_tenant_rel rel
+        LEFT JOIN moirai_tenant ten ON rel.DOWN_TENANT_ID = ten.tenant_id
+        LEFT JOIN moirai_org org ON rel.DOWN_ORG_ID = org.org_id
+        <where>
+            <if test="id != null and id != ''">
+                AND rel.ID = #{id, jdbcType=BIGINT}
+            </if>
+            <if test="upperTenantId != null and upperTenantId !=''">
+                AND rel.UPPER_TENANT_ID = #{upperTenantId, jdbcType=BIGINT}
+            </if>
+            <if test="upperTenantType != null and upperTenantType !=''">
+                AND rel.UPPER_TENANT_TYPE = #{upperTenantType, jdbcType=VARCHAR}
+            </if>
+            <if test="downTenantId != null and downTenantId !=''">
+                AND rel.DOWN_TENANT_ID = #{downTenantId, jdbcType=BIGINT}
+            </if>
+            <if test="downTenantType != null and downTenantType !=''">
+                AND rel.DOWN_TENANT_TYPE = #{downTenantType, jdbcType=VARCHAR}
+            </if>
+            <if test="upperOrgId != null and upperOrgId !=''">
+                AND rel.UPPER_ORG_ID = #{upperOrgId, jdbcType=BIGINT}
+            </if>
+            <if test="downOrgId != null and downOrgId !=''">
+                AND rel.DOWN_ORG_ID = #{downOrgId, jdbcType=BIGINT}
+            </if>
+            <if test="tenantRelation != null and tenantRelation !=''">
+                AND rel.TENANT_RELATION = #{tenantRelation, jdbcType=VARCHAR}
+            </if>
+            <if test="userAccount != null and userAccount !=''">
+                AND rel.USER_ACCOUNT = #{userAccount, jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND rel.UPDATE_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND rel.UPDATE_TIME &lt;= DATE_ADD(#{endTime},INTERVAL 1 DAY)
+            </if>
+            <if test="orgName != null and orgName != ''">
+                AND org.ORG_NAME LIKE CONCAT('%',#{orgName, jdbcType=VARCHAR},'%')
+            </if>
+            AND rel.DEL_FLAG = "N" AND rel.USE_FLAG = "Y"
+        </where>
+        ORDER BY rel.CREATE_TIME DESC
+    </select>
+
+    <!-- 查询组织结构ID与租户ID之间对应关系 -->
+    <select id="selectTenantId" resultType="com.baiwang.moirai.model.tenant.MoiraiTenantListVO">
+      SELECT tenant_id AS tenantId
+      FROM moirai_org
+      WHERE org_id = #{orgId, jdbcType=DECIMAL} AND del_flag = "N" AND use_flag = "Y"
+    </select>
+</mapper>

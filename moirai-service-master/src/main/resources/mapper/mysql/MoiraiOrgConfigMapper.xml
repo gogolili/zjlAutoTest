@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiOrgConfigMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.org.MoiraiOrgConfig">
+        <id column="oc_id" jdbcType="BIGINT" property="ocId"/>
+        <result column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="item" jdbcType="VARCHAR" property="item"/>
+        <result column="value" jdbcType="VARCHAR" property="value"/>
+        <result column="opera_time" jdbcType="VARCHAR" property="operaTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    oc_id, org_id, tenant_id, item, value, opera_time
+  </sql>
+
+    <!--根据组织机构ID和item项查询配置信息-->
+    <select id="selectByOrgItem" parameterType="com.baiwang.moirai.model.org.MoiraiOrgConfig" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_org_config
+        where org_id = #{orgId,jdbcType=BIGINT} AND item = #{item,jdbcType=VARCHAR}
+    </select>
+
+    <!--根据组织机构item项查询配置信息-->
+    <select id="selectByItemOrValue" parameterType="com.baiwang.moirai.model.org.MoiraiOrgConfig"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_org_config where 1=1
+        <if test="item != null">
+            and item = #{item,jdbcType=VARCHAR}
+        </if>
+        <if test="value != null">
+            and value = #{value,jdbcType=VARCHAR}
+        </if>
+        <if test="orgId != null">
+            and org_id = #{orgId,jdbcType=BIGINT}
+        </if>
+        <if test="tenantId != null">
+            and tenant_id = #{tenantId,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <!--根据组织机构所有配置信息-->
+    <select id="selectByOrgId" parameterType="com.baiwang.moirai.model.org.MoiraiOrgConfig" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_org_config
+        where org_id = #{orgId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_org_config
+    where oc_id = #{ocId,jdbcType=BIGINT}
+  </delete>
+
+    <delete id="deleteByParam" parameterType="com.baiwang.moirai.model.org.MoiraiOrgConfig">
+        delete from moirai_org_config
+        <where>
+            <if test="ocId != null">
+                and oc_id = #{ocId,jdbcType=BIGINT}
+            </if>
+            <if test="item != null">
+                and item = #{item,jdbcType=VARCHAR}
+            </if>
+            <if test="value != null">
+                and value = #{value,jdbcType=VARCHAR}
+            </if>
+            <if test="orgId != null">
+                and org_id = #{orgId,jdbcType=BIGINT}
+            </if>
+            <if test="tenantId != null">
+                and tenant_id = #{tenantId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </delete>
+
+    <!--新增组织机构配置信息-->
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.org.MoiraiOrgConfig">
+        insert into moirai_org_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ocId != null">
+                oc_id,
+            </if>
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="item != null">
+                item,
+            </if>
+            <if test="value != null">
+                value,
+            </if>
+            <if test="operaTime != null">
+                opera_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ocId != null">
+                #{ocId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="item != null">
+                #{item,jdbcType=VARCHAR},
+            </if>
+            <if test="value != null">
+                #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="operaTime != null">
+                #{operaTime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!--更新组织机构配置信息-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.org.MoiraiOrgConfig">
+        update moirai_org_config
+        <set>
+            <if test="value != null">
+                value = #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="operaTime != null">
+                opera_time = #{operaTime,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where oc_id = #{ocId,jdbcType=BIGINT}
+    </update>
+</mapper>

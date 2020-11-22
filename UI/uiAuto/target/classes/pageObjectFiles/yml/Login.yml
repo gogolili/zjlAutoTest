@@ -1,0 +1,9 @@
+pages:
+    - page:
+       pageName: pageObject.LoginPage
+       value: "http://www.baiwang.com/mainsite/src/html/login/login.html"
+       desc: "登录页面"
+       locators: 
+          - {type: "id",timeout: "5",value: "username",desc: "用户名输入框",name: "username"}
+          - {type: "id",timeout: "5",value: "password",desc: "密码输入框",name: "password"}
+          - {type: "id",timeout: "5",value: "login-btn",desc: "登录按钮",name: "submit"}

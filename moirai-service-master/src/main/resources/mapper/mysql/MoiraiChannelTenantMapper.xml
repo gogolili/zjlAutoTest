@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiChannelTenantMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.tenant.MoiraiChannelTenant">
+        <id column="channel_tenant_id" jdbcType="BIGINT" property="channelTenantId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="qd_bm" jdbcType="BIGINT" property="qdBm"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      channel_tenant_id, TENANT_ID, QD_BM
+    </sql>
+
+    <!--批量添加租户-->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into moirai_channel_tenant
+        (channel_tenant_id, tenant_id, qd_bm)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.channelTenantId,jdbcType=BIGINT},
+            #{item.tenantId,jdbcType=BIGINT},
+            #{item.qdBm,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from moirai_channel_tenant
+        where channel_tenant_id = #{channelTenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByTenantId" parameterType="java.lang.Long">
+        delete from moirai_channel_tenant where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="queryList" parameterType="com.baiwang.moirai.model.tenant.MoiraiChannelTenant"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM moirai_channel_tenant
+        <where>
+            <if test="channelTenantId != null">AND channel_tenant_id = #{channelTenantId,jdbcType=BIGINT}</if>
+            <if test="tenantId != null">AND tenant_id = #{tenantId,jdbcType=BIGINT}</if>
+            <if test="qdBm != null">AND qd_bm = #{qdBm,jdbcType=BIGINT}</if>
+            <if test="channelTenantId == null and tenantId == null and qdBm == null">
+                1 = 2
+            </if>
+        </where>
+    </select>
+
+    <!--  根据租户id列表查询租户渠道信息  -->
+    <select id="selectListByTenantIdList" parameterType="java.util.List"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM moirai_channel_tenant
+        <where>
+            <if test="list != null and list.size > 0">
+            tenant_id in
+                <foreach collection="list" item="item" open="(" separator="," close=")">
+                    #{item,jdbcType=BIGINT}
+                </foreach>
+            </if>
+            <if test="list == null or list.size == 0">
+                1 = 2
+            </if>
+        </where>
+    </select>
+</mapper>

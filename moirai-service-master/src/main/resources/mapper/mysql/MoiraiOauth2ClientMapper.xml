@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiOauth2ClientMapper">
+  <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.oauth.MoiraiOauth2Client">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="client_name" jdbcType="VARCHAR" property="clientName" />
+    <result column="client_id" jdbcType="VARCHAR" property="clientId" />
+    <result column="client_secret" jdbcType="VARCHAR" property="clientSecret" />
+    <result column="token_key" jdbcType="VARCHAR" property="tokenKey" />
+    <result column="SYSTEM_CODE" jdbcType="VARCHAR" property="systemCode" />
+    <result column="RSA_PUBLIC" jdbcType="VARCHAR" property="rsaPublic" />
+    <result column="RSA_PRIVATE" jdbcType="VARCHAR" property="rsaPrivate" />
+    <result column="SECRET_DOMAIN" jdbcType="VARCHAR" property="secretDomain" />
+    <result column="REDIRECT_URL" jdbcType="VARCHAR" property="redirectUrl" />
+    <result column="OAUTH_TYPE" jdbcType="VARCHAR" property="oauthType" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, client_name, client_id, client_secret, token_key, SYSTEM_CODE, RSA_PUBLIC, RSA_PRIVATE, 
+    SECRET_DOMAIN, REDIRECT_URL, OAUTH_TYPE
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from moirai_oauth2_client
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByClientId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from moirai_oauth2_client
+    where client_id = #{clientId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_oauth2_client
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.baiwang.moirai.model.oauth.MoiraiOauth2Client">
+    insert into moirai_oauth2_client (id, client_name, client_id, 
+      client_secret, token_key, SYSTEM_CODE, 
+      RSA_PUBLIC, RSA_PRIVATE, SECRET_DOMAIN, 
+      REDIRECT_URL, OAUTH_TYPE)
+    values (#{id,jdbcType=BIGINT}, #{clientName,jdbcType=VARCHAR}, #{clientId,jdbcType=VARCHAR}, 
+      #{clientSecret,jdbcType=VARCHAR}, #{tokenKey,jdbcType=VARCHAR}, #{systemCode,jdbcType=VARCHAR}, 
+      #{rsaPublic,jdbcType=VARCHAR}, #{rsaPrivate,jdbcType=VARCHAR}, #{secretDomain,jdbcType=VARCHAR}, 
+      #{redirectUrl,jdbcType=VARCHAR}, #{oauthType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.baiwang.moirai.model.oauth.MoiraiOauth2Client">
+    insert into moirai_oauth2_client
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="clientName != null">
+        client_name,
+      </if>
+      <if test="clientId != null">
+        client_id,
+      </if>
+      <if test="clientSecret != null">
+        client_secret,
+      </if>
+      <if test="tokenKey != null">
+        token_key,
+      </if>
+      <if test="systemCode != null">
+        SYSTEM_CODE,
+      </if>
+      <if test="rsaPublic != null">
+        RSA_PUBLIC,
+      </if>
+      <if test="rsaPrivate != null">
+        RSA_PRIVATE,
+      </if>
+      <if test="secretDomain != null">
+        SECRET_DOMAIN,
+      </if>
+      <if test="redirectUrl != null">
+        REDIRECT_URL,
+      </if>
+      <if test="oauthType != null">
+        OAUTH_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="clientName != null">
+        #{clientName,jdbcType=VARCHAR},
+      </if>
+      <if test="clientId != null">
+        #{clientId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientSecret != null">
+        #{clientSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="tokenKey != null">
+        #{tokenKey,jdbcType=VARCHAR},
+      </if>
+      <if test="systemCode != null">
+        #{systemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="rsaPublic != null">
+        #{rsaPublic,jdbcType=VARCHAR},
+      </if>
+      <if test="rsaPrivate != null">
+        #{rsaPrivate,jdbcType=VARCHAR},
+      </if>
+      <if test="secretDomain != null">
+        #{secretDomain,jdbcType=VARCHAR},
+      </if>
+      <if test="redirectUrl != null">
+        #{redirectUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="oauthType != null">
+        #{oauthType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.oauth.MoiraiOauth2Client">
+    update moirai_oauth2_client
+    <set>
+      <if test="clientName != null">
+        client_name = #{clientName,jdbcType=VARCHAR},
+      </if>
+      <if test="clientId != null">
+        client_id = #{clientId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientSecret != null">
+        client_secret = #{clientSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="tokenKey != null">
+        token_key = #{tokenKey,jdbcType=VARCHAR},
+      </if>
+      <if test="systemCode != null">
+        SYSTEM_CODE = #{systemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="rsaPublic != null">
+        RSA_PUBLIC = #{rsaPublic,jdbcType=VARCHAR},
+      </if>
+      <if test="rsaPrivate != null">
+        RSA_PRIVATE = #{rsaPrivate,jdbcType=VARCHAR},
+      </if>
+      <if test="secretDomain != null">
+        SECRET_DOMAIN = #{secretDomain,jdbcType=VARCHAR},
+      </if>
+      <if test="redirectUrl != null">
+        REDIRECT_URL = #{redirectUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="oauthType != null">
+        OAUTH_TYPE = #{oauthType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.baiwang.moirai.model.oauth.MoiraiOauth2Client">
+    update moirai_oauth2_client
+    set client_name = #{clientName,jdbcType=VARCHAR},
+      client_id = #{clientId,jdbcType=VARCHAR},
+      client_secret = #{clientSecret,jdbcType=VARCHAR},
+      token_key = #{tokenKey,jdbcType=VARCHAR},
+      SYSTEM_CODE = #{systemCode,jdbcType=VARCHAR},
+      RSA_PUBLIC = #{rsaPublic,jdbcType=VARCHAR},
+      RSA_PRIVATE = #{rsaPrivate,jdbcType=VARCHAR},
+      SECRET_DOMAIN = #{secretDomain,jdbcType=VARCHAR},
+      REDIRECT_URL = #{redirectUrl,jdbcType=VARCHAR},
+      OAUTH_TYPE = #{oauthType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByClient" parameterType="com.baiwang.moirai.model.oauth.MoiraiOauth2Client" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from moirai_oauth2_client
+    where 1=1
+    <if test="clientName != null">
+        and client_name = #{clientName,jdbcType=VARCHAR}
+      </if>
+      <if test="clientId != null">
+        and client_id = #{clientId,jdbcType=VARCHAR}
+      </if>
+      <if test="clientSecret != null">
+        and client_secret = #{clientSecret,jdbcType=VARCHAR}
+      </if>
+      <if test="tokenKey != null">
+        and token_key = #{tokenKey,jdbcType=VARCHAR}
+      </if>
+      <if test="systemCode != null">
+        and SYSTEM_CODE = #{systemCode,jdbcType=VARCHAR}
+      </if>
+  </select>
+  <select id="selectAllOrCondition" parameterType="com.baiwang.moirai.model.oauth.MoiraiOauth2Client" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from moirai_oauth2_client
+    where 1=1
+    <if test="clientName != null">
+       and client_name = #{clientName,jdbcType=VARCHAR}
+      </if>
+      <if test="clientId != null">
+        and client_id = #{clientId,jdbcType=VARCHAR}
+      </if>
+      <if test="clientSecret != null">
+        and client_secret = #{clientSecret,jdbcType=VARCHAR}
+      </if>
+      <if test="tokenKey != null">
+        and token_key = #{tokenKey,jdbcType=VARCHAR}
+      </if>
+      <if test="systemCode != null">
+        and SYSTEM_CODE = #{systemCode,jdbcType=VARCHAR}
+      </if>
+      <if test="rsaPublic != null">
+        and RSA_PUBLIC = #{rsaPublic,jdbcType=VARCHAR}
+      </if>
+      <if test="rsaPrivate != null">
+        and RSA_PRIVATE = #{rsaPrivate,jdbcType=VARCHAR}
+      </if>
+      <if test="secretDomain != null">
+        and SECRET_DOMAIN = #{secretDomain,jdbcType=VARCHAR}
+      </if>
+      <if test="redirectUrl != null">
+        and REDIRECT_URL = #{redirectUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="oauthType != null">
+        and OAUTH_TYPE = #{oauthType,jdbcType=VARCHAR}
+      </if>
+  </select>
+</mapper>

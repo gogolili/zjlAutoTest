@@ -1,0 +1,1425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiOrgMapper">
+    <!--简单树模型映射-->
+    <resultMap id="OrgSimpleResultMap" type="com.baiwang.moirai.model.org.MoiraiOrg">
+        <id column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="org_type" jdbcType="INTEGER" property="orgType"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="tax_code" jdbcType="VARCHAR" property="taxCode"/>
+        <result column="parent_org" jdbcType="BIGINT" property="parentOrg"/>
+        <result column="ORG_CODE" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="modify_user" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="modify_time" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="del_flag" jdbcType="CHAR" property="delFlag"/>
+        <result column="use_flag" jdbcType="CHAR" property="useFlag"/>
+        <result column="self_manage" jdbcType="CHAR" property="selfManage"/>
+        <result column="parent_visible" jdbcType="CHAR" property="parentVisible"/>
+        <result column="telphone" jdbcType="VARCHAR" property="telphone"/>
+        <result column="bank_deposit" jdbcType="VARCHAR" property="bankDeposit"/>
+        <result column="account_number" jdbcType="VARCHAR" property="accountNumber"/>
+        <result column="legal_name" jdbcType="VARCHAR" property="legalName"/>
+        <result column="reg_PROV" jdbcType="BIGINT" property="regProv"/>
+        <result column="reg_CITY" jdbcType="BIGINT" property="regCity"/>
+        <result column="reg_AREA" jdbcType="BIGINT" property="regArea"/>
+        <result column="tax_prov" jdbcType="VARCHAR" property="taxProv"/>
+        <result column="business_address" jdbcType="VARCHAR" property="businessAddress"/>
+        <result column="use_selfinfo" jdbcType="VARCHAR" property="useSelfinfo"/>
+        <result column="dj_company_type" jdbcType="VARCHAR" property="djCompanyType"/>
+        <result column="belong_industry" jdbcType="VARCHAR" property="belongIndustry"/>
+        <result column="jrd_code" jdbcType="VARCHAR" property="jrdCode"/>
+        <result column="tax_quali" jdbcType="CHAR" property="taxQuali"/>
+        <result column="need_seal" jdbcType="CHAR" property="needSeal"/>
+        <result column="seal_id" jdbcType="VARCHAR" property="sealId"/>
+        <result column="device_type" jdbcType="VARCHAR" property="deviceType"/>
+        <result column="tg_type" jdbcType="CHAR" property="tgType"/>
+        <result column="device_name" jdbcType="VARCHAR" property="deviceName"/>
+        <result column="device_code" jdbcType="VARCHAR" property="deviceCode"/>
+        <result column="modify_lev" jdbcType="CHAR" property="modifyLev"/>
+        <result column="TAXENTITY_ID" jdbcType="BIGINT" property="taxentityId"/>
+        <result column="REMARK" jdbcType="VARCHAR" property="remark"/>
+        <result column="BACKUP" jdbcType="VARCHAR" property="backup"/>
+
+        <result column="EXPORT_QUALIFY" jdbcType="VARCHAR" property="exportQualify"/>
+        <result column="ADDRESSEE" jdbcType="VARCHAR" property="addressee"/>
+        <result column="CONTACT_NUMBER" jdbcType="VARCHAR" property="contactNumber"/>
+        <result column="MAILING_ADDRESS" jdbcType="VARCHAR" property="moilingAddress"/>
+        <result column="is_fetch" jdbcType="CHAR" property="isFetch"/>
+        <result column="is_proof" jdbcType="CHAR" property="isProof"/>
+        <result column="is_authe" jdbcType="CHAR" property="isAuthe"/>
+        <result column="device_sn" jdbcType="VARCHAR" property="deviceSn"/>
+        <result column="device_password" jdbcType="VARCHAR" property="devicePassword"/>
+        <result column="device_key" jdbcType="VARCHAR" property="deviceKey"/>
+
+        <result column="tenant_name" jdbcType="VARCHAR" property="tenantName"/>
+        <result column="register_address" jdbcType="VARCHAR" property="registerAddress"/>
+        <result column="perfect_flag" jdbcType="VARCHAR" property="perfectFlag"/>
+        <result column="contract_num" jdbcType="VARCHAR" property="contractNum"/>
+    </resultMap>
+
+    <sql id="Org_Column_List">
+		org_id, tenant_id, org_type, org_name, tax_code, parent_org, ORG_CODE,
+		creater, create_time,
+		modify_user, modify_time, del_flag, use_flag, self_manage, parent_visible,
+		telphone,
+		bank_deposit, account_number, legal_name, reg_PROV, reg_CITY, reg_AREA, tax_prov,
+		business_address,use_selfinfo,
+		dj_company_type, belong_industry, jrd_code, tax_quali, need_seal, seal_id,
+		device_type, tg_type,
+		device_name, device_code, modify_lev,TAXENTITY_ID,REMARK, BACKUP,
+		EXPORT_QUALIFY, ADDRESSEE, CONTACT_NUMBER, MAILING_ADDRESS, is_fetch, is_proof, is_authe,
+		device_sn, device_password, device_key, register_address,perfect_flag,contract_num
+	</sql>
+
+    <sql id="Org_Column_alias">
+		org.org_id, org.tenant_id, org.org_type, org.org_name, org.tax_code,
+		org.parent_org, org.ORG_CODE, org.creater, org.create_time,
+		org.modify_user, org.modify_time, org.del_flag, org.use_flag,
+		org.self_manage, org.parent_visible, org.telphone,
+		org.bank_deposit, org.account_number, org.legal_name, org.reg_PROV, org.reg_CITY,
+		org.reg_AREA, org.tax_prov, org.business_address,use_selfinfo,
+		org.dj_company_type, org.belong_industry, org.jrd_code, org.tax_quali,
+		org.need_seal, org.seal_id, org.device_type, org.tg_type,
+		org.device_name, org.device_code,
+		org.modify_lev,org.TAXENTITY_ID,org.REMARK, org.BACKUP,
+		org.EXPORT_QUALIFY, org.ADDRESSEE, org.CONTACT_NUMBER,
+		org.MAILING_ADDRESS, org.is_fetch, org.is_proof, org.is_authe,
+		org.device_sn, org.device_password, org.device_key, org.register_address,perfect_flag
+	</sql>
+
+    <!-- excel导入校验税号 -->
+    <select id="selectOrgBytaxCode" parameterType="com.baiwang.moirai.model.org.MoiraiOrg" resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        where tax_code in
+        <foreach collection="list" item="org" open="(" separator="," close=")">
+            #{org.taxCode,jdbcType=VARCHAR}
+        </foreach>
+        and org_type = 1
+    </select>
+
+    <!-- excel导入校验机构代码 -->
+    <select id="selectOrgByOrgCode" parameterType="com.baiwang.moirai.model.org.MoiraiOrg" resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        where tenant_id = #{tenantId,jdbcType=BIGINT} and
+        org_code in
+        <foreach collection="orgList" item="org" open="(" separator="," close=")">
+            #{org.orgCode,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <!--根据条件查询组织机构(返回一条数据)：内部调用 -->
+    <select id="selectOneOrg" parameterType="com.baiwang.moirai.model.org.MoiraiOrg"
+            resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        <where>
+            <if test="orgId != null and orgId != 0">
+                AND org_id = #{orgId,jdbcType=BIGINT}
+            </if>
+            <if test="orgCode != null and orgCode != ''">
+                AND ORG_CODE = #{orgCode,jdbcType=VARCHAR}
+            </if>
+            <if test="taxCode != null and taxCode != ''">
+                AND tax_code = #{taxCode,jdbcType=VARCHAR}
+            </if>
+            <if test="tenantId != null">
+                AND tenant_id = #{tenantId,jdbcType=BIGINT}
+            </if>
+            <if test="parentOrg != null">
+                AND parent_org = #{parentOrg,jdbcType=BIGINT}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <!--根据条件查询组织机构(返回多条数据)：内部调用 -->
+    <select id="selectMoreOrg" parameterType="com.baiwang.moirai.model.org.MoiraiOrg"
+            resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        <where>
+            <if test="tenantId != null">
+                AND tenant_id = #{tenantId,jdbcType=BIGINT}
+            </if>
+            <if test="orgType != null and orgType != ''">
+                AND org_type = #{orgType,jdbcType=INTEGER}
+            </if>
+            <if test="orgName != null and orgName != ''">
+                AND org_name = #{orgName,jdbcType=VARCHAR}
+            </if>
+            <if test="parentOrg != null">
+                AND parent_org = #{parentOrg,jdbcType=BIGINT}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <!--查询租户的组织机构树-->
+    <select id="queryOrgTreeByTenant" parameterType="java.lang.Long" resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </select>
+
+
+    <!--查询租户的组织机构树**精简展示树-->
+    <select id="queryOrgSimpleTreeByTenant" parameterType="java.lang.Long" resultMap="OrgSimpleResultMap">
+        select
+        org_id, tenant_id, org_type, org_name, tax_code, parent_org, ORG_CODE
+        from moirai_org
+        where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </select>
+
+    <!--查询租户的所有税号数 -->
+    <select id="queryTenantTaxCodeTotal" parameterType="java.lang.Long"
+            resultType="java.lang.Integer">
+		select count(org_id)
+		from moirai_org
+		where tenant_id = #{tenantId,jdbcType=BIGINT} AND org_type = 1
+	</select>
+
+    <!--按条件查询组织机构-->
+    <select id="queryOrgByCondition" parameterType="com.baiwang.moirai.model.org.MoiraiOrgCondition"
+            resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        <where>
+            use_flag = 'Y'
+            <if test="orgId != null and orgId != 0">
+                AND org_id = #{orgId,jdbcType=BIGINT}
+            </if>
+            <if test="tenantId != null">
+                AND tenant_id = #{tenantId,jdbcType=BIGINT}
+            </if>
+            <if test="orgType != null and orgType != ''">
+                AND org_type = #{orgType,jdbcType=INTEGER}
+            </if>
+            <choose>
+                <when test='fuzzyQuery == "false"'>
+                    <if test="orgName != null and orgName != ''">
+                        AND org_name = #{orgName,jdbcType=VARCHAR}
+                    </if>
+                    <if test="taxCode != null and taxCode != ''">
+                        AND tax_code = #{taxCode,jdbcType=VARCHAR}
+                    </if>
+                    <if test="orgCode != null and orgCode != ''">
+                        AND ORG_CODE = #{orgCode,jdbcType=VARCHAR}
+                    </if>
+                    <if test="remark != null and remark != ''">
+                        AND REMARK = #{remark,jdbcType=VARCHAR}
+                    </if>
+                    <if test="backup != null and backup != ''">
+                        AND BACKUP = #{backup,jdbcType=VARCHAR}
+                    </if>
+                </when>
+                <otherwise>
+                    <if test="orgName != null and orgName != ''">
+                        AND org_name LIKE concat(concat('%' , #{orgName,jdbcType=VARCHAR}) , '%')
+                    </if>
+                    <if test="taxCode != null and taxCode != ''">
+                        AND tax_code LIKE concat(concat('%' , #{taxCode,jdbcType=VARCHAR} ), '%')
+                    </if>
+                    <if test="orgCode != null and orgCode != ''">
+                        AND ORG_CODE LIKE concat(concat('%' , #{orgCode,jdbcType=VARCHAR}) , '%')
+                    </if>
+                    <if test="remark != null and remark != ''">
+                        AND REMARK LIKE concat(concat('%' , #{remark,jdbcType=VARCHAR}) , '%')
+                    </if>
+                    <if test="backup != null and backup != ''">
+                        AND BACKUP LIKE concat(concat('%' , #{backup,jdbcType=VARCHAR}) , '%')
+                    </if>
+                </otherwise>
+            </choose>
+            <if test="parentOrg != null">
+                AND parent_org = #{parentOrg,jdbcType=BIGINT}
+            </if>
+            <if test="creater != null and creater != ''">
+                AND creater = #{creater,jdbcType=VARCHAR}
+            </if>
+            <if test="modifyUser != null and modifyUser != ''">
+                AND modify_user = #{modifyUser,jdbcType=VARCHAR}
+            </if>
+            <if test="useFlag != null and useFlag != ''">
+                AND use_flag = #{useFlag,jdbcType=CHAR}
+            </if>
+            <if test="selfManage != null and selfManage != ''">
+                AND self_manage = #{selfManage,jdbcType=CHAR}
+            </if>
+            <if test="parentVisible != null and parentVisible != ''">
+                AND parent_visible = #{parentVisible,jdbcType=CHAR}
+            </if>
+            <if test="telphone != null and telphone != ''">
+                AND telphone = #{telphone,jdbcType=VARCHAR}
+            </if>
+            <if test="bankDeposit != null and bankDeposit != ''">
+                AND bank_deposit = #{bankDeposit,jdbcType=VARCHAR}
+            </if>
+            <if test="accountNumber != null and accountNumber != ''">
+                AND account_number = #{accountNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="legalName != null and legalName != ''">
+                AND legal_name = #{legalName,jdbcType=VARCHAR}
+            </if>
+            <if test="regProv != null and regProv != ''">
+                AND reg_PROV = #{regProv,jdbcType=BIGINT}
+            </if>
+            <if test="regCity != null and regCity != ''">
+                AND reg_CITY = #{regCity,jdbcType=BIGINT}
+            </if>
+            <if test="regArea != null and regArea != ''">
+                AND reg_AREA = #{regArea,jdbcType=BIGINT}
+            </if>
+            <if test="taxProv != null and taxProv != ''">
+                AND tax_prov = #{taxProv,jdbcType=VARCHAR}
+            </if>
+            <if test="businessAddress != null and businessAddress != ''">
+                AND business_address = #{businessAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="registerAddress != null and registerAddress != ''">
+                AND register_address = #{registerAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="djCompanyType != null and djCompanyType != ''">
+                AND dj_company_type = #{djCompanyType,jdbcType=VARCHAR}
+            </if>
+            <if test="belongIndustry != null and belongIndustry != ''">
+                AND belong_industry = #{belongIndustry,jdbcType=VARCHAR}
+            </if>
+            <if test="jrdCode != null and jrdCode != ''">
+                AND jrd_code = #{jrdCode,jdbcType=VARCHAR}
+            </if>
+            <if test="taxQuali != null and taxQuali != ''">
+                AND tax_quali = #{taxQuali,jdbcType=CHAR}
+            </if>
+            <if test="needSeal != null and needSeal != ''">
+                AND need_seal = #{needSeal,jdbcType=CHAR}
+            </if>
+            <if test="sealId != null and sealId != ''">
+                AND seal_id = #{sealId,jdbcType=VARCHAR}
+            </if>
+            <if test="deviceType != null and deviceType != ''">
+                AND device_type = #{deviceType,jdbcType=VARCHAR}
+            </if>
+            <if test="tgType != null and tgType != ''">
+                AND tg_type = #{tgType,jdbcType=CHAR}
+            </if>
+            <if test="deviceName != null and deviceName != ''">
+                AND device_name = #{deviceName,jdbcType=VARCHAR}
+            </if>
+            <if test="deviceCode != null and deviceCode != ''">
+                AND device_code = #{deviceCode,jdbcType=VARCHAR}
+            </if>
+            <if test="deviceSn != null and deviceSn != ''">
+                AND device_sn = #{deviceSn,jdbcType=VARCHAR}
+            </if>
+            <if test="modifyLev != null and modifyLev != ''">
+                AND modify_lev = #{modifyLev,jdbcType=CHAR}
+            </if>
+            <if test="taxentityId != null and taxentityId != ''">
+                AND taxentity_id = #{taxentityId,jdbcType=BIGINT}
+            </if>
+            <if test="isProof != null and isProof != ''">
+                AND is_proof = #{isProof,jdbcType=CHAR}
+            </if>
+            <if test="isAuthe != null and isAuthe != ''">
+                AND is_authe = #{isAuthe,jdbcType=CHAR}
+            </if>
+            <if test="isFetch != null and isFetch != ''">
+                AND is_fetch = #{isFetch,jdbcType=CHAR}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <!--批量查询组织机构-->
+    <select id="queryOrgListByCondition" parameterType="java.util.Map" resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_alias"/>
+        from moirai_org org
+        <where>
+            <if test="orgId != null ">
+                AND org.org_id in
+                <foreach collection="orgId" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="taxCode != null ">
+                AND org.tax_code in
+                <foreach collection="taxCode" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="taxentityId != null ">
+                AND org.taxentity_id in
+                <foreach collection="taxentityId" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="orgName != null ">
+                AND org.org_name in
+                <foreach collection="orgName" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="tenantId != null ">
+                AND org.tenant_id in
+                <foreach collection="tenantId" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="parentOrg != null ">
+                AND org.parent_org in
+                <foreach collection="parentOrg" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="productCon != null ">AND org.org_id in (
+                select distinct(org_id) from moirai_org_product p
+                where p.product_id in
+                <foreach collection="productCon" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+                )
+            </if>
+            <if test="qdBms !=null">AND org.tenant_id in (
+                select distinct ct.tenant_id
+                from moirai_channel_tenant ct
+                where ct.qd_bm in
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+
+    <!--税号管理，查询组织机构列表也是纳税主体列表-->
+    <select id="queryOrgListPage" parameterType="com.baiwang.moirai.model.org.MoiraiOrgCondition"
+            resultMap="OrgSimpleResultMap">
+        SELECT
+        <include refid="Org_Column_alias"/>, t.tenant_name
+        FROM moirai_org org, moirai_tenant t
+        <where>
+            org.tenant_id = t.tenant_id
+            <if test="orgName != null and orgName !=''">AND org.org_name LIKE concat(concat('%' ,
+                #{orgName,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="taxCode != null and taxCode !=''">AND org.tax_code LIKE concat(concat('%' ,
+                #{taxCode,jdbcType=VARCHAR} ), '%')
+            </if>
+            <if test="orgType != null and orgType != ''">AND org_type = #{orgType,jdbcType=INTEGER}</if>
+            <if test="taxQuali != null and taxQuali != ''">AND tax_quali = #{taxQuali,jdbcType=CHAR}</if>
+            <if test="registerBegintime != null ">AND org.create_time &gt;= #{registerBegintime ,jdbcType=BIGINT}</if>
+            <if test="registerEndtime != null ">AND org.create_time &lt;= #{registerEndtime ,jdbcType=BIGINT}</if>
+            <if test="taxProv != null and taxProv != ''">AND org.tax_prov = #{taxProv ,jdbcType=VARCHAR}</if>
+            <if test="belongIndustry != null and belongIndustry != ''">AND org.belong_industry =
+                #{belongIndustry ,jdbcType=VARCHAR}
+            </if>
+            <if test="deviceType != null and deviceType != ''">AND org.device_type = #{deviceType ,jdbcType=VARCHAR}
+            </if>
+            <if test="tgType != null and tgType != ''">AND org.tg_type = #{tgType ,jdbcType=CHAR}</if>
+            <if test="isNeedProduct >= 2 ">
+                AND org.org_id in (select distinct(org_id) from moirai_org_product p where p.product_id in
+                <foreach collection="productCon" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+                )
+            </if>
+            <if test="isNeedProduct == 1 or isNeedProduct == 3">
+                AND org.tenant_id in (
+                select distinct ct.tenant_id
+                from moirai_channel_tenant ct
+                where ct.qd_bm in
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+                )
+            </if>
+        </where>
+        ORDER BY org.modify_time DESC
+    </select>
+
+    <!--税号管理，查询组织机构列表也是纳税主体列表-->
+    <select id="queryOrgListPage2" parameterType="com.baiwang.moirai.model.org.MoiraiOrgCondition"
+            resultMap="OrgSimpleResultMap">
+        SELECT
+        <include refid="Org_Column_alias"/>
+        FROM moirai_org org
+        <if test="isNeedProduct >= 2 ">
+            left join moirai_org_product p on org.org_id = p.org_id
+        </if>
+        <if test="isNeedProduct == 1 or isNeedProduct == 3">
+            left join moirai_channel_tenant ct on org.tenant_id = ct.tenant_id
+        </if>
+        <where>
+            <if test="orgName != null and orgName !=''">AND org.org_name LIKE concat(concat('%' ,
+                #{orgName,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="taxCode != null and taxCode !=''">AND org.tax_code LIKE concat(concat('%' ,
+                #{taxCode,jdbcType=VARCHAR} ), '%')
+            </if>
+            <if test="orgType != null and orgType != ''">AND org_type = #{orgType,jdbcType=INTEGER}</if>
+            <if test="taxQuali != null and taxQuali != ''">AND tax_quali = #{taxQuali,jdbcType=CHAR}</if>
+            <if test="registerBegintime != null ">AND org.create_time &gt;= #{registerBegintime ,jdbcType=BIGINT}</if>
+            <if test="registerEndtime != null ">AND org.create_time &lt;= #{registerEndtime ,jdbcType=BIGINT}</if>
+            <if test="taxProv != null and taxProv != ''">AND org.tax_prov = #{taxProv ,jdbcType=VARCHAR}</if>
+            <if test="belongIndustry != null and belongIndustry != ''">AND org.belong_industry =
+                #{belongIndustry ,jdbcType=VARCHAR}
+            </if>
+            <if test="deviceType != null and deviceType != ''">AND org.device_type = #{deviceType ,jdbcType=VARCHAR}
+            </if>
+            <if test="tgType != null and tgType != ''">AND org.tg_type = #{tgType ,jdbcType=CHAR}</if>
+            <if test="isNeedProduct >= 2 ">
+                and p.product_id in
+                <foreach collection="productCon" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="isNeedProduct == 1 or isNeedProduct == 3">
+                AND ct.qd_bm in
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY org.modify_time DESC
+    </select>
+
+    <!--新增纳税主体组织机构-->
+    <insert id="addTaxOrg" parameterType="com.baiwang.moirai.model.org.MoiraiOrg">
+        insert into moirai_org
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="orgType != null">
+                org_type,
+            </if>
+            <if test="orgName != null">
+                org_name,
+            </if>
+            <if test="taxCode != null">
+                tax_code,
+            </if>
+            <if test="parentOrg != null">
+                parent_org,
+            </if>
+            <if test="orgCode != null">
+                ORG_CODE,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyUser != null">
+                modify_user,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="parentVisible != null">
+                parent_visible,
+            </if>
+            <if test="deviceName != null">
+                device_name,
+            </if>
+            <if test="deviceCode != null">
+                device_code,
+            </if>
+            <if test="modifyLev != null">
+                modify_lev,
+            </if>
+            <if test="telphone != null">
+                telphone,
+            </if>
+            <if test="bankDeposit != null">
+                bank_deposit,
+            </if>
+            <if test="accountNumber != null">
+                account_number,
+            </if>
+            <if test="legalName != null">
+                legal_name,
+            </if>
+            <if test="regProv != null">
+                reg_PROV,
+            </if>
+            <if test="regCity != null">
+                reg_CITY,
+            </if>
+            <if test="regArea != null">
+                reg_AREA,
+            </if>
+            <if test="taxProv != null">
+                tax_prov,
+            </if>
+            <if test="businessAddress != null">
+                business_address,
+            </if>
+            <if test="djCompanyType != null">
+                dj_company_type,
+            </if>
+            <if test="belongIndustry != null">
+                belong_industry,
+            </if>
+            <if test="jrdCode != null">
+                jrd_code,
+            </if>
+            <if test="taxQuali != null">
+                tax_quali,
+            </if>
+            <if test="needSeal != null">
+                need_seal,
+            </if>
+            <if test="sealId != null">
+                seal_id,
+            </if>
+            <if test="deviceType != null">
+                device_type,
+            </if>
+            <if test="tgType != null">
+                tg_type,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="backup != null">
+                BACKUP,
+            </if>
+
+            <if test="useSelfinfo != null">
+                use_selfinfo,
+            </if>
+            <if test="exportQualify != null">
+                EXPORT_QUALIFY,
+            </if>
+            <if test="contactNumber != null">
+                CONTACT_NUMBER,
+            </if>
+            <if test="addressee != null">
+                ADDRESSEE,
+            </if>
+            <if test="moilingAddress != null">
+                MAILING_ADDRESS,
+            </if>
+            <if test="isProof != null">
+                is_proof,
+            </if>
+            <if test="isAuthe != null">
+                is_authe,
+            </if>
+            <if test="isFetch != null">
+                is_fetch,
+            </if>
+            <if test="deviceSn != null">
+                device_sn,
+            </if>
+            <if test="devicePassword != null">
+                device_password,
+            </if>
+            <if test="deviceKey != null">
+                device_key,
+            </if>
+            <if test="registerAddress != null">
+                register_address,
+            </if>
+            <if test="perfectFlag != null">
+                perfect_flag,
+            </if>
+            <if test="contractNum != null">
+                contract_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgType != null">
+                #{orgType,jdbcType=INTEGER},
+            </if>
+            <if test="orgName != null">
+                #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="taxCode != null">
+                #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOrg != null">
+                #{parentOrg,jdbcType=BIGINT},
+            </if>
+            <if test="orgCode != null">
+                #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="parentVisible != null">
+                #{parentVisible,jdbcType=CHAR},
+            </if>
+            <if test="deviceName != null">
+                #{deviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceCode != null">
+                #{deviceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyLev != null">
+                #{modifyLev,jdbcType=CHAR},
+            </if>
+            <if test="telphone != null">
+                #{telphone,jdbcType=VARCHAR},
+            </if>
+            <if test="bankDeposit != null">
+                #{bankDeposit,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNumber != null">
+                #{accountNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="legalName != null">
+                #{legalName,jdbcType=VARCHAR},
+            </if>
+            <if test="regProv != null">
+                #{regProv,jdbcType=BIGINT},
+            </if>
+            <if test="regCity != null">
+                #{regCity,jdbcType=BIGINT},
+            </if>
+            <if test="regArea != null">
+                #{regArea,jdbcType=BIGINT},
+            </if>
+            <if test="taxProv != null">
+                #{taxProv,jdbcType=VARCHAR},
+            </if>
+            <if test="businessAddress != null">
+                #{businessAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="djCompanyType != null">
+                #{djCompanyType,jdbcType=VARCHAR},
+            </if>
+            <if test="belongIndustry != null">
+                #{belongIndustry,jdbcType=VARCHAR},
+            </if>
+            <if test="jrdCode != null">
+                #{jrdCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taxQuali != null">
+                #{taxQuali,jdbcType=CHAR},
+            </if>
+            <if test="needSeal != null">
+                #{needSeal,jdbcType=CHAR},
+            </if>
+            <if test="sealId != null">
+                #{sealId,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="tgType != null">
+                #{tgType,jdbcType=CHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=CHAR},
+            </if>
+            <if test="backup != null">
+                #{backup,jdbcType=CHAR},
+            </if>
+
+            <if test="useSelfinfo != null">
+                #{useSelfinfo,jdbcType=CHAR},
+            </if>
+            <if test="exportQualify != null">
+                #{exportQualify,jdbcType=CHAR},
+            </if>
+            <if test="contactNumber != null">
+                #{contactNumber,jdbcType=CHAR},
+            </if>
+            <if test="addressee != null">
+                #{addressee,jdbcType=CHAR},
+            </if>
+            <if test="moilingAddress != null">
+                #{moilingAddress,jdbcType=CHAR},
+            </if>
+            <if test="isProof != null">
+                #{isProof,jdbcType=CHAR},
+            </if>
+            <if test="isAuthe != null">
+                #{isAuthe,jdbcType=CHAR},
+            </if>
+            <if test="isFetch != null">
+                #{isFetch,jdbcType=CHAR},
+            </if>
+            <if test="deviceSn != null">
+                #{deviceSn,jdbcType=VARCHAR},
+            </if>
+            <if test="devicePassword != null">
+                #{devicePassword,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceKey != null">
+                #{deviceKey,jdbcType=VARCHAR},
+            </if>
+            <if test="registerAddress != null">
+                #{registerAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="perfectFlag != null">
+                #{perfectFlag,jdbcType=CHAR},
+            </if>
+            <if test="contractNum != null">
+                #{contractNum,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!--新增非纳税主体组织机构 -->
+    <insert id="addNoTaxOrg" parameterType="com.baiwang.moirai.model.org.MoiraiOrg">
+        insert into moirai_org
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="orgType != null">
+                org_type,
+            </if>
+            <if test="orgName != null">
+                org_name,
+            </if>
+            <if test="parentOrg != null">
+                parent_org,
+            </if>
+            <if test="orgCode != null">
+                org_code,
+            </if>
+            <if test="telphone != null">
+                telphone,
+            </if>
+            <if test="bankDeposit != null">
+                bank_deposit,
+            </if>
+            <if test="accountNumber != null">
+                account_number,
+            </if>
+            <if test="businessAddress != null">
+                business_address,
+            </if>
+            <if test="registerAddress != null">
+                register_address,
+            </if>
+            <if test="legalName != null">
+                legal_name,
+            </if>
+            <if test="regCity != null">
+                reg_CITY,
+            </if>
+            <if test="regArea != null">
+                reg_AREA,
+            </if>
+            <if test="regProv != null">
+                reg_PROV,
+            </if>
+            <if test="useSelfinfo != null">
+                use_selfinfo,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyUser != null">
+                modify_user,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="selfManage != null">
+                self_manage,
+            </if>
+            <if test="deviceName != null">
+                device_name,
+            </if>
+            <if test="deviceCode != null">
+                device_code,
+            </if>
+            <if test="parentVisible != null">
+                parent_visible,
+            </if>
+            <if test="jrdCode != null">
+                jrd_code,
+            </if>
+            <if test="taxQuali != null">
+                tax_quali,
+            </if>
+            <if test="needSeal != null">
+                need_seal,
+            </if>
+            <if test="sealId != null">
+                seal_id,
+            </if>
+            <if test="deviceType != null">
+                device_type,
+            </if>
+            <if test="tgType != null">
+                tg_type,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="backup != null">
+                BACKUP,
+            </if>
+            <if test="contactNumber != null">
+                CONTACT_NUMBER,
+            </if>
+            <if test="addressee != null">
+                ADDRESSEE,
+            </if>
+            <if test="moilingAddress != null">
+                MAILING_ADDRESS,
+            </if>
+            <if test="isProof != null">
+                is_proof,
+            </if>
+            <if test="isAuthe != null">
+                is_authe,
+            </if>
+            <if test="perfectFlag != null">
+                perfect_flag,
+            </if>
+            <if test="contractNum != null">
+                contract_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgType != null">
+                #{orgType,jdbcType=INTEGER},
+            </if>
+            <if test="orgName != null">
+                #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOrg != null">
+                #{parentOrg,jdbcType=BIGINT},
+            </if>
+            <if test="orgCode != null">
+                #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="telphone != null">
+                #{telphone,jdbcType=VARCHAR},
+            </if>
+            <if test="bankDeposit != null">
+                #{bankDeposit,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNumber != null">
+                #{accountNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="businessAddress != null">
+                #{businessAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="registerAddress != null">
+                #{registerAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="legalName != null">
+                #{legalName,jdbcType=VARCHAR},
+            </if>
+            <if test="regCity != null">
+                #{regCity,jdbcType=BIGINT},
+            </if>
+            <if test="regArea != null">
+                #{regArea,jdbcType=BIGINT},
+            </if>
+            <if test="regProv != null">
+                #{regProv,jdbcType=BIGINT},
+            </if>
+            <if test="useSelfinfo != null">
+                #{useSelfinfo,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="selfManage != null">
+                #{selfManage,jdbcType=CHAR},
+            </if>
+            <if test="deviceName != null">
+                #{deviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceCode != null">
+                #{deviceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="parentVisible != null">
+                #{parentVisible,jdbcType=CHAR},
+            </if>
+            <if test="jrdCode != null">
+                #{jrdCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taxQuali != null">
+                #{taxQuali,jdbcType=CHAR},
+            </if>
+            <if test="needSeal != null">
+                #{needSeal,jdbcType=CHAR},
+            </if>
+            <if test="sealId != null">
+                #{sealId,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="tgType != null">
+                #{tgType,jdbcType=CHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="backup != null">
+                #{backup,jdbcType=VARCHAR},
+            </if>
+            <if test="contactNumber != null">
+                #{contactNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="addressee != null">
+                #{addressee,jdbcType=VARCHAR},
+            </if>
+            <if test="moilingAddress != null">
+                #{moilingAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="isProof != null">
+                #{isProof,jdbcType=CHAR},
+            </if>
+            <if test="isAuthe != null">
+                #{isAuthe,jdbcType=CHAR},
+            </if>
+            <if test="perfectFlag != null">
+                #{perfectFlag,jdbcType=CHAR},
+            </if>
+            <if test="contractNum != null">
+                #{contractNum,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!--删除组织机构-->
+    <delete id="deleteOrg" parameterType="java.lang.Long">
+        delete from moirai_org
+        where org_id = #{orgId,jdbcType=BIGINT}
+    </delete>
+
+    <!--更新组织机构信息 -->
+    <update id="updateOrg" parameterType="com.baiwang.moirai.model.org.MoiraiOrg">
+        update moirai_org
+        <set>
+            <if test="taxCode != null">
+                tax_code = #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="orgType != null">
+                org_type = #{orgType,jdbcType=INTEGER},
+            </if>
+            <if test="orgName != null">
+                org_name = #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOrg != null">
+                parent_org = #{parentOrg,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="orgCode != null">
+                ORG_CODE = #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                use_flag = #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="selfManage != null">
+                self_manage = #{selfManage,jdbcType=CHAR},
+            </if>
+            <if test="parentVisible != null">
+                parent_visible = #{parentVisible,jdbcType=CHAR},
+            </if>
+            <if test="deviceName != null">
+                device_name = #{deviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceCode != null">
+                device_code = #{deviceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyLev != null">
+                modify_lev = #{modifyLev,jdbcType=CHAR},
+            </if>
+            <if test="telphone != null">
+                telphone = #{telphone,jdbcType=VARCHAR},
+            </if>
+            <if test="bankDeposit != null">
+                bank_deposit = #{bankDeposit,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNumber != null">
+                account_number = #{accountNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="legalName != null">
+                legal_name = #{legalName,jdbcType=VARCHAR},
+            </if>
+            <if test="regProv != null">
+                reg_PROV = #{regProv,jdbcType=BIGINT},
+            </if>
+            <if test="regCity != null">
+                reg_CITY = #{regCity,jdbcType=BIGINT},
+            </if>
+            <if test="regArea != null">
+                reg_AREA = #{regArea,jdbcType=BIGINT},
+            </if>
+            <if test="taxProv != null">
+                tax_prov = #{taxProv,jdbcType=VARCHAR},
+            </if>
+            <if test="businessAddress != null">
+                business_address = #{businessAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="useSelfinfo != null">
+                use_selfinfo = #{useSelfinfo,jdbcType=VARCHAR},
+            </if>
+            <if test="djCompanyType != null">
+                dj_company_type = #{djCompanyType,jdbcType=VARCHAR},
+            </if>
+            <if test="belongIndustry != null">
+                belong_industry = #{belongIndustry,jdbcType=VARCHAR},
+            </if>
+            <if test="jrdCode != null">
+                jrd_code = #{jrdCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taxQuali != null">
+                tax_quali = #{taxQuali,jdbcType=CHAR},
+            </if>
+            <if test="needSeal != null">
+                need_seal = #{needSeal,jdbcType=CHAR},
+            </if>
+            <if test="sealId != null">
+                seal_id = #{sealId,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                device_type = #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="tgType != null">
+                tg_type = #{tgType,jdbcType=CHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="backup != null">
+                BACKUP = #{backup,jdbcType=VARCHAR},
+            </if>
+            <if test="exportQualify != null">
+                EXPORT_QUALIFY = #{exportQualify,jdbcType=VARCHAR},
+            </if>
+            <if test="contactNumber != null">
+                CONTACT_NUMBER = #{contactNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="addressee != null">
+                ADDRESSEE = #{addressee,jdbcType=VARCHAR},
+            </if>
+            <if test="moilingAddress != null">
+                MAILING_ADDRESS = #{moilingAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="isFetch != null">
+                is_fetch = #{isFetch,jdbcType=CHAR},
+            </if>
+            <if test="isProof != null">
+                is_proof = #{isProof,jdbcType=CHAR},
+            </if>
+            <if test="isAuthe != null">
+                is_authe = #{isAuthe,jdbcType=CHAR},
+            </if>
+            <if test="deviceSn != null">
+                device_sn = #{deviceSn,jdbcType=VARCHAR},
+            </if>
+            <if test="devicePassword != null">
+                device_password = #{devicePassword,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceKey != null">
+                device_key = #{deviceKey,jdbcType=VARCHAR},
+            </if>
+            <if test="registerAddress != null">
+                register_address = #{registerAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="perfectFlag != null">
+                perfect_flag = #{perfectFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="contractNum != null">
+                contract_num = #{contractNum,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where org_id = #{orgId,jdbcType=BIGINT} or tax_code = #{taxCode,jdbcType=VARCHAR}
+    </update>
+
+    <!--更新组织机构税号和名称 -->
+    <update id="updateOrgTaxName" parameterType="com.baiwang.moirai.model.org.MoiraiOrg">
+        update moirai_org
+        <set>
+            <if test="orgName != null">
+                org_name = #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="taxCode != null">
+                tax_code = #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taxProv != null">
+                tax_prov = #{taxProv,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where org_id = #{orgId,jdbcType=BIGINT}
+    </update>
+    <!-- 修改机构状态值 -->
+    <update id="updateOrgSwitchState" parameterType="com.baiwang.moirai.model.org.MoiraiOrg">
+        update moirai_org
+        <set>
+            <if test="isFetch != null">
+                is_fetch = #{isFetch,jdbcType=CHAR},
+            </if>
+            <if test="isProof != null">
+                is_proof = #{isProof,jdbcType=CHAR},
+            </if>
+            <if test="isAuthe != null">
+                is_authe = #{isAuthe,jdbcType=CHAR},
+            </if>
+        </set>
+        where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </update>
+
+    <!--批量查询组织机构-->
+    <select id="selectOrgBatcher" parameterType="java.util.List" resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        where org_id IN
+        <foreach collection="items" item="kpyUserId" open="(" separator="," close=")">
+            #{kpyUserId}
+        </foreach>
+        <if test="orgName != null and orgName !=''">AND org_name LIKE concat(concat('%' ,
+            #{orgName,jdbcType=VARCHAR}) , '%')
+        </if>
+        <if test="taxCode != null and taxCode !=''">AND tax_code LIKE concat(concat('%' ,
+            #{taxCode,jdbcType=VARCHAR} ), '%')
+        </if>
+        <if test="orgCode != null and orgCode != ''">AND org_code = #{orgCode,jdbcType=VARCHAR}</if>
+        order by create_time
+    </select>
+
+    <select id="selectOrgByAuth" parameterType="java.util.List" resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        where del_flag = 'N'
+        <if test="tenantId != null and userId != null">
+            AND ORG_ID in
+            (select authz.auth_org from moirai_user_authz authz inner join moirai_role_resource res on authz.role_id = res.role_id
+            <where>
+                <if test="tenantId != null">and authz.tenant_id = #{tenantId}</if>
+                <if test="userId != null">and authz.user_id = #{userId}</if>
+                <if test="resourceId != null">and res.resource_id = #{resourceId}</if>
+            </where>)
+        </if>
+        <if test="tenantId == null or userId == null">
+            AND ORG_ID = -1
+        </if>
+        <if test="orgName != null and orgName !=''">AND org_name LIKE concat(concat('%' ,
+            #{orgName,jdbcType=VARCHAR}) , '%')
+        </if>
+        <if test="taxCode != null and taxCode !=''">AND tax_code LIKE concat(concat('%' ,
+            #{taxCode,jdbcType=VARCHAR} ), '%')
+        </if>
+        <if test="orgCode != null and orgCode != ''">AND org_code = #{orgCode,jdbcType=VARCHAR}</if>
+        order by create_time
+    </select>
+
+    <!--批量添加组织机构-->
+    <insert id="addOrgList" parameterType="java.util.List">
+        insert into moirai_org
+        (org_id,tenant_id,org_type,org_name,tax_code,parent_org,ORG_CODE,creater,create_time,modify_user,modify_time,
+        self_manage,parent_visible,device_name,device_code,modify_lev,telphone,bank_deposit,account_number,legal_name,reg_PROV,reg_CITY,
+        reg_AREA,tax_prov,business_address,dj_company_type,belong_industry,jrd_code,tax_quali,need_seal,seal_id,
+        REMARK,BACKUP,use_selfinfo,EXPORT_QUALIFY,CONTACT_NUMBER,ADDRESSEE,MAILING_ADDRESS,is_fetch,is_proof,is_authe,
+        device_sn,device_password,device_key,register_address,contract_num)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.orgId,jdbcType=BIGINT},
+            #{item.tenantId,jdbcType=BIGINT},
+            #{item.orgType,jdbcType=INTEGER},
+            #{item.orgName,jdbcType=VARCHAR},
+            #{item.taxCode,jdbcType=VARCHAR},
+            #{item.parentOrg,jdbcType=BIGINT},
+            #{item.orgCode,jdbcType=VARCHAR},
+            #{item.creater,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=BIGINT},
+            #{item.modifyUser,jdbcType=VARCHAR},
+            #{item.modifyTime,jdbcType=BIGINT},
+            #{item.selfManage,jdbcType=CHAR},
+            #{item.parentVisible,jdbcType=CHAR},
+            #{item.deviceName,jdbcType=VARCHAR},
+            #{item.deviceCode,jdbcType=VARCHAR},
+            #{item.modifyLev,jdbcType=CHAR},
+            #{item.telphone,jdbcType=VARCHAR},
+            #{item.bankDeposit,jdbcType=VARCHAR},
+            #{item.accountNumber,jdbcType=VARCHAR},
+            #{item.legalName,jdbcType=VARCHAR},
+            #{item.regProv,jdbcType=BIGINT},
+            #{item.regCity,jdbcType=BIGINT},
+            #{item.regArea,jdbcType=BIGINT},
+            #{item.taxProv,jdbcType=VARCHAR},
+            #{item.businessAddress,jdbcType=VARCHAR},
+            #{item.djCompanyType,jdbcType=VARCHAR},
+            #{item.belongIndustry,jdbcType=VARCHAR},
+            #{item.jrdCode,jdbcType=VARCHAR},
+            #{item.taxQuali,jdbcType=CHAR},
+            #{item.needSeal,jdbcType=CHAR},
+            #{item.sealId,jdbcType=VARCHAR},
+            #{item.remark,jdbcType=CHAR},
+            #{item.backup,jdbcType=CHAR},
+            #{item.useSelfinfo,jdbcType=CHAR},
+            #{item.exportQualify,jdbcType=CHAR},
+            #{item.contactNumber,jdbcType=CHAR},
+            #{item.addressee,jdbcType=CHAR},
+            #{item.moilingAddress,jdbcType=CHAR},
+            #{item.isFetch,jdbcType=CHAR},
+            #{item.isProof,jdbcType=CHAR},
+            #{item.isAuthe,jdbcType=CHAR},
+            #{item.deviceSn,jdbcType=VARCHAR},
+            #{item.devicePassword,jdbcType=VARCHAR},
+            #{item.deviceKey,jdbcType=VARCHAR},
+            #{item.registerAddress,jdbcType=VARCHAR},
+            #{item.contractNum,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <!--开放平台定制-->
+    <select id="findTaxCodeListInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT DISTINCT t.tax_code taxCode, MIN(t.org_name) orgName, MIN(t.org_id) orgId, MIN(t.tenant_id) tenantId,
+        MIN(t.origin_mark) originMark, GROUP_CONCAT(t.product_id SEPARATOR ',') productId
+        FROM (SELECT DISTINCT org.tax_code, org.org_name, org.org_id, org.tenant_id, tenant.origin_mark, pro.product_id
+        FROM moirai_org org
+        LEFT JOIN moirai_tenant tenant ON org.tenant_id = tenant.tenant_id
+        LEFT JOIN moirai_org_product pro ON org.org_id = pro.org_id
+        WHERE org.tax_code IS NOT NULL
+        <if test="originMark != null and originMark != ''">and tenant.origin_mark = #{originMark}</if>
+        <if test="taxCode != null and taxCode != ''">and org.tax_code like concat(concat('%',#{taxCode}),'%')</if>
+        <if test="orgName != null and orgName != ''">and org.org_name like concat(concat('%',#{orgName}),'%')</if>
+        <if test="productId != null and productId != ''">and pro.product_id = #{productId}</if>
+        and org.tax_code in
+        <foreach collection="taxNoList" item="taxNo" open="(" separator="," close=")">
+            #{taxNo}
+        </foreach>
+        ) t group by t.tax_code
+    </select>
+
+    <select id="selectTopOrgListByTenantIdList" parameterType="java.util.List" resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        <where>
+            parent_org=0
+            <if test="list != null and list.size > 0">
+                and tenant_id in
+                <foreach collection="list" item="item" open="(" separator="," close=")">
+                    #{item,jdbcType=BIGINT}
+                </foreach>
+            </if>
+            <if test="list == null or list.size == 0">
+                and 1 = 2
+            </if>
+        </where>
+    </select>
+
+    <!--查询租户的所有税号数 -->
+    <select id="queryTenantTaxCodeTotalList" parameterType="java.util.List"
+            resultType="java.util.Map">
+        select tenant_id tenantId, count(org_id) orgCount
+        from moirai_org
+        where org_type = 1
+        <if test="list != null and list.size > 0">
+            and tenant_id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        <if test="list == null or list.size == 0">
+            and 1 = 2
+        </if>
+        group by tenant_id
+    </select>
+
+    <!--批量查询组织机构-->
+    <select id="queryChannelOrg" parameterType="java.util.Map" resultMap="OrgSimpleResultMap">
+        select
+        <include refid="Org_Column_alias"/>
+        from moirai_org org left join moirai_channel_tenant ct on org.tenant_id = ct.tenant_id
+        <where>
+            use_flag = 'Y'
+            <if test="orgId != null and orgId != 0">AND org_id = #{orgId,jdbcType=BIGINT}</if>
+            <if test="tenantId != null">AND tenant_id = #{tenantId,jdbcType=BIGINT}</if>
+            <if test="orgType != null and orgType != ''">AND org_type = #{orgType,jdbcType=INTEGER}</if>
+            <if test="orgName != null and orgName != ''">AND org_name = #{orgName,jdbcType=VARCHAR}</if>
+            <if test="taxCode != null and taxCode != ''">AND tax_code = #{taxCode,jdbcType=VARCHAR}</if>
+            <if test="orgCode != null and orgCode != ''">AND ORG_CODE = #{orgCode,jdbcType=VARCHAR}</if>
+            <if test="remark != null and remark != ''">AND REMARK = #{remark,jdbcType=VARCHAR}</if>
+            <if test="backup != null and backup != ''">AND BACKUP = #{backup,jdbcType=VARCHAR}</if>
+            <if test="qdBms !=null and qdBms.size > 0">AND ct.qd_bm in
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="taxCodes != null and taxCodes.size > 0">
+            and org.tax_code in
+            <foreach collection="taxCodes" item="item" open="(" separator="," close=")">
+                #{item,jdbcType=VARCHAR}
+            </foreach>
+        </if>
+        </where>
+    </select>
+</mapper>

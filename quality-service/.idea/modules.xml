@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/quality-service.iml" filepath="$PROJECT_DIR$/quality-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quality-service-common/quality-service-common.iml" filepath="$PROJECT_DIR$/quality-service-common/quality-service-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quality-service-dao/quality-service-dao.iml" filepath="$PROJECT_DIR$/quality-service-dao/quality-service-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quality-service-integration/quality-service-integration.iml" filepath="$PROJECT_DIR$/quality-service-integration/quality-service-integration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quality-service-service/quality-service-service.iml" filepath="$PROJECT_DIR$/quality-service-service/quality-service-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quality-service-startup/quality-service-startup.iml" filepath="$PROJECT_DIR$/quality-service-startup/quality-service-startup.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quality-service-web/quality-service-web.iml" filepath="$PROJECT_DIR$/quality-service-web/quality-service-web.iml" />
+    </modules>
+  </component>
+</project>

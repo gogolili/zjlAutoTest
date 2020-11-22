@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiProductMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.role.MoiraiProduct">
+        <id column="PRODUCT_ID" jdbcType="BIGINT" property="productId"/>
+        <result column="PRODUCT_NAME" jdbcType="VARCHAR" property="productName"/>
+        <result column="PRODUCT_CODE" jdbcType="VARCHAR" property="productCode"/>
+        <result column="PRODUCT_TYPE" jdbcType="VARCHAR" property="productType"/>
+        <result column="PRODUCT_OPENTYPE" jdbcType="VARCHAR" property="productOpentype"/>
+        <result column="PRODUCT_DESCRIBE" jdbcType="VARCHAR" property="productDescribe"/>
+        <result column="PRODUCT_MARK" jdbcType="CHAR" property="productMark"/>
+        <result column="BELONG_PRODUCT" jdbcType="BIGINT" property="belongProduct"/>
+        <result column="CREATETIME" jdbcType="BIGINT" property="createtime"/>
+        <result column="CREATER" jdbcType="VARCHAR" property="creater"/>
+        <result column="MODIFY_TIME" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="STARTTIME" jdbcType="BIGINT" property="starttime"/>
+        <result column="ENDTIME" jdbcType="BIGINT" property="endtime"/>
+        <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="PRODUCT_URL" jdbcType="VARCHAR" property="productUrl"/>
+        <result column="PRODUCT_ICON" jdbcType="VARCHAR" property="productIcon"/>
+        <result column="ORDER_INDEX" jdbcType="BIGINT" property="orderIndex"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+    PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, PRODUCT_OPENTYPE, PRODUCT_DESCRIBE, PRODUCT_MARK, BELONG_PRODUCT,
+    CREATETIME, CREATER, MODIFY_TIME, STARTTIME, ENDTIME, MODIFY_USER,PRODUCT_URL,PRODUCT_ICON,ORDER_INDEX
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_product
+        where PRODUCT_ID = #{productId,jdbcType=BIGINT} ORDER BY ORDER_INDEX
+    </select>
+
+    <!-- 批量查询 -->
+    <select id="selectBatchInfo" parameterType="java.util.List" resultMap="BaseResultMap">
+        select * from MOIRAI_PRODUCT where product_id in (select distinct p.PRODUCT_ID from
+        (select
+        prd.PRODUCT_ID as PRODUCT_ID, prd.PRODUCT_NAME as PRODUCT_NAME, prd.BELONG_PRODUCT as BELONG_PRODUCT,
+        prd.PRODUCT_TYPE as PRODUCT_TYPE
+        from moirai_product prd left join moirai_product_resource res on prd.PRODUCT_ID = res.PRODUCT_ID
+        WHERE res.RESOURCE_ID IN
+        <foreach collection="list" open="(" close=")" separator="," item="item" index="index">
+            #{item}
+        </foreach>
+        order by prd.ORDER_INDEX) p)
+    </select>
+
+    <select id="selectByBean" parameterType="com.baiwang.moirai.model.role.MoiraiProduct" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_product
+        where 1=1
+        <if test="productId != null">
+            AND PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        </if>
+        <if test="productName != null">
+            AND PRODUCT_NAME LIKE CONCAT (CONCAT ('%', #{productName,jdbcType=VARCHAR}), '%')
+        </if>
+        <if test="productType != null">
+            AND PRODUCT_TYPE = #{productType,jdbcType=VARCHAR}
+        </if>
+        <if test="productCode != null">
+            AND PRODUCT_CODE = #{productCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productOpentype != null">
+            AND PRODUCT_OPENTYPE = #{productOpentype,jdbcType=VARCHAR}
+        </if>
+        <if test="productDescribe != null">
+            AND PRODUCT_DESCRIBE = #{productDescribe,jdbcType=VARCHAR}
+        </if>
+        <if test="productMark != null">
+            AND PRODUCT_MARK = #{productMark,jdbcType=CHAR}
+        </if>
+        <if test="belongProduct != null">
+            AND BELONG_PRODUCT = #{belongProduct,jdbcType=BIGINT}
+        </if>
+        <if test="createtime != null">
+            AND CREATETIME = #{createtime,jdbcType=BIGINT}
+        </if>
+        <if test="creater != null">
+            AND CREATER = #{creater,jdbcType=VARCHAR}
+        </if>
+        <if test="modifyTime != null">
+            AND MODIFY_TIME = #{modifyTime,jdbcType=BIGINT}
+        </if>
+        <if test="starttime != null">
+            AND STARTTIME = #{starttime,jdbcType=BIGINT}
+        </if>
+        <if test="endtime != null">
+            AND ENDTIME = #{endtime,jdbcType=BIGINT}
+        </if>
+        <if test="modifyUser != null">
+            AND MODIFY_USER = #{modifyUser,jdbcType=VARCHAR}
+        </if>
+        <if test="productUrl != null">
+            AND PRODUCT_URL = #{productUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="productIcon != null">
+            AND PRODUCT_ICON = #{productIcon,jdbcType=VARCHAR}
+        </if>
+        <if test="orderIndex != null">
+            AND ORDER_INDEX = #{orderIndex,jdbcType=BIGINT}
+        </if>
+        ORDER BY ORDER_INDEX
+    </select>
+    <!--删除-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_product
+    where PRODUCT_ID = #{productId,jdbcType=BIGINT}
+  </delete>
+
+    <!--选择插入-->
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.role.MoiraiProduct">
+        insert into moirai_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">
+                PRODUCT_ID,
+            </if>
+            <if test="productName != null">
+                PRODUCT_NAME,
+            </if>
+            <if test="productType != null">
+                PRODUCT_TYPE,
+            </if>
+            <if test="productOpentype != null">
+                PRODUCT_OPENTYPE,
+            </if>
+            <if test="productDescribe != null">
+                PRODUCT_DESCRIBE,
+            </if>
+            <if test="productMark != null">
+                PRODUCT_MARK,
+            </if>
+            <if test="belongProduct != null">
+                BELONG_PRODUCT,
+            </if>
+            <if test="createtime != null">
+                CREATETIME,
+            </if>
+            <if test="creater != null">
+                CREATER,
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME,
+            </if>
+            <if test="starttime != null">
+                STARTTIME,
+            </if>
+            <if test="endtime != null">
+                ENDTIME,
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER,
+            </if>
+            <if test="productUrl != null">
+                PRODUCT_URL,
+            </if>
+            <if test="productIcon != null">
+                PRODUCT_ICON,
+            </if>
+            <if test="orderIndex != null">
+                order_index,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=VARCHAR},
+            </if>
+            <if test="productOpentype != null">
+                #{productOpentype,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescribe != null">
+                #{productDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="productMark != null">
+                #{productMark,jdbcType=CHAR},
+            </if>
+            <if test="belongProduct != null">
+                #{belongProduct,jdbcType=BIGINT},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="starttime != null">
+                #{starttime,jdbcType=BIGINT},
+            </if>
+            <if test="endtime != null">
+                #{endtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="productUrl != null">
+                #{productUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="productIcon != null">
+                #{productIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="orderIndex != null">
+                #{orderIndex,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <!--根据id选择更新-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.role.MoiraiProduct">
+        update moirai_product
+        <set>
+            <if test="productName != null">
+                PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="productType != null">
+                PRODUCT_TYPE = #{productType,jdbcType=VARCHAR},
+            </if>
+            <if test="productOpentype != null">
+                PRODUCT_OPENTYPE = #{productOpentype,jdbcType=VARCHAR},
+            </if>
+            <if test="productDescribe != null">
+                PRODUCT_DESCRIBE = #{productDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="productMark != null">
+                PRODUCT_MARK = #{productMark,jdbcType=CHAR},
+            </if>
+            <if test="belongProduct != null">
+                BELONG_PRODUCT = #{belongProduct,jdbcType=BIGINT},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="starttime != null">
+                STARTTIME = #{starttime,jdbcType=BIGINT},
+            </if>
+            <if test="endtime != null">
+                ENDTIME = #{endtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="productUrl != null">
+                PRODUCT_URL = #{productUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="productIcon != null">
+                PRODUCT_ICON = #{productIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="orderIndex != null">
+                ORDER_INDEX = #{orderIndex,jdbcType=BIGINT},
+            </if>
+        </set>
+        where PRODUCT_ID = #{productId,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectOrgProductDetail" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        pro.PRODUCT_ID, pro.PRODUCT_NAME, pro.PRODUCT_CODE, pro.PRODUCT_TYPE, pro.PRODUCT_DESCRIBE, pro.BELONG_PRODUCT,
+        pro.PRODUCT_ICON, org.use_begintime as STARTTIME, org.use_endtime as ENDTIME
+        from moirai_product pro left join moirai_org_product org on pro.PRODUCT_ID = org.PRODUCT_ID
+        where org.org_id = #{orgId,jdbcType=BIGINT}
+        <if test="productName != null">
+            AND pro.PRODUCT_NAME LIKE CONCAT (CONCAT ('%', #{productName,jdbcType=VARCHAR}), '%')
+        </if>
+        order by pro.ORDER_INDEX
+    </select>
+</mapper>

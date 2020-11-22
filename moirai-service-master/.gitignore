@@ -1,0 +1,9 @@
+# IntelliJ Idea project files
+.idea
+target
+*.iml
+# Eclipse project files
+.classpath
+.settings
+.project
+.metadata

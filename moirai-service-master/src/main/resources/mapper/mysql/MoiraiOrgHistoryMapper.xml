@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiOrgHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.org.MoiraiOrgHistory">
+    <id column="his_id" jdbcType="BIGINT" property="hisId" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+    <result column="tax_code" jdbcType="VARCHAR" property="taxCode" />
+    <result column="new_name" jdbcType="VARCHAR" property="newName" />
+    <result column="new_code" jdbcType="VARCHAR" property="newCode" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    his_id, org_id, tenant_id, org_name, tax_code, new_name, new_code, creater, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from moirai_org_history
+    where his_id = #{hisId,jdbcType=BIGINT}
+  </select>
+
+  <!--按照历史税号或者名称查询-->
+  <select id="selectByHistoryTaxName" parameterType="com.baiwang.moirai.model.org.MoiraiOrg" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from moirai_org_history
+    where
+    1=1
+    <if test="taxCode != null and taxCode !=''"> AND tax_code = #{taxCode} </if>
+    <if test="orgName != null and orgName !=''"> AND org_name = #{orgName} </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_org_history
+    where his_id = #{hisId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="com.baiwang.moirai.model.org.MoiraiOrgHistory">
+    insert into moirai_org_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="hisId != null">
+        his_id,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="orgName != null">
+        org_name,
+      </if>
+      <if test="taxCode != null">
+        tax_code,
+      </if>
+      <if test="newName != null">
+        new_name,
+      </if>
+      <if test="newCode != null">
+        new_code,
+      </if>
+      <if test="creater != null">
+        creater,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="hisId != null">
+        #{hisId,jdbcType=BIGINT},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="orgName != null">
+        #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="taxCode != null">
+        #{taxCode,jdbcType=VARCHAR},
+      </if>
+      <if test="newName != null">
+        #{newName,jdbcType=VARCHAR},
+      </if>
+      <if test="newCode != null">
+        #{newCode,jdbcType=VARCHAR},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>

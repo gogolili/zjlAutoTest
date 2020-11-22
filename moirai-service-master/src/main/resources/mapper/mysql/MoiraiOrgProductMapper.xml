@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiOrgProductMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.org.MoiraiOrgProduct">
+        <id column="op_id" jdbcType="BIGINT" property="opId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="product_id" jdbcType="BIGINT" property="productId"/>
+        <result column="product_type" jdbcType="BIGINT" property="productType"/>
+        <result column="open_type" jdbcType="BIGINT" property="openType"/>
+        <result column="qd_bm" jdbcType="BIGINT" property="qdBm"/>
+        <result column="belong_product" jdbcType="BIGINT" property="belongProduct"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="use_begintime" jdbcType="BIGINT" property="useBegintime"/>
+        <result column="use_endtime" jdbcType="BIGINT" property="useEndtime"/>
+        <result column="product_name" jdbcType="BIGINT" property="productName"/>
+        <result column="product_url" jdbcType="VARCHAR" property="productUrl"/>
+        <result column="product_icon" jdbcType="VARCHAR" property="productIcon"/>
+        <result column="product_describe" jdbcType="VARCHAR" property="productDescribe"/>
+    </resultMap>
+    <resultMap id="OrgProductVOMap" type="com.baiwang.moirai.model.org.MoiraiOrgProductVO" extends="BaseResultMap">
+        <result column="tax_code" jdbcType="VARCHAR" property="taxCode"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    op_id, tenant_id, org_id, product_id, product_type, open_type, qd_bm, creater, create_time,
+    use_begintime, use_endtime
+  </sql>
+
+    <select id="findOrgProductByCondition" parameterType="com.baiwang.moirai.model.org.MoiraiOrgProduct"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_org_product
+        <where>
+            <if test="orgId != null">and org_id = #{orgId}</if>
+            <if test="tenantId != null">and tenant_id = #{tenantId}</if>
+            <if test="opId != null">and op_id = #{opId}</if>
+            <if test="productId != null">and product_id = #{productId}</if>
+            <if test="productType != null and productType !=''">and product_type = #{productType}</if>
+            <if test="openType != null and openType !=''">and open_type = #{openType}</if>
+            <if test="qdBm != null and qdBm !=''">and QD_BM = #{qdBm}</if>
+        </where>
+    </select>
+
+    <!--查询租户开通产品开通产品，不去重-->
+    <select id="queryTenantProducts" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select o.org_id, o.product_id, o.product_type, o.qd_bm, o.creater, o.create_time, p.product_name ,p.belong_product
+        from moirai_org_product o,moirai_product p
+        where o.product_id=p.product_id AND tenant_id = #{tenantId,jdbcType=BIGINT}
+        order by p.ORDER_INDEX asc
+    </select>
+
+    <!--批量查询组织机构开通产品-->
+    <select id="queryOrgProducts" parameterType="java.util.List" resultMap="BaseResultMap">
+        select o.org_id, o.product_id, o.product_type, o.qd_bm, o.creater, o.create_time,
+        o.open_type, o.use_begintime, o.use_endtime, p.product_name, p.belong_product, p.product_describe
+        from moirai_org_product o,moirai_product p
+        where o.product_id=p.product_id and o.org_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+        order by o.create_time desc
+    </select>
+
+    <!--查询组织机构开通的所有产品-->
+    <select id="selectOrgProducts" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    product.product_id, product.product_type,product_name,product.PRODUCT_URL,product.PRODUCT_ICON,product.BELONG_PRODUCT
+    from moirai_org_product orgPro inner join moirai_product product  on orgPro.product_id = product.PRODUCT_ID
+    where orgPro.org_id = #{orgId,jdbcType=BIGINT}
+    <if test="productId != null">
+        and orgPro.product_id = #{productId,jdbcType=BIGINT}
+    </if>
+    ORDER BY product.ORDER_INDEX
+  </select>
+
+    <!--判断是否有组织机构使用产品-->
+    <select id="queryOrgByProduct" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_org_product
+        where product_id = #{productId,jdbcType=BIGINT}
+    </select>
+
+    <!--查询组织机构中所有税号开通的所有产品-->
+    <select id="queryTenantAllProducts" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenant"
+            resultMap="OrgProductVOMap">
+    select
+    p.org_id,p.product_id, p.product_type,p.qd_bm,p.creater,p.create_time,o.tax_code
+    from moirai_org_product p, moirai_org o
+    where p.tenant_id = #{tenantId,jdbcType=BIGINT} AND p.org_id=o.org_id
+    ORDER BY p.create_time
+  </select>
+    <!--删除组织机构开通的所有产品-->
+    <delete id="deleteOrgAllProducts" parameterType="java.lang.Long">
+    delete from moirai_org_product
+    where org_id = #{orgId,jdbcType=BIGINT}
+  </delete>
+
+    <!--组织机构删除开通的产品-->
+    <delete id="deleteOrgProduct" parameterType="java.lang.Long">
+        delete from moirai_org_product where org_id = #{orgId,jdbcType=BIGINT} AND product_id = #{productId,jdbcType=BIGINT}
+    </delete>
+
+    <!--组织机构开通产品-->
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.org.MoiraiOrgProduct">
+        insert into moirai_org_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="opId != null">
+                op_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="openType != null">
+                open_type,
+            </if>
+            <if test="qdBm != null">
+                QD_BM,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="useBegintime != null">
+                use_begintime,
+            </if>
+            <if test="useEndtime != null">
+                use_endtime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="opId != null">
+                #{opId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=BIGINT},
+            </if>
+            <if test="openType != null">
+                #{openType,jdbcType=BIGINT},
+            </if>
+            <if test="qdBm != null">
+                #{qdBm,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="useBegintime != null">
+                #{useBegintime,jdbcType=BIGINT},
+            </if>
+            <if test="useEndtime != null">
+                #{useEndtime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.org.MoiraiOrgProduct">
+        update moirai_org_product
+        <set>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                org_id = #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=BIGINT},
+            </if>
+            <if test="openType != null">
+                open_type = #{openType,jdbcType=BIGINT},
+            </if>
+            <if test="qdBm != null">
+                QD_BM = #{qdBm,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="useBegintime != null">
+                use_begintime = #{useBegintime,jdbcType=BIGINT},
+            </if>
+            <if test="useEndtime != null">
+                use_endtime = #{useEndtime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where op_id = #{opId,jdbcType=BIGINT}
+    </update>
+
+    <!--批量添加机构产品-->
+    <insert id="addOrgProductList" parameterType="java.util.List">
+        insert into moirai_org_product (op_id, tenant_id, org_id, product_id, product_type, open_type, QD_BM, creater,
+        create_time, use_begintime,use_endtime)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.opId,jdbcType=BIGINT},
+            #{item.tenantId,jdbcType=BIGINT},
+            #{item.orgId,jdbcType=BIGINT},
+            #{item.productId,jdbcType=BIGINT},
+            #{item.productType,jdbcType=BIGINT},
+            #{item.openType,jdbcType=BIGINT},
+            #{item.qdBm,jdbcType=BIGINT},
+            #{item.creater,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=BIGINT},
+            #{item.useBegintime,jdbcType=BIGINT},
+            #{item.useEndtime,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectCPProductsByTenantId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_org_product
+        where tenant_id = #{tenantId,jdbcType=BIGINT}
+        AND product_id = 30000
+    </select>
+
+    <select id="selectCPProductsByOrgId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_org_product
+        where org_id = #{orgId,jdbcType=BIGINT}
+        AND product_id = 30000
+    </select>
+</mapper>

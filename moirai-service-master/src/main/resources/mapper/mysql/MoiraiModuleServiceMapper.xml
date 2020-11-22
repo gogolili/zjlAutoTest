@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiModuleMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.role.MoiraiModuleService">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="service_name" jdbcType="VARCHAR" property="serviceName"/>
+        <result column="url_prefix" jdbcType="VARCHAR" property="urlPrefix"/>
+    </resultMap>
+
+    <sql id="Base_Column_Select">
+    id, service_name, url_prefix
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_module_service
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_module_service
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.role.MoiraiModuleService">
+        insert into moirai_module_service
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="serviceName != null">
+                service_name,
+            </if>
+            <if test="urlPrefix != null">
+                url_prefix,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="serviceName != null">
+                #{serviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="urlPrefix != null">
+                #{urlPrefix,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.role.MoiraiModuleService">
+        update moirai_module_service
+        <set>
+            <if test="serviceName != null">
+                service_name = #{serviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="urlPrefix != null">
+                url_prefix = #{urlPrefix,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectListByCondition" parameterType="com.baiwang.moirai.model.role.MoiraiModuleServiceCondition"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_module_service
+        <where>
+            <if test="serviceName != null">
+                and service_name LIKE CONCAT('%',#{serviceName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="urlPrefix != null">
+                and url_prefix = #{urlPrefix,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by id
+    </select>
+</mapper>

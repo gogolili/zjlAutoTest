@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiProductResourceMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.role.MoiraiProductResource">
+        <id column="PRODUCT_RESOURCE_ID" jdbcType="BIGINT" property="productResourceId"/>
+        <result column="PRODUCT_ID" jdbcType="BIGINT" property="productId"/>
+        <result column="RESOURCE_ID" jdbcType="BIGINT" property="resourceId"/>
+        <result column="CREATETIME" jdbcType="BIGINT" property="createtime"/>
+        <result column="CREATER" jdbcType="VARCHAR" property="creater"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      PRODUCT_RESOURCE_ID, PRODUCT_ID, RESOURCE_ID, CREATETIME, CREATER
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_product_resource
+        where PRODUCT_RESOURCE_ID = #{productResourceId,jdbcType=BIGINT}
+    </select>
+
+    <!-- 批量查询 -->
+    <select id="selectBatchInfo" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_product_resource
+        WHERE PRODUCT_ID IN
+        <foreach collection="list" open="(" close=")" separator="," item="item" index="index">
+            #{item}
+        </foreach>
+        ORDER BY CREATETIME DESC
+    </select>
+
+    <select id="selectByBean" parameterType="com.baiwang.moirai.model.role.MoiraiProductResource"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_product_resource
+        where 1=1
+        <if test="productId != null">
+            AND PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceId != null">
+            AND RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="createtime != null">
+            AND CREATETIME = #{createtime,jdbcType=BIGINT}
+        </if>
+        <if test="creater != null">
+            AND CREATER = #{creater,jdbcType=VARCHAR}
+        </if>
+        <if test="productResourceId != null">
+            AND PRODUCT_RESOURCE_ID = #{productResourceId,jdbcType=VARCHAR}
+        </if>
+        ORDER BY CREATETIME DESC
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from moirai_product_resource
+        where PRODUCT_RESOURCE_ID = #{productResourceId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByBean" parameterType="com.baiwang.moirai.model.role.MoiraiProductResource">
+        delete from moirai_product_resource
+        where 1=1
+        <if test="productId != null">
+            AND PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceId != null">
+            AND RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="productResourceId != null">
+            AND PRODUCT_RESOURCE_ID = #{productResourceId,jdbcType=VARCHAR}
+        </if>
+        <if test="productResourceId == null and resourceId == null and productId == null">
+            AND 1 = 2
+        </if>
+    </delete>
+
+    <insert id="insert" parameterType="com.baiwang.moirai.model.role.MoiraiProductResource">
+        insert into moirai_product_resource (PRODUCT_RESOURCE_ID, PRODUCT_ID, RESOURCE_ID, CREATETIME, CREATER)
+        values (#{productResourceId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{resourceId,jdbcType=BIGINT},
+          #{createtime,jdbcType=BIGINT}, #{creater,jdbcType=VARCHAR})
+     </insert>
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.role.MoiraiProductResource">
+        insert into moirai_product_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productResourceId != null">
+                PRODUCT_RESOURCE_ID,
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID,
+            </if>
+            <if test="resourceId != null">
+                RESOURCE_ID,
+            </if>
+            <if test="createtime != null">
+                CREATETIME,
+            </if>
+            <if test="creater != null">
+                CREATER,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productResourceId != null">
+                #{productResourceId,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="resourceId != null">
+                #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.role.MoiraiProductResource">
+        update moirai_product_resource
+        <set>
+            <if test="productId != null">
+                PRODUCT_ID = #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="resourceId != null">
+                RESOURCE_ID = #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PRODUCT_RESOURCE_ID = #{productResourceId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.baiwang.moirai.model.role.MoiraiProductResource">
+        update moirai_product_resource
+        set PRODUCT_ID = #{productId,jdbcType=BIGINT},
+          RESOURCE_ID = #{resourceId,jdbcType=BIGINT},
+          CREATETIME = #{createtime,jdbcType=BIGINT},
+          CREATER = #{creater,jdbcType=VARCHAR}
+        where PRODUCT_RESOURCE_ID = #{productResourceId,jdbcType=BIGINT}
+    </update>
+
+    <!-- 批量添加 -->
+    <insert id="insertBatchInfo" parameterType="java.util.List">
+        insert into moirai_product_resource (PRODUCT_RESOURCE_ID, PRODUCT_ID, RESOURCE_ID,
+        CREATETIME, CREATER)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.productResourceId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT},
+            #{item.resourceId,jdbcType=BIGINT},
+            #{item.createtime,jdbcType=BIGINT}, #{item.creater,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <!-- 删除关联关系，保留租户自建 -->
+    <delete id="deleteProductResource" parameterType="java.lang.Long">
+        delete from moirai_product_resource
+        where PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        <if test="idList != null and idList.size > 0">
+            and PRODUCT_RESOURCE_ID not in
+            <foreach collection="idList" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+    </delete>
+    <select id="selectprimaryKey" parameterType="java.lang.Long" resultType="java.util.HashMap">
+        select res.PRODUCT_RESOURCE_ID as productResourceId, tenant.TENANT_ID as tenantId from moirai_product_resource res, moirai_resource_tenant tenant
+        where res.RESOURCE_ID = tenant.RESOURCE_ID
+        and res.PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        and tenant.SOURCE_FLAG = '0'
+    </select>
+</mapper>

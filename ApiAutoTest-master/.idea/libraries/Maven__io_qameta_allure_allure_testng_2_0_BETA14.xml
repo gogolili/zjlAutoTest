@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: io.qameta.allure:allure-testng:2.0-BETA14">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.m2/repository/io/qameta/allure/allure-testng/2.0-BETA14/allure-testng-2.0-BETA14.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.m2/repository/io/qameta/allure/allure-testng/2.0-BETA14/allure-testng-2.0-BETA14-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.m2/repository/io/qameta/allure/allure-testng/2.0-BETA14/allure-testng-2.0-BETA14-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

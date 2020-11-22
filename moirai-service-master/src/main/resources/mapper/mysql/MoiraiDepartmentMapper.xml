@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiDepartmentMapper">
+  <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.department.MoiraiDepartment">
+    <id column="DEPARTMENT_ID" jdbcType="BIGINT" property="departmentId" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="P_ID" jdbcType="BIGINT" property="pId" />
+    <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId" />
+    <result column="CREATER" jdbcType="VARCHAR" property="creater" />
+    <result column="CREATE_TIME" jdbcType="BIGINT" property="createTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="MODIFY_TIME" jdbcType="BIGINT" property="modifyTime" />
+    <result column="DEL_FLAG" jdbcType="CHAR" property="delFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    DEPARTMENT_ID, NAME, P_ID, TENANT_ID, CREATER, CREATE_TIME, MODIFY_USER, MODIFY_TIME,
+    DEL_FLAG
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from moirai_department
+    where DEPARTMENT_ID = #{departmentId,jdbcType=BIGINT}
+    and DEL_FLAG='N'
+  </select>
+  <insert id="insertSelective" parameterType="com.baiwang.moirai.model.department.MoiraiDepartment">
+    insert into moirai_department
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="departmentId != null">
+        DEPARTMENT_ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="pId != null">
+        P_ID,
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID,
+      </if>
+      <if test="creater != null">
+        CREATER,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="modifyUser != null">
+        MODIFY_USER,
+      </if>
+      <if test="modifyTime != null">
+        MODIFY_TIME,
+      </if>
+      <if test="delFlag != null">
+        DEL_FLAG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pId != null">
+        #{pId,jdbcType=BIGINT},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUser != null">
+        #{modifyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.department.MoiraiDepartment">
+    update moirai_department
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pId != null">
+        P_ID = #{pId,jdbcType=BIGINT},
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="creater != null">
+        CREATER = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUser != null">
+        MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null">
+        MODIFY_TIME = #{modifyTime,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        DEL_FLAG = #{delFlag,jdbcType=CHAR},
+      </if>
+    </set>
+    where DEPARTMENT_ID = #{departmentId,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from moirai_department
+    where P_ID = #{pId,jdbcType=BIGINT}
+    and DEL_FLAG='N'
+  </select>
+  <select id="selectByTenantId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from moirai_department
+    where TENANT_ID = #{tenantId,jdbcType=BIGINT}
+    and DEL_FLAG='N'
+  </select>
+</mapper>

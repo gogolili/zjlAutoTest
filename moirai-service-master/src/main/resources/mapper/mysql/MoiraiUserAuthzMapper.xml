@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiUserAuthzMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.role.MoiraiUserAuthz">
+        <id column="uor_id" property="uorId" jdbcType="BIGINT"/>
+        <result column="tenant_id" property="tenantId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="user_org" property="userOrg" jdbcType="BIGINT"/>
+        <result column="auth_org" property="authOrg" jdbcType="BIGINT"/>
+        <result column="role_id" property="roleId" jdbcType="BIGINT"/>
+        <result column="role_org" property="roleOrg" jdbcType="BIGINT"/>
+        <result column="creater" property="creater" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+        <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR"/>
+        <result column="org_name" property="orgName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="AuthzOrgResultMap" type="com.baiwang.moirai.model.role.MoiraiUserAuthzOrg" extends="BaseResultMap">
+        <result column="org_id" property="orgId" jdbcType="BIGINT"/>
+        <result column="org_type" jdbcType="INTEGER" property="orgType"/>
+        <result column="tax_code" jdbcType="VARCHAR" property="taxCode"/>
+        <result column="ORG_CODE" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="parent_org" jdbcType="BIGINT" property="parentOrg"/>
+        <result column="REMARK" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+
+    <resultMap id="ResourceResultMap" type="com.baiwang.moirai.model.role.MoiraiResource">
+        <result column="resource_id" property="resourceId" jdbcType="BIGINT"/>
+        <result column="resource_type" property="resourceType" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and
+                                    #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem"
+                                             open="(" close=")" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria"
+                     separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and
+                                    #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem"
+                                             open="(" close=")" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+		uor_id, tenant_id, user_id, user_org, auth_org, role_id, role_org, creater,
+		create_time
+	</sql>
+
+    <select id="selectByBean" parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthz" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user_authz
+        <where>
+            <if test="userId != null and userId !=''">AND user_id = #{userId,jdbcType=BIGINT}</if>
+            <if test="userOrg != null and userOrg !=''">AND user_org = #{userOrg,jdbcType=BIGINT}</if>
+            <if test="authOrg != null and authOrg !=''">AND auth_org = #{authOrg,jdbcType=BIGINT}</if>
+            <if test="roleId != null and roleId !=''">AND role_id = #{roleId,jdbcType=BIGINT}</if>
+            <if test="tenantId != null and tenantId !=''">AND tenant_id = #{tenantId,jdbcType=BIGINT}</if>
+        </where>
+    </select>
+
+
+    <!-- 查询用户资源ID的所有授权-->
+    <select id="getUserAuthByResourceId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select authz.auth_org
+        from moirai_user_authz authz inner join moirai_role_resource res on authz.role_id = res.role_id
+        where authz.user_id = #{userId,jdbcType=BIGINT}
+        and res.resource_id = #{resourceId,jdbcType=BIGINT}
+        group by authz.auth_org
+    </select>
+
+    <!-- 查询用户ID角色ID的所有授权-->
+    <select id="getUserAuthByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select authz.auth_org
+        from moirai_user_authz authz
+        where authz.user_id = #{userId,jdbcType=BIGINT}
+        <if test="roleId != null">
+            and authz.role_id = #{roleId,jdbcType=BIGINT}
+        </if>
+        group by authz.auth_org
+    </select>
+
+    <!--查询切换机构下拉 -->
+    <select id="selectDiffAuthOrg" resultMap="BaseResultMap"
+            parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthzOrg">
+        select authz.auth_org, min(org.org_name) as orgName
+        from moirai_user_authz authz
+        left join moirai_org org on authz.auth_org = org.org_id
+        <where>
+            <if test="userId != null">
+                and authz.user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="userOrg != null">
+                and authz.user_org = #{userOrg,jdbcType=BIGINT}
+            </if>
+            <if test="authOrg != null">
+                and authz.auth_org = #{authOrg,jdbcType=BIGINT}
+            </if>
+            <if test="roleId != null">
+                and authz.role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+            <if test="roleOrg != null">
+                and authz.role_org = #{roleOrg,jdbcType=BIGINT}
+            </if>
+            <if test="tenantId != null">
+                and authz.tenant_id = #{tenantId,jdbcType=BIGINT}
+            </if>
+            <if test="orgName != null and orgName != ''">
+                and org.org_name like concat('%', concat(#{orgName,jdbcType=VARCHAR}, '%'))
+            </if>
+        </where>
+        group by authz.auth_org
+        order by org.org_name
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthzExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from moirai_user_authz
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap"
+            parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user_authz
+        where uor_id = #{uorId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from moirai_user_authz
+		where uor_id = #{uorId,jdbcType=BIGINT}
+	</delete>
+    <delete id="deleteByExample"
+            parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthzExample">
+        delete from moirai_user_authz
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthz">
+		insert into moirai_user_authz (uor_id, tenant_id, user_id,
+		user_org, auth_org, role_id,
+		role_org, creater, create_time
+		)
+		values (#{uorId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT},
+		#{userId,jdbcType=BIGINT},
+		#{userOrg,jdbcType=BIGINT}, #{authOrg,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
+		#{roleOrg,jdbcType=BIGINT}, #{creater,jdbcType=VARCHAR},
+		#{createTime,jdbcType=BIGINT}
+		)
+	</insert>
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthz">
+        insert into moirai_user_authz
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uorId != null">
+                uor_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userOrg != null">
+                user_org,
+            </if>
+            <if test="authOrg != null">
+                auth_org,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="roleOrg != null">
+                role_org,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uorId != null">
+                #{uorId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="userOrg != null">
+                #{userOrg,jdbcType=BIGINT},
+            </if>
+            <if test="authOrg != null">
+                #{authOrg,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="roleOrg != null">
+                #{roleOrg,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthz">
+        update moirai_user_authz
+        <set>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="userOrg != null">
+                user_org = #{userOrg,jdbcType=BIGINT},
+            </if>
+            <if test="authOrg != null">
+                auth_org = #{authOrg,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="roleOrg != null">
+                role_org = #{roleOrg,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where uor_id = #{uorId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthz">
+		update moirai_user_authz
+		set tenant_id = #{tenantId,jdbcType=BIGINT},
+		user_id = #{userId,jdbcType=BIGINT},
+		user_org = #{userOrg,jdbcType=BIGINT},
+		auth_org = #{authOrg,jdbcType=BIGINT},
+		role_id = #{roleId,jdbcType=BIGINT},
+		role_org = #{roleOrg,jdbcType=BIGINT},
+		creater = #{creater,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=BIGINT}
+		where uor_id = #{uorId,jdbcType=BIGINT}
+	</update>
+    <insert id="batchInsert" parameterType="map">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into moirai_user_authz (uor_id, tenant_id, user_id,
+        user_org, auth_org, role_id,
+        role_org, creater, create_time)
+        values
+        <foreach collection="records" item="item" index="index"
+                 separator=",">
+            (#{item.uorId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT},
+            #{item.userOrg,jdbcType=BIGINT}, #{item.authOrg,jdbcType=BIGINT},
+            #{item.roleId,jdbcType=BIGINT},
+            #{item.roleOrg,jdbcType=BIGINT}, #{item.creater,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=BIGINT})
+        </foreach>
+    </insert>
+
+    <!--查询是否有用户正在使用该角色-->
+    <select id="findCountByRoleId" parameterType="java.lang.Long" resultType="int">
+		select count(1)
+		from moirai_user_authz
+		where role_id = #{roleId}
+    </select>
+
+    <!--获取授权组织机构-->
+    <select id="getUserAuthzOrg" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition"
+            resultMap="AuthzOrgResultMap">
+        select min(auth.tenant_id) as tenantId, min(auth.user_id) as userId, min(auth.user_org) as userOrg,
+        auth.auth_org as authOrg,
+        min(auth.create_time) as create_time, min(org.org_name) as orgName, min(org.tax_code) as taxCode,
+        min(org.ORG_CODE) as orgCode, min(org.parent_org) as parentOrg, min(org.REMARK) as remark, min(org.org_type) as
+        orgType
+        from moirai_user_authz auth left join moirai_org org on auth.auth_org = org.org_id
+
+        <where>
+            auth.user_id = #{userId,jdbcType=BIGINT}
+            <if test="orgName != null and orgName !=''">and org.org_name like CONCAT('%',#{orgName},'%')</if>
+            <if test="tenantId != null">and auth.tenant_id = #{tenantId,jdbcType=BIGINT}</if>
+        </where>
+        group by auth.auth_org
+        order by create_time asc
+    </select>
+
+    <!--获取用户所有授权信息-->
+    <select id="findAuthRoleListByUseId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select auth.*, role.role_name as roleName
+        from moirai_user_authz auth left join moirai_role role on auth.role_id = role.role_id
+        <where>
+            auth.user_id = #{userId,jdbcType=BIGINT}
+        </where>
+        order by auth.create_time asc
+    </select>
+
+    <!--是否有顶级机构的权限 -->
+    <select id="selectTopOrgUserAuth" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select auth.uor_id
+        from moirai_user_authz auth left join moirai_org org on auth.auth_org = org.org_id
+        where org.parent_org = 0 and auth.user_id = #{userId,jdbcType=BIGINT} and org.tenant_id = #{tenantId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectResourceByUser" resultMap="ResourceResultMap">
+        select
+        roleres.RESOURCE_ID as resource_id,res.RESOURCE_TYPE
+        FROM moirai_user_authz as authz
+        left join moirai_role_resource as roleres on roleres.ROLE_ID=authz.ROLE_ID
+        left join moirai_product_resource as mpr on mpr.RESOURCE_ID=roleres.RESOURCE_ID
+		left join moirai_resource_tenant as res on res.resource_id=mpr.RESOURCE_ID
+        where authz.user_id=#{userId,jdbcType=BIGINT}
+        and authz.auth_org=#{orgId,jdbcType=BIGINT}
+        and mpr.product_id=30000
+        and res.source_flag=0
+    </select>
+</mapper>

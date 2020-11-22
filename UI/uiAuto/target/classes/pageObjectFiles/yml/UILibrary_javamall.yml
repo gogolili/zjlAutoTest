@@ -1,0 +1,29 @@
+pages:
+    -page:
+      pageName: com.testfan.ui.auto.pageObject.MainPage.java
+      value: "http://121.40.156.59:8080/javamall/admin/backendUi!main.do"
+      desc:  "Javamall主页"
+      locators: 
+        - {type: "cssSelector",timeout: "5",value: "#parent26 > a > div.icon",desc: "userIcon",name: "userIcon"}
+        - {type: "linkText",timeout: "5",value: "会员列表",desc: "userlist",name: "userlist"}
+        
+        
+    -page: 
+       pageName: com.testfan.ui.auto.pageObject.UserListPage
+       value: "http://121.40.156.59:8080/javamall/admin/backendUi!main.do"
+       desc: "会员列表页"
+       locators:
+          - {type: "cssSelector",timeout: "5",value: "#tb > a:nth-child(1) > span > span",desc: "userAdd",name: "userAdd"}
+          
+          
+    -page: 
+       pageName: com.testfan.ui.auto.pageObject.UserAddPage
+       value: "http://121.40.156.59:8080/javamall/admin/backendUi!main.do"
+       desc: "会员添加页"
+       locators:
+          - {type: "id",timeout: "5",value: "m_name",desc: "userName",name: "userName"}
+          - {type: "name",timeout: "5",value: "member.password",desc: "userPassword",name: "userPassword"}
+          - {type: "cssSelector",timeout: "5",value: "#addForm > table > tbody > tr:nth-child(3) > td:nth-child(2) > span > input.combo-text.validatebox-text",desc: "userBirth",name: "userBirth"}
+          - {type: "name",timeout: "5",value: "member.email",desc: "userEmail",name: "userEmail"}
+          - {type: "cssSelector",timeout: "5",value: "#searchAdvance > span > span",desc: "userSave",name: "userSave"}
+        

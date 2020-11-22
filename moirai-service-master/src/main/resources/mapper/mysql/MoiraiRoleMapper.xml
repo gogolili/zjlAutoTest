@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiRoleMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.role.MoiraiRole">
+        <id column="ROLE_ID" jdbcType="BIGINT" property="roleId"/>
+        <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName"/>
+        <result column="ROLE_DESCRIBE" jdbcType="VARCHAR" property="roleDescribe"/>
+        <result column="ORG_ID" jdbcType="BIGINT" property="orgId"/>
+        <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId"/>
+        <result column="DEFAULT_FLAG" jdbcType="CHAR" property="defaultFlag"/>
+        <result column="LOWER_SEE" jdbcType="CHAR" property="lowerSee"/>
+        <result column="CREATER" jdbcType="VARCHAR" property="creater"/>
+        <result column="CREATETIME" jdbcType="BIGINT" property="createtime"/>
+        <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="MODIFY_TIME" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="DEL_FLAG" jdbcType="CHAR" property="delFlag"/>
+        <result column="USE_FLAG" jdbcType="CHAR" property="useFlag"/>
+        <result column="ASSOCIATED_PRODUCT_ID" jdbcType="BIGINT" property="associatedProductId"/>
+        <result column="TENANT_AUTOMATIC" jdbcType="CHAR" property="tenantAutomatic"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ROLE_ID, ROLE_NAME, ROLE_DESCRIBE, ORG_ID, TENANT_ID, DEFAULT_FLAG, LOWER_SEE, CREATER,
+        CREATETIME, MODIFY_USER, MODIFY_TIME, DEL_FLAG, USE_FLAG,ASSOCIATED_PRODUCT_ID, TENANT_AUTOMATIC
+    </sql>
+
+    <select id="selectByBean" parameterType="com.baiwang.moirai.model.role.MoiraiRole" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role
+        WHERE 1 = 1
+        <if test="roleId != null">
+            AND ROLE_ID = #{roleId,jdbcType=BIGINT}
+        </if>
+        <if test="roleName != null and roleName != ''">
+            AND ROLE_NAME LIKE concat(#{roleName,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="roleDescribe != null">
+            AND ROLE_DESCRIBE = #{roleDescribe,jdbcType=VARCHAR}
+        </if>
+        <if test="orgId != null">
+            AND ORG_ID = #{orgId,jdbcType=BIGINT}
+        </if>
+        <if test="tenantId != null">
+            AND TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        </if>
+        <if test="defaultFlag != null">
+            AND DEFAULT_FLAG = #{defaultFlag,jdbcType=CHAR}
+        </if>
+        <if test="lowerSee != null">
+            AND LOWER_SEE = #{lowerSee,jdbcType=CHAR}
+        </if>
+        <if test="creater != null">
+            AND CREATER = #{creater,jdbcType=VARCHAR}
+        </if>
+        <if test="createtime != null">
+            AND CREATETIME = #{createtime,jdbcType=BIGINT}
+        </if>
+        <if test="createTimeStart != null">
+            AND CREATETIME >= #{createTimeStart,jdbcType=BIGINT}
+        </if>
+        <if test="createTimeEnd != null">
+            AND CREATETIME &lt;= #{createTimeEnd,jdbcType=BIGINT}
+        </if>
+        <if test="modifyUser != null">
+            AND MODIFY_USER = #{modifyUser,jdbcType=VARCHAR}
+        </if>
+        <if test="modifyTime != null">
+            AND MODIFY_TIME = #{modifyTime,jdbcType=BIGINT}
+        </if>
+        <if test="useFlag != null">
+            AND USE_FLAG = #{useFlag,jdbcType=CHAR}
+        </if>
+        <if test="associatedProductId != null">
+            AND ASSOCIATED_PRODUCT_ID = #{associatedProductId,jdbcType=BIGINT}
+        </if>
+        <if test="tenantAutomatic != null">
+            AND TENANT_AUTOMATIC = #{tenantAutomatic,jdbcType=CHAR}
+        </if>
+        <if test="products != null and products.size >0">
+            AND ASSOCIATED_PRODUCT_ID in
+            <foreach collection="products" item="associatedProductId" open="(" separator="," close=")">
+                #{associatedProductId,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        ORDER BY MODIFY_TIME DESC
+    </select>
+
+    <select id="selectOrgShowRoles" parameterType="com.baiwang.moirai.model.role.MoiraiRoleCondition"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role
+        WHERE del_flag = 'N' AND LOWER_SEE = 'Y' and USE_FLAG = 'Y'
+        <if test="tenantId != null">
+            AND TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        </if>
+        <if test="roleName != null">
+            AND ROLE_NAME LIKE concat(concat('%' , #{roleName,jdbcType=VARCHAR}) , '%')
+        </if>
+        <if test="products != null and products.size > 0">
+            OR (ASSOCIATED_PRODUCT_ID in
+            <foreach collection="products" item="associatedProductId" open="(" separator="," close=")">
+                #{associatedProductId,jdbcType=BIGINT}
+            </foreach>
+            AND DEFAULT_FLAG = 'Y' and del_flag = 'N' AND LOWER_SEE = 'Y' and USE_FLAG = 'Y'
+            <if test="roleName != null">
+                AND ROLE_NAME LIKE concat(concat('%' , #{roleName,jdbcType=VARCHAR}) , '%')
+            </if>
+            )
+        </if>
+        union
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role
+        WHERE del_flag = 'N'
+        <if test="roleName != null">
+            AND ROLE_NAME LIKE concat(concat('%' , #{roleName,jdbcType=VARCHAR}) , '%')
+        </if>
+        <if test="tenantId != null and userId != null">
+            AND ORG_ID in
+            (select authz.auth_org from moirai_user_authz authz inner join moirai_role_resource res on authz.role_id = res.role_id
+            <where>
+                <if test="tenantId != null">and authz.tenant_id = #{tenantId}</if>
+                <if test="userId != null">and authz.user_id = #{userId}</if>
+                <if test="resourceId != null">and res.resource_id = #{resourceId}</if>
+            </where>)
+        </if>
+        <if test="tenantId == null or userId == null">
+            AND ORG_ID = -1
+        </if>
+        <if test="tenantId != null">
+            AND TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        </if>
+        ORDER BY DEFAULT_FLAG DESC,LOWER_SEE DESC, MODIFY_TIME DESC
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role
+        where ROLE_ID = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectTenantKpyRoles" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select DISTINCT role.role_id
+        from moirai_role role INNER JOIN moirai_role_resource mrr
+        ON mrr.TENANT_ID = #{tenantId,jdbcType=BIGINT} AND mrr.RESOURCE_ID IN (${kpyResource}) AND role.ROLE_ID=mrr.ROLE_ID
+        union
+        select DISTINCT role.role_id
+        from moirai_role role INNER JOIN moirai_role_resource mrr
+        ON mrr.TENANT_ID = 1 AND mrr.RESOURCE_ID IN (${kpyResource}) AND role.ROLE_ID=mrr.ROLE_ID
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from moirai_role
+        where ROLE_ID = #{roleId,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.baiwang.moirai.model.role.MoiraiRole">
+        insert into moirai_role (ROLE_ID, ROLE_NAME, ROLE_DESCRIBE,
+          ORG_ID, TENANT_ID, DEFAULT_FLAG,
+          LOWER_SEE, CREATER, CREATETIME,
+          MODIFY_USER, MODIFY_TIME, DEL_FLAG,
+          USE_FLAG)
+        values (#{roleId,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{roleDescribe,jdbcType=VARCHAR},
+          #{orgId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, #{defaultFlag,jdbcType=CHAR},
+          #{lowerSee,jdbcType=CHAR}, #{creater,jdbcType=VARCHAR}, #{createtime,jdbcType=BIGINT},
+          #{modifyUser,jdbcType=VARCHAR}, #{modifyTime,jdbcType=BIGINT}, #{delFlag,jdbcType=CHAR},
+          #{useFlag,jdbcType=CHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.role.MoiraiRole">
+        insert into moirai_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                ROLE_ID,
+            </if>
+            <if test="roleName != null">
+                ROLE_NAME,
+            </if>
+            <if test="roleDescribe != null">
+                ROLE_DESCRIBE,
+            </if>
+            <if test="orgId != null">
+                ORG_ID,
+            </if>
+            <if test="tenantId != null">
+                TENANT_ID,
+            </if>
+            <if test="defaultFlag != null">
+                DEFAULT_FLAG,
+            </if>
+            <if test="lowerSee != null">
+                LOWER_SEE,
+            </if>
+            <if test="creater != null">
+                CREATER,
+            </if>
+            <if test="createtime != null">
+                CREATETIME,
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER,
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME,
+            </if>
+            <if test="delFlag != null">
+                DEL_FLAG,
+            </if>
+            <if test="useFlag != null">
+                USE_FLAG,
+            </if>
+            <if test="associatedProductId != null">
+                ASSOCIATED_PRODUCT_ID,
+            </if>
+            <if test="tenantAutomatic != null">
+                TENANT_AUTOMATIC,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDescribe != null">
+                #{roleDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="defaultFlag != null">
+                #{defaultFlag,jdbcType=CHAR},
+            </if>
+            <if test="lowerSee != null">
+                #{lowerSee,jdbcType=CHAR},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="associatedProductId != null">
+                #{associatedProductId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantAutomatic != null">
+                #{tenantAutomatic,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.role.MoiraiRole">
+        update moirai_role
+        <set>
+            <if test="roleName != null">
+                ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDescribe != null">
+                ROLE_DESCRIBE = #{roleDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                TENANT_ID = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="defaultFlag != null">
+                DEFAULT_FLAG = #{defaultFlag,jdbcType=CHAR},
+            </if>
+            <if test="lowerSee != null">
+                LOWER_SEE = #{lowerSee,jdbcType=CHAR},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                DEL_FLAG = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                USE_FLAG = #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="associatedProductId != null">
+                ASSOCIATED_PRODUCT_ID = #{associatedProductId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantAutomatic != null">
+                TENANT_AUTOMATIC = #{tenantAutomatic,jdbcType=CHAR},
+            </if>
+        </set>
+        where ROLE_ID = #{roleId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.baiwang.moirai.model.role.MoiraiRole">
+    update moirai_role
+    set ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      ROLE_DESCRIBE = #{roleDescribe,jdbcType=VARCHAR},
+      ORG_ID = #{orgId,jdbcType=BIGINT},
+      TENANT_ID = #{tenantId,jdbcType=BIGINT},
+      DEFAULT_FLAG = #{defaultFlag,jdbcType=CHAR},
+      LOWER_SEE = #{lowerSee,jdbcType=CHAR},
+      CREATER = #{creater,jdbcType=VARCHAR},
+      CREATETIME = #{createtime,jdbcType=BIGINT},
+      MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+      MODIFY_TIME = #{modifyTime,jdbcType=BIGINT},
+      DEL_FLAG = #{delFlag,jdbcType=CHAR},
+      USE_FLAG = #{useFlag,jdbcType=CHAR},
+      TENANT_AUTOMATIC = #{tenantAutomatic,jdbcType=CHAR}
+    where ROLE_ID = #{roleId,jdbcType=BIGINT}
+  </update>
+
+    <!--查询通用角色和本机构角色-->
+    <select id="selectAuthRoles" parameterType="com.baiwang.moirai.model.role.MoiraiRole" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role
+        where del_flag = 'N' and TENANT_ID = #{tenantId,jdbcType=BIGINT} and USE_FLAG = 'Y'
+        and (ORG_ID = #{orgId,jdbcType=BIGINT} or LOWER_SEE = 'Y')
+        <if test="products != null and products.size > 0">
+            OR (ASSOCIATED_PRODUCT_ID in
+            <foreach collection="products" item="associatedProductId" open="(" separator="," close=")">
+                #{associatedProductId,jdbcType=BIGINT}
+            </foreach>
+            AND DEFAULT_FLAG = 'Y' and del_flag = 'N' AND LOWER_SEE = 'Y' and USE_FLAG = 'Y')
+        </if>
+    </select>
+
+    <!-- 查询租户所有角色信息 -->
+    <select id="selectAllAuthRoles" parameterType="com.baiwang.moirai.model.role.MoiraiRole" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role
+        where del_flag = 'N' and TENANT_ID = #{tenantId,jdbcType=BIGINT} and USE_FLAG = 'Y'
+        <if test="products != null and products.size > 0">
+            OR (ASSOCIATED_PRODUCT_ID in
+            <foreach collection="products" item="associatedProductId" open="(" separator="," close=")">
+                #{associatedProductId,jdbcType=BIGINT}
+            </foreach>
+            AND DEFAULT_FLAG = 'Y' and del_flag = 'N' AND LOWER_SEE = 'Y' and USE_FLAG = 'Y')
+        </if>
+    </select>
+
+    <!--查询 预制产品角色-->
+    <select id="selectProductRoles" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role
+        where del_flag = 'N' and USE_FLAG = 'Y' AND DEFAULT_FLAG = 'Y' AND LOWER_SEE = 'Y'
+        <if test="list != null and list.size > 0">
+            and ASSOCIATED_PRODUCT_ID in
+            <foreach collection="list" item="productId" open="(" separator="," close=")">
+                #{productId,jdbcType=BIGINT}
+            </foreach>
+        </if>
+    </select>
+
+    <!--批量查询角色-->
+    <select id="selectRoleBatch" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role
+        where DEL_FLAG = 'N' and ROLE_ID in
+        <foreach collection="list" item="roleId" open="(" separator="," close=")">
+            #{roleId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+</mapper>

@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: moirai-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: config-server
+      profile: ${spring.profiles.active}
+      password: baiwang1234
+      username: user
+      label: master
+      name: moirai-service
+#  sleuth:
+#    sampler:
+#      percentage: 1.0
+  zipkin:
+    base-url: http://sleuth:8891
+    enabled: false
+  mvc:
+    view:
+      prefix: /html
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+  client:
+    service-url:
+         defaultZone: http://registerserver-pool.${DOMAIN}:8889/eureka
+
+server:
+  context-path:
+  port: 8788
+  tomcat:
+      accesslog:
+        directory: logs
+        enabled: true
+        pattern: combined
+        rotate: true
+      basedir: /mnt/logs/moirai-service
+
+
+mybatis:
+  mapper-locations: classpath*:mapper/${dialect}/*.xml
+  type-aliases-package: com.baiwang.moirai.model
+
+#logging:
+#  level:
+#    com.baiwang.moirai.mapper: debug

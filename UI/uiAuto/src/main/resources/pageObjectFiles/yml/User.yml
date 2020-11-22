@@ -1,0 +1,27 @@
+pages:
+    - page:
+       pageName: pageObject.UserPage
+       value: ""
+       desc: "用户操作按钮列"
+       locators: 
+          - {type: "xpath",timeout: "5",value: "//button[contains(@class,'bw-btn bw-btn-first margin')]",desc: "按钮行",name: "buttonList"}     
+          - {type: "xpath",timeout: "5",value: "//div[contains(@class,'ivu-form-item ivu-form-item-required')]",desc: "添加用户必填输入框",name: "mustInput"}
+          - {type: "className",timeout: "5",value: "ivu-form-item",desc: "添加用户非必填输入框",name: "notInput"}
+          - {type: "xpath",timeout: "5",value: "//button[contains(@class,'ivu-btn ivu-btn-primary')]",desc: "添加确认确定按钮",name: "submit"}
+          - {type: "xpath",timeout: "5",value: "//div[@class='ivu-message']//span",desc: "添加成功浮框",name: "floatMessage"}
+          - {type: "className",timeout: "5",value: "ivu-table-tbody",desc: "整个表格元素",name: "table"}
+          - {type: "xpath",timeout: "5",value: "//button[contains(@class,'ivu-btn')]",desc: "确认框按钮",name: "ivuModalButton"}
+          - {type: "xpath",timeout: "5",value: "//button[contains(@class,'bw-btn')]",desc: "行操作按钮",name: "lineButton"}
+          - {type: "className",timeout: "5",value: "ivu-modal-body",desc: "弹框信息",name: "ivuModalBody"}
+          - {type: "xpath",timeout: "5",value: "//div[contains(@class,'ivu-tabs-tab')]",desc: "查看详情的tab页",name: "tabs"}
+          - {type: "xpath",timeout: "5",value: "//label[contains(@class,'ivu-radio-wrapper')]//span[2]",desc: "角色授权角色选择",name: "authRole"}
+          - {type: "xpath",timeout: "5",value: "//input[@class='b-checkbox-input']",desc: "授权机构树",name: "authOrgTree"}
+
+
+          
+          
+          
+
+          
+          
+          

@@ -1,0 +1,1062 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiUserMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.user.MoiraiUser">
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="user_account" jdbcType="VARCHAR" property="userAccount"/>
+        <result column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="phone_validate" jdbcType="CHAR" property="phoneValidate"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_password" jdbcType="VARCHAR" property="userPassword"/>
+        <result column="UUID" jdbcType="CHAR" property="uuid"/>
+        <result column="user_email" jdbcType="VARCHAR" property="userEmail"/>
+        <result column="email_validate" jdbcType="CHAR" property="emailValidate"/>
+        <result column="user_detaile" jdbcType="VARCHAR" property="userDetaile"/>
+        <result column="user_type" jdbcType="CHAR" property="userType"/>
+        <result column="user_createtype" jdbcType="CHAR" property="userCreatetype"/>
+        <result column="userinfo_id" jdbcType="BIGINT" property="userinfoId"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
+        <result column="use_flag" jdbcType="VARCHAR" property="useFlag"/>
+        <result column="last_logintime" jdbcType="BIGINT" property="lastLogintime"/>
+        <result column="modify_user" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="modify_time" jdbcType="VARCHAR" property="modifyTime"/>
+        <result column="is_tenantaccount" jdbcType="VARCHAR" property="isTenantAccount"/>
+        <result column="FIRST_LOGIN" jdbcType="CHAR" property="firstLogin"/>
+        <result column="login_org" jdbcType="BIGINT" property="loginOrg"/>
+        <result column="user_company" jdbcType="CHAR" property="userCompany"/>
+        <result column="origin_mark" jdbcType="CHAR" property="originMark"/>
+        <result column="bind_company" jdbcType="CHAR" property="bindCompany"/>
+        <result column="default_user" jdbcType="CHAR" property="defaultUser"/>
+        <result column="bind_account" jdbcType="VARCHAR" property="bindAccount"/>
+        <result column="employee_num" jdbcType="VARCHAR" property="employeeNum"/>
+        <result column="user_position" jdbcType="VARCHAR" property="userPosition"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="backup" jdbcType="VARCHAR" property="backup"/>
+        <result column="dept" jdbcType="CHAR" property="dept"/>
+        <result column="qd_bm" jdbcType="BIGINT" property="qdBm"/>
+        <result column="sys_code" jdbcType="VARCHAR" property="sysCode"/>
+        <result column="sys_id" jdbcType="VARCHAR" property="sysId"/>
+        <result column="modify_opt_user" jdbcType="VARCHAR" property="modifyOptUser"/>
+        <result column="modify_opt_time" jdbcType="TIMESTAMP" property="modifyOptTime"/>
+
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    user_id, user_account, user_name, user_email, email_validate,
+    telephone, phone_validate, user_detaile, user_type, user_createtype, userinfo_id,
+    org_id, tenant_id, dept,del_flag, use_flag, last_logintime, modify_user,
+    user_company, bind_company, DEFAULT_user,
+    bind_account,is_tenantaccount,creater,create_time,modify_time,remark,backup,login_org,employee_num,user_position,
+    qd_bm,sys_code,sys_id,modify_opt_user,modify_opt_time
+    </sql>
+
+    <sql id="Base_Column_List_login">
+    user_id, user_account,user_password, user_name, UUID, user_email, email_validate,
+    telephone, phone_validate, user_detaile, user_type, user_createtype, userinfo_id,
+    org_id, tenant_id, dept, creater, create_time, del_flag, use_flag, last_logintime, modify_user,
+    modify_time, user_company, origin_mark, FIRST_LOGIN, bind_company, DEFAULT_user,
+    bind_account,is_tenantaccount,remark,backup,login_org,employee_num,user_position,qd_bm,sys_code,sys_id,
+    modify_opt_user,modify_opt_time
+    </sql>
+
+    <select id="selectOneUser" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List_login"/>
+        from moirai_user
+        <where>
+            <choose>
+                <when test="userId != null">
+                    AND user_id = #{userId,jdbcType=BIGINT}
+                </when>
+                <otherwise>
+                    <if test="userAccount != null">
+                        AND user_account = #{userAccount,jdbcType=VARCHAR}
+                    </if>
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap" resultSetType="SCROLL_INSENSITIVE">
+        select
+        <include refid="Base_Column_List_login"/>
+        from moirai_user
+        where user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user
+        where user_id IN
+        <foreach collection="list" item="kpyUserId" open="(" separator="," close=")">
+            #{kpyUserId.userId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <!--删除用户-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from moirai_user where user_id = #{userId,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.user.MoiraiUser">
+        insert into moirai_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userAccount != null">
+                user_account,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userPassword != null">
+                user_password,
+            </if>
+            <if test="uuid != null">
+                UUID,
+            </if>
+            <if test="userEmail != null">
+                user_email,
+            </if>
+            <if test="emailValidate != null">
+                email_validate,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+            <if test="phoneValidate != null">
+                phone_validate,
+            </if>
+            <if test="userDetaile != null">
+                user_detaile,
+            </if>
+            <if test="userType != null">
+                user_type,
+            </if>
+            <if test="userCreatetype != null">
+                user_createtype,
+            </if>
+            <if test="userinfoId != null">
+                userinfo_id,
+            </if>
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="dept != null">
+                dept,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="useFlag != null">
+                use_flag,
+            </if>
+            <if test="lastLogintime != null">
+                last_logintime,
+            </if>
+            <if test="modifyUser != null">
+                modify_user,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="userCompany != null">
+                user_company,
+            </if>
+            <if test="originMark != null">
+                origin_mark,
+            </if>
+            <if test="firstLogin != null">
+                FIRST_LOGIN,
+            </if>
+            <if test="bindCompany != null">
+                bind_company,
+            </if>
+            <if test="defaultUser != null">
+                default_user,
+            </if>
+            <if test="bindAccount != null">
+                bind_account,
+            </if>
+            <if test="isTenantAccount != null">
+                is_tenantaccount,
+            </if>
+            <if test="loginOrg != null">
+                login_org,
+            </if>
+            <if test="employeeNum != null">
+                employee_num,
+            </if>
+            <if test="userPosition != null">
+                user_position,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="backup != null">
+                backup,
+            </if>
+            <if test="qdBm != null">
+                qd_bm,
+            </if>
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="sysId != null">
+                sys_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=DECIMAL},
+            </if>
+            <if test="userAccount != null">
+                #{userAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userPassword != null">
+                #{userPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=CHAR},
+            </if>
+            <if test="userEmail != null">
+                #{userEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="emailValidate != null">
+                #{emailValidate,jdbcType=CHAR},
+            </if>
+            <if test="telephone != null">
+                #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneValidate != null">
+                #{phoneValidate,jdbcType=CHAR},
+            </if>
+            <if test="userDetaile != null">
+                #{userDetaile,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                #{userType,jdbcType=CHAR},
+            </if>
+            <if test="userCreatetype != null">
+                #{userCreatetype,jdbcType=CHAR},
+            </if>
+            <if test="userinfoId != null">
+                #{userinfoId,jdbcType=DECIMAL},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=DECIMAL},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=DECIMAL},
+            </if>
+            <if test="dept != null">
+                #{dept,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DECIMAL},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="lastLogintime != null">
+                #{lastLogintime,jdbcType=DECIMAL},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=DECIMAL},
+            </if>
+            <if test="userCompany != null">
+                #{userCompany,jdbcType=CHAR},
+            </if>
+            <if test="originMark != null">
+                #{originMark,jdbcType=CHAR},
+            </if>
+            <if test="firstLogin != null">
+                #{firstLogin,jdbcType=CHAR},
+            </if>
+            <if test="bindCompany != null">
+                #{bindCompany,jdbcType=CHAR},
+            </if>
+            <if test="defaultUser != null">
+                #{defaultUser,jdbcType=CHAR},
+            </if>
+            <if test="bindAccount != null">
+                #{bindAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="isTenantAccount != null">
+                #{isTenantAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="loginOrg != null">
+                #{loginOrg,jdbcType=BIGINT},
+            </if>
+            <if test="employeeNum != null">
+                #{employeeNum,jdbcType=VARCHAR},
+            </if>
+            <if test="userPosition != null">
+                #{userPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="backup != null">
+                #{backup,jdbcType=VARCHAR},
+            </if>
+            <if test="qdBm != null">
+                #{qdBm,jdbcType=BIGINT},
+            </if>
+            <if test="sysCode != null">
+                #{sysCode ,jdbcType=VARCHAR},
+            </if>
+            <if test="sysId != null">
+                #{sysId ,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!--更新用户-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.user.MoiraiUser">
+        update moirai_user
+        <set>
+            <if test="userAccount != null">
+                user_account = #{userAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userPassword != null">
+                user_password = #{userPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="uuid != null">
+                UUID = #{uuid,jdbcType=CHAR},
+            </if>
+            <if test="userEmail != null">
+                user_email = #{userEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="emailValidate != null">
+                email_validate = #{emailValidate,jdbcType=CHAR},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneValidate != null">
+                phone_validate = #{phoneValidate,jdbcType=CHAR},
+            </if>
+            <if test="userDetaile != null">
+                user_detaile = #{userDetaile,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=CHAR},
+            </if>
+            <if test="userCreatetype != null">
+                user_createtype = #{userCreatetype,jdbcType=CHAR},
+            </if>
+            <if test="userinfoId != null">
+                userinfo_id = #{userinfoId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                org_id = #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="dept != null">
+                dept = #{dept,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                use_flag = #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="lastLogintime != null">
+                last_logintime = #{lastLogintime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="userCompany != null">
+                user_company = #{userCompany,jdbcType=CHAR},
+            </if>
+            <if test="originMark != null">
+                origin_mark = #{originMark,jdbcType=CHAR},
+            </if>
+            <if test="firstLogin != null">
+                FIRST_LOGIN = #{firstLogin,jdbcType=CHAR},
+            </if>
+            <if test="bindCompany != null">
+                bind_company = #{bindCompany,jdbcType=CHAR},
+            </if>
+            <if test="defaultUser != null">
+                DEFAULT_user = #{defaultUser,jdbcType=CHAR},
+            </if>
+            <if test="bindAccount != null">
+                bind_account = #{bindAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="backup != null">
+                backup = #{backup,jdbcType=VARCHAR},
+            </if>
+            <if test="loginOrg != null">
+                login_org = #{loginOrg,jdbcType=BIGINT},
+            </if>
+            <if test="employeeNum != null">
+                employee_num = #{employeeNum,jdbcType=VARCHAR},
+            </if>
+            <if test="userPosition != null">
+                user_position = #{userPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="sysCode != null">
+                sys_code = #{sysCode ,jdbcType=VARCHAR},
+            </if>
+            <if test="sysId != null">
+                sys_id = #{sysId,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyOptUser != null">
+                modify_opt_user = #{modifyOptUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyOptTime != null">
+                modify_opt_time = #{modifyOptTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <!--根据条件查询用户信息-->
+    <select id="findUserByCondition" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition"
+            resultMap="BaseResultMap" resultSetType="SCROLL_INSENSITIVE">
+        select
+        <include refid="Base_Column_List_login"/>
+        from moirai_user
+        <where>
+            <if test="userAccount != null and userAccount !=''">and user_account = #{userAccount}</if>
+            <if test="userPassword != null and userPassword !=''">and user_password = #{userPassword}</if>
+            <if test="userName != null and userName !=''">and user_name = #{userName})</if>
+            <if test="orgId != null">and org_id = #{orgId}</if>
+            <if test="tenantId != null">and tenant_id = #{tenantId}</if>
+            <if test="userType != null and userType !=''">and user_type = #{userType}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="userEmail != null and userEmail !=''">and user_email = #{userEmail}</if>
+            <if test="telephone != null and telephone !=''">and telephone = #{telephone}</if>
+            <if test="isTenantAccount != null and isTenantAccount !=''">and is_tenantaccount = #{isTenantAccount}</if>
+            <if test="userCreatetype != null and userCreatetype !=''">and user_createtype = #{userCreatetype}</if>
+            <if test="dept != null and dept !=''">and dept = #{dept}</if>
+            <if test="remark != null and remark !=''">and remark LIKE CONCAT('%',#{remark, jdbcType=VARCHAR},'%')</if>
+            <if test="remark != null and remark !=''">and remark LIKE CONCAT(CONCAT('%',
+                #{remark, jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="sysCode != null">and sys_code = #{sysCode,jdbcType=VARCHAR}</if>
+            <if test="sysId != null">and sys_id = #{sysId,jdbcType=VARCHAR}</if>
+        </where>
+        ORDER BY CREATE_TIME DESC
+    </select>
+
+    <select id="findUserListByCondition" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition"
+            resultMap="BaseResultMap" resultSetType="SCROLL_INSENSITIVE">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user
+        <where>
+            <if test="registerBeginTime != null">and create_time &gt;= RPAD(#{registerBeginTime, jdbcType=BIGINT}, 17,
+                0)
+            </if>
+            <if test="registerEndTime != null">and create_time &lt;= RPAD(#{registerEndTime, jdbcType=BIGINT} + 1, 17,
+                0)
+            </if>
+            <if test="loginBeginTime != null">and last_logintime &gt;= RPAD(#{loginBeginTime, jdbcType=BIGINT}, 17, 0)
+            </if>
+            <if test="loginEndTime != null">and last_logintime &lt;= RPAD(#{loginEndTime, jdbcType=BIGINT} + 1, 17, 0)
+            </if>
+            <if test="userAccount != null and userAccount !=''">and user_account LIKE concat(concat('%' ,
+                #{userAccount,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="userName != null and userName !=''">and user_name LIKE concat(concat('%' ,
+                #{userName,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="userType != null and userType !=''">
+                and user_type = #{userType}
+                <if test='userType == "C"'>
+                    <if test="userId != null">and user_id LIKE concat(concat('%' ,#{userId,jdbcType=VARCHAR}) , '%')</if>
+                </if>
+            </if>
+            <if test="userPassword != null and userPassword !=''">and user_password = #{userPassword}</if>
+            <if test="orgId != null">and org_id = #{orgId}</if>
+            <if test="tenantId != null">and tenant_id = #{tenantId}</if>
+            <if test="userEmail != null and userEmail !=''">and user_email = #{userEmail}</if>
+            <if test="telephone != null and telephone !=''">and telephone LIKE concat(concat('%'
+                ,#{telephone,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="isTenantAccount != null and isTenantAccount !=''">and is_tenantaccount = #{isTenantAccount}</if>
+            <if test="remark != null and remark !=''">and remark LIKE CONCAT('%',#{remark, jdbcType=VARCHAR},'%')</if>
+            <if test="useFlag != null and useFlag !=''">and use_flag = #{useFlag}</if>
+            <if test="authOrgIds != null and authOrgIds.size()>0">
+                and org_id in
+                <foreach collection="authOrgIds" item="_item" open="(" separator="," close=")">
+                    #{_item}
+                </foreach>
+            </if>
+            <if test='userType == "B" and (authOrgIds == null or authOrgIds.size() == 0) and (tenantId != null or userId != null or orgId != null)'>
+                and org_id in
+                (select auth_org from moirai_user_authz
+                <where>
+                    <if test="tenantId != null">and tenant_id = #{tenantId}</if>
+                    <if test="userId != null">and user_id = #{userId}</if>
+                    <if test="orgId != null">and user_org = #{orgId}</if>
+                </where>)
+            </if>
+            <if test="qdBms != null and qdBms.size() > 0">
+                and qd_bm in
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+        </where>
+        order by modify_time desc
+    </select>
+
+    <select id="findUserCountByCondition" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition"
+            resultType="java.lang.Integer">
+        select
+        COUNT(*)
+        from moirai_user u
+        <where>
+            <if test="registerBeginTime != null">and u.create_time &gt;= RPAD(#{registerBeginTime, jdbcType=BIGINT}, 17,
+                0)
+            </if>
+            <if test="registerEndTime != null">and u.create_time &lt;= RPAD(#{registerEndTime, jdbcType=BIGINT} + 1, 17,
+                0)
+            </if>
+            <if test="loginBeginTime != null">and u.last_logintime &gt;= RPAD(#{loginBeginTime, jdbcType=BIGINT}, 17, 0)
+            </if>
+            <if test="loginEndTime != null">and u.last_logintime &lt;= RPAD(#{loginEndTime, jdbcType=BIGINT} + 1, 17, 0)
+            </if>
+            <if test="userAccount != null and userAccount !=''">and u.user_account LIKE concat(concat('%' ,
+                #{userAccount,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="userName != null and userName !=''">and u.user_name LIKE concat(concat('%' ,
+                #{userName,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="userType != null and userType !=''">
+                and u.user_type = #{userType}
+                <if test='userType == "C"'>
+                    <if test="userId != null">and u.user_id LIKE concat(concat('%' ,#{userId,jdbcType=VARCHAR}) , '%')</if>
+                </if>
+            </if>
+            <if test="userPassword != null and userPassword !=''">and u.user_password = #{userPassword}</if>
+            <if test="orgId != null">and u.org_id = #{orgId}</if>
+            <if test="tenantId != null">and u.tenant_id = #{tenantId}</if>
+            <if test="userEmail != null and userEmail !=''">and u.user_email = #{userEmail}</if>
+            <if test="telephone != null and telephone !=''">and u.telephone LIKE concat(concat('%'
+                ,#{telephone,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="isTenantAccount != null and isTenantAccount !=''">and u.is_tenantaccount = #{isTenantAccount}</if>
+            <if test="remark != null and remark !=''">and u.remark LIKE CONCAT('%',#{remark, jdbcType=VARCHAR},'%')</if>
+            <if test="useFlag != null and useFlag !=''">and u.use_flag = #{useFlag}</if>
+            <if test="authOrgIds != null and authOrgIds.size()>0">
+                and u.org_id in
+                <foreach collection="authOrgIds" item="_item" open="(" separator="," close=")">
+                    #{_item}
+                </foreach>
+            </if>
+            <if test="qdBms != null and qdBms.size() > 0">
+                and u.qd_bm in
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据登录账号获取用户信息【判重】 -->
+    <select id="getUserByUserAccount" resultMap="BaseResultMap" parameterType="string">
+        select
+        <include refid="Base_Column_List_login"/>
+        from moirai_user where user_account = #{userAccount,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 根据电话号码获取用户信息【判重】 -->
+    <select id="getUserByTelephone" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List_login"/>
+        from moirai_user where telephone = #{telephone,jdbcType=VARCHAR}
+        and user_type = 'B' and tenant_id = #{tenantId,jdbcType=BIGINT}
+        and rownum = 1
+    </select>
+
+    <!-- 根据电话号码获取C端用户 -->
+    <select id="getCUserByTelephone" resultMap="BaseResultMap" parameterType="string">
+        select
+        <include refid="Base_Column_List_login"/>
+        from moirai_user where telephone = #{telephone,jdbcType=VARCHAR} and user_type = 'C'
+    </select>
+
+    <!-- 根据邮箱获取用户信息【判重】 -->
+    <select id="getUserByUserEmail" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List_login"/>
+        from moirai_user
+        where user_email = #{userEmail,jdbcType=VARCHAR}
+        and user_type = 'B' and tenant_id = #{tenantId,jdbcType=BIGINT}
+        and rownum = 1
+    </select>
+
+    <!-- 邮箱批量判重 -->
+    <select id="batchEmailCheckRepetition" resultType="map"
+            parameterType="com.baiwang.moirai.model.user.MoiraiEmailCheck">
+        SELECT user_email as userEmail,count(1) as total from moirai_user where user_email in
+        <foreach collection="emails" item="_item" open="(" separator="," close=")">
+            #{_item}
+        </foreach>
+        and user_type = #{userType}
+        GROUP BY user_email
+    </select>
+
+    <!-- 获取角色下的用户 -->
+    <select id="getUserByRoleId" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition"
+            resultMap="BaseResultMap">
+      SELECT b.*,a.create_time,a.creater
+        FROM
+        ( SELECT user_id, create_time, creater FROM moirai_user_authz WHERE role_id = #{roleId} AND tenant_id = #{tenantId} GROUP BY user_id, create_time, creater) a
+            LEFT JOIN (
+                SELECT
+                    u.user_id,
+                    u.user_name,
+                    u.user_account,
+                    u.org_id
+                FROM
+                    moirai_user u
+                WHERE
+                    u.tenant_id = #{tenantId}
+                    ) b ON a.user_id = b.user_id
+        ORDER BY
+            a.create_time DESC
+  </select>
+
+    <!--删除用户授权，兼容老版本-->
+    <delete id="delUserRoleByUserIdRoleId" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition">
+       delete from  moirai_user_authz where user_id = #{userId} and role_id =#{roleId}
+    </delete>
+
+    <!-- 根据租户ID查询所有用户 == 》南航 -->
+    <select id="findUserByTenantId" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition"
+            resultMap="BaseResultMap">
+        select
+        moirai_user.*, moirai_org.org_name as orgName
+        from moirai_user left join moirai_org on moirai_user.org_id = moirai_org.org_id
+        <where>
+            moirai_user.is_tenantaccount <![CDATA[!= ]]> 'Y'
+            AND moirai_user.use_flag = 'Y' AND moirai_user.user_createtype <![CDATA[!= ]]> '0'
+            <if test="tenantId != null">and moirai_user.tenant_id = #{tenantId}</if>
+        </where>
+        order by moirai_user.modify_time desc
+    </select>
+
+    <insert id="addBatch" parameterType="java.util.List">
+        insert into moirai_user (user_id, user_account, user_name,
+        user_password, UUID, user_email,
+        email_validate, telephone, phone_validate,
+        user_detaile, user_type, user_createtype,
+        userinfo_id, org_id, tenant_id,
+        creater, create_time,del_flag,use_flag, last_logintime, modify_user,
+        modify_time, user_company, origin_mark,
+        bind_company, DEFAULT_user,
+        bind_account,is_tenantaccount,remark,backup,dept,login_org,
+        employee_num,user_position, FIRST_LOGIN
+        )
+        <foreach collection="list" item="item" index="index" separator="union all">
+            select
+            #{item.userId,jdbcType=BIGINT}, #{item.userAccount,jdbcType=VARCHAR}, #{item.userName,jdbcType=VARCHAR},
+            #{item.userPassword,jdbcType=VARCHAR}, #{item.uuid,jdbcType=CHAR}, #{item.userEmail,jdbcType=VARCHAR},
+            #{item.emailValidate,jdbcType=CHAR}, #{item.telephone,jdbcType=VARCHAR},
+            #{item.phoneValidate,jdbcType=CHAR},
+            #{item.userDetaile,jdbcType=VARCHAR}, #{item.userType,jdbcType=CHAR}, #{item.userCreatetype,jdbcType=CHAR},
+            #{item.userinfoId,jdbcType=BIGINT}, #{item.orgId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT},
+            #{item.creater,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=BIGINT},#{item.delFlag,jdbcType=VARCHAR},#{item.useFlag,jdbcType=VARCHAR},
+            #{item.lastLogintime,jdbcType=BIGINT}, #{item.modifyUser,jdbcType=VARCHAR},
+            #{item.modifyTime,jdbcType=BIGINT}, #{item.userCompany,jdbcType=CHAR}, #{item.originMark,jdbcType=CHAR},
+            #{item.bindCompany,jdbcType=CHAR}, #{item.defaultUser,jdbcType=CHAR},
+            #{item.bindAccount,jdbcType=VARCHAR},#{item.isTenantAccount,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},
+            #{item.backup,jdbcType=VARCHAR},#{item.dept,jdbcType=VARCHAR},#{item.loginOrg,jdbcType=BIGINT},
+            #{item.employeeNum,jdbcType=VARCHAR},#{item.userPosition,jdbcType=VARCHAR},#{item.firstLogin,jdbcType=VARCHAR}
+            from dual
+        </foreach>
+    </insert>
+
+    <!--删除使用的相同手机号-->
+    <update id="deleteSimplePhone" parameterType="java.lang.String">
+        update moirai_user set telephone = null where telephone = #{telephone,jdbcType=VARCHAR} and phone_validate = 'N' and user_type = 'B'
+    </update>
+
+    <!--插入用户删除历史表-->
+    <insert id="insertUserHistory" parameterType="com.baiwang.moirai.model.user.MoiraiUser">
+        insert into moirai_user_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userAccount != null">
+                user_account,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userPassword != null">
+                user_password,
+            </if>
+            <if test="uuid != null">
+                UUID,
+            </if>
+            <if test="userEmail != null">
+                user_email,
+            </if>
+            <if test="emailValidate != null">
+                email_validate,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+            <if test="phoneValidate != null">
+                phone_validate,
+            </if>
+            <if test="userDetaile != null">
+                user_detaile,
+            </if>
+            <if test="userType != null">
+                user_type,
+            </if>
+            <if test="userCreatetype != null">
+                user_createtype,
+            </if>
+            <if test="userinfoId != null">
+                userinfo_id,
+            </if>
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="dept != null">
+                dept,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="useFlag != null">
+                use_flag,
+            </if>
+            <if test="lastLogintime != null">
+                last_logintime,
+            </if>
+            <if test="modifyUser != null">
+                modify_user,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="userCompany != null">
+                user_company,
+            </if>
+            <if test="originMark != null">
+                origin_mark,
+            </if>
+            <if test="firstLogin != null">
+                FIRST_LOGIN,
+            </if>
+            <if test="bindCompany != null">
+                bind_company,
+            </if>
+            <if test="defaultUser != null">
+                default_user,
+            </if>
+            <if test="bindAccount != null">
+                bind_account,
+            </if>
+            <if test="isTenantAccount != null">
+                is_tenantaccount,
+            </if>
+            <if test="loginOrg != null">
+                login_org,
+            </if>
+            <if test="employeeNum != null">
+                employee_num,
+            </if>
+            <if test="userPosition != null">
+                user_position,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="backup != null">
+                backup,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=DECIMAL},
+            </if>
+            <if test="userAccount != null">
+                #{userAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userPassword != null">
+                #{userPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=CHAR},
+            </if>
+            <if test="userEmail != null">
+                #{userEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="emailValidate != null">
+                #{emailValidate,jdbcType=CHAR},
+            </if>
+            <if test="telephone != null">
+                #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneValidate != null">
+                #{phoneValidate,jdbcType=CHAR},
+            </if>
+            <if test="userDetaile != null">
+                #{userDetaile,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                #{userType,jdbcType=CHAR},
+            </if>
+            <if test="userCreatetype != null">
+                #{userCreatetype,jdbcType=CHAR},
+            </if>
+            <if test="userinfoId != null">
+                #{userinfoId,jdbcType=DECIMAL},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=DECIMAL},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=DECIMAL},
+            </if>
+            <if test="dept != null">
+                #{dept,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DECIMAL},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="lastLogintime != null">
+                #{lastLogintime,jdbcType=DECIMAL},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=DECIMAL},
+            </if>
+            <if test="userCompany != null">
+                #{userCompany,jdbcType=CHAR},
+            </if>
+            <if test="originMark != null">
+                #{originMark,jdbcType=CHAR},
+            </if>
+            <if test="firstLogin != null">
+                #{firstLogin,jdbcType=CHAR},
+            </if>
+            <if test="bindCompany != null">
+                #{bindCompany,jdbcType=CHAR},
+            </if>
+            <if test="defaultUser != null">
+                #{defaultUser,jdbcType=CHAR},
+            </if>
+            <if test="bindAccount != null">
+                #{bindAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="isTenantAccount != null">
+                #{isTenantAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="loginOrg != null">
+                #{loginOrg,jdbcType=BIGINT},
+            </if>
+            <if test="employeeNum != null">
+                #{employeeNum,jdbcType=VARCHAR},
+            </if>
+            <if test="userPosition != null">
+                #{userPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="backup != null">
+                #{backup,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByCondition" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition">
+        update moirai_user
+        <set>
+            <if test="useFlag != null">
+                use_flag = #{useFlag,jdbcType=CHAR},
+            </if>
+        </set>
+        where user_account = #{userAccount,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 用户导入账号校验-->
+    <select id="selectUserByAccount" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user
+        where user_account in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.userAccount,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+    <!-- 用户导入邮箱校验-->
+    <select id="selectUserByEmail" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user
+        where user_email in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and tenant_id = #{tenantId,jdbcType=BIGINT}
+    </select>
+    <select id="selectUserByPhone" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user
+        where telephone in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and tenant_id = #{tenantId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectTenantAccountUserList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user
+        where is_tenantaccount = 'Y'
+        and tenant_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectAdminUser" resultMap="BaseResultMap">
+        select org_id, user_account
+        from moirai_user
+        where user_createtype = '0'
+        <if test="list != null and list.size() > 0">
+            and org_id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        <if test="list == null or list.size == 0">
+            and 1 = 2
+        </if>
+    </select>
+
+    <!-- 运营后台2.0企业用户查询 -->
+    <select id="findBUserListByCondition" parameterType="com.baiwang.moirai.model.user.MoiraiUserCondition" resultMap="ConditionResultMap">
+        select u.user_id, u.user_account, u.user_name, u.telephone, u.user_email, t.tenant_name, o.org_name,
+        o.tax_code, u.create_time, u.last_logintime, u.use_flag, u.modify_opt_user, u.modify_opt_time
+        from moirai_user u
+        left join moirai_org o on u.org_id = o.org_id
+        left join moirai_tenant t on u.tenant_id = t.tenant_id
+        where u.user_type = 'B'
+        <if test="tenantName != null and tenantName != ''">
+            and t.tenant_name = #{tenantName,jdbcType=VARCHAR}
+        </if>
+        <if test="orgName != null and orgName != ''">
+            and o.org_name = #{orgName,jdbcType=VARCHAR}
+        </if>
+        <if test="taxCode != null and taxCode != ''">
+            and o.tax_code = #{taxCode,jdbcType=VARCHAR}
+        </if>
+        <if test="useFlag != null and useFlag != ''">
+            and u.use_flag = #{useFlag,jdbcType=VARCHAR}
+        </if>
+        <if test="registerBeginTime != null">and u.create_time &gt;= #{registerBeginTime, jdbcType=BIGINT}</if>
+        <if test="registerEndTime != null">and u.create_time &lt;= #{registerEndTime, jdbcType=BIGINT}</if>
+        <if test="firstLogin != null and firstLogin != ''">
+            and u.first_login = #{firstLogin,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectUserListByAuth" parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthz" resultMap="BaseResultMap">
+        select
+        u.user_id, u.user_account, u.user_name, u.user_email, u.email_validate,
+        u.telephone, u.phone_validate, u.user_detaile, u.user_type, u.user_createtype, u.userinfo_id,
+        u.org_id, u.tenant_id, u.dept,u.del_flag, u.use_flag, u.last_logintime, u.modify_user,
+        u.user_company, u.bind_company, u.DEFAULT_user,
+        u.bind_account,u.is_tenantaccount,u.creater,u.create_time,u.modify_time,u.remark,u.backup,
+        u.login_org,u.employee_num,u.user_position,
+        u.qd_bm,u.sys_code,u.sys_id,u.modify_opt_user,u.modify_opt_time
+        from moirai_user u left join moirai_user_authz authz on u.org_id = authz.user_org
+        <where>
+            <if test="userOrg != null">
+                and authz.user_org = #{userOrg,jdbcType=BIGINT}
+            </if>
+            <if test="roleId != null">
+                and authz.role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+</mapper>

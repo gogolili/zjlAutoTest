@@ -1,0 +1,16 @@
+stages:
+    - sonar
+    - unittest
+sonar_analyze:
+    stage: sonar
+    script:
+        - sh git_ci.sh
+    tags:
+        - web
+
+Unittest:
+    stage: unittest
+    script:
+        - sh unittest.sh
+    tags:
+        - web

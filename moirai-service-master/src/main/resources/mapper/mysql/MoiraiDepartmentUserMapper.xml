@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiDepartmentUserMapper">
+  <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.department.MoiraiDepartmentUser">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="DEPARTMENT_ID" jdbcType="BIGINT" property="departmentId" />
+    <result column="USER_ID" jdbcType="BIGINT" property="userId" />
+    <result column="POST_TYPE" jdbcType="INTEGER" property="postType" />
+    <result column="CREATER" jdbcType="VARCHAR" property="creater" />
+    <result column="CREATE_TIME" jdbcType="BIGINT" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DEPARTMENT_ID, USER_ID, POST_TYPE, CREATER, CREATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from moirai_department_user
+    where DEPARTMENT_ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByDepartmentId" parameterType="java.lang.Long">
+    delete from moirai_department_user
+    where DEPARTMENT_ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteBatch" parameterType="java.util.List">
+    delete from moirai_department_user
+    where ID in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </delete>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into moirai_department_user (ID, DEPARTMENT_ID, USER_ID,
+    POST_TYPE, CREATER, CREATE_TIME
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      ( #{item.id}, #{item.departmentId}, #{item.userId},
+      #{item.postType}, #{item.creater},
+      #{item.createTime} )
+    </foreach>
+  </insert>
+  <insert id="insert" parameterType="com.baiwang.moirai.model.department.MoiraiDepartmentUser">
+    insert into moirai_department_user (ID, DEPARTMENT_ID, USER_ID, 
+      POST_TYPE, CREATER, CREATE_TIME
+      )
+    values (#{id,jdbcType=BIGINT}, #{departmentId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{postType,jdbcType=INTEGER}, #{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.baiwang.moirai.model.department.MoiraiDepartmentUser">
+    insert into moirai_department_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="departmentId != null">
+        DEPARTMENT_ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="postType != null">
+        POST_TYPE,
+      </if>
+      <if test="creater != null">
+        CREATER,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="postType != null">
+        #{postType,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.department.MoiraiDepartmentUser">
+    update moirai_department_user
+    <set>
+      <if test="departmentId != null">
+        DEPARTMENT_ID = #{departmentId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="postType != null">
+        POST_TYPE = #{postType,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null">
+        CREATER = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.baiwang.moirai.model.department.MoiraiDepartmentUser">
+    update moirai_department_user
+    set DEPARTMENT_ID = #{departmentId,jdbcType=BIGINT},
+      USER_ID = #{userId,jdbcType=BIGINT},
+      POST_TYPE = #{postType,jdbcType=INTEGER},
+      CREATER = #{creater,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findDepartmentUser" parameterType="com.baiwang.moirai.model.department.MoiraiDepartment"
+    resultType="com.baiwang.moirai.model.department.MoiraiDepartmentUserView">
+    select
+        mdu.ID,
+        mdu.POST_TYPE as postType,
+        mu.user_id as userId,
+        mu.user_name as userName,
+		mu.telephone,
+		mu.user_email as userEmail,
+		mu.user_position as userPosition
+    from moirai_department_user as mdu
+    left join moirai_user as mu on mu.user_id=mdu.USER_ID
+    where mdu.DEPARTMENT_ID = #{departmentId,jdbcType=BIGINT}
+  </select>
+</mapper>

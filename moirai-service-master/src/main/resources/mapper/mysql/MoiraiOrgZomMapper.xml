@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiOrgZomMapper">
+    <resultMap id="ZomOrgResultMap" type="com.baiwang.moirai.model.org.MoiraiOrg">
+        <id column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="org_type" jdbcType="INTEGER" property="orgType"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="tax_code" jdbcType="VARCHAR" property="taxCode"/>
+        <result column="parent_org" jdbcType="BIGINT" property="parentOrg"/>
+        <result column="ORG_CODE" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="modify_user" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="modify_time" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="del_flag" jdbcType="CHAR" property="delFlag"/>
+        <result column="use_flag" jdbcType="CHAR" property="useFlag"/>
+        <result column="self_manage" jdbcType="CHAR" property="selfManage"/>
+        <result column="parent_visible" jdbcType="CHAR" property="parentVisible"/>
+        <result column="telphone" jdbcType="VARCHAR" property="telphone"/>
+        <result column="bank_deposit" jdbcType="VARCHAR" property="bankDeposit"/>
+        <result column="account_number" jdbcType="VARCHAR" property="accountNumber"/>
+        <result column="legal_name" jdbcType="VARCHAR" property="legalName"/>
+        <result column="reg_PROV" jdbcType="BIGINT" property="regProv"/>
+        <result column="reg_CITY" jdbcType="BIGINT" property="regCity"/>
+        <result column="reg_AREA" jdbcType="BIGINT" property="regArea"/>
+        <result column="tax_prov" jdbcType="VARCHAR" property="taxProv"/>
+        <result column="business_address" jdbcType="VARCHAR" property="businessAddress"/>
+        <result column="use_selfinfo" jdbcType="VARCHAR" property="useSelfinfo"/>
+        <result column="dj_company_type" jdbcType="VARCHAR" property="djCompanyType"/>
+        <result column="belong_industry" jdbcType="VARCHAR" property="belongIndustry"/>
+        <result column="jrd_code" jdbcType="VARCHAR" property="jrdCode"/>
+        <result column="tax_quali" jdbcType="CHAR" property="taxQuali"/>
+        <result column="need_seal" jdbcType="CHAR" property="needSeal"/>
+        <result column="seal_id" jdbcType="VARCHAR" property="sealId"/>
+        <result column="device_type" jdbcType="VARCHAR" property="deviceType"/>
+        <result column="tg_type" jdbcType="CHAR" property="tgType"/>
+        <result column="device_name" jdbcType="VARCHAR" property="deviceName"/>
+        <result column="device_code" jdbcType="VARCHAR" property="deviceCode"/>
+        <result column="modify_lev" jdbcType="CHAR" property="modifyLev"/>
+        <result column="TAXENTITY_ID" jdbcType="BIGINT" property="taxentityId"/>
+        <result column="REMARK" jdbcType="VARCHAR" property="remark"/>
+        <result column="BACKUP" jdbcType="VARCHAR" property="backup"/>
+
+        <result column="EXPORT_QUALIFY" jdbcType="VARCHAR" property="exportQualify"/>
+        <result column="ADDRESSEE" jdbcType="VARCHAR" property="addressee"/>
+        <result column="CONTACT_NUMBER" jdbcType="VARCHAR" property="contactNumber"/>
+        <result column="MAILING_ADDRESS" jdbcType="VARCHAR" property="moilingAddress"/>
+        <result column="is_fetch" jdbcType="CHAR" property="isFetch"/>
+        <result column="is_proof" jdbcType="CHAR" property="isProof"/>
+        <result column="is_authe" jdbcType="CHAR" property="isAuthe"/>
+        <result column="device_sn" jdbcType="VARCHAR" property="deviceSn"/>
+        <result column="device_password" jdbcType="VARCHAR" property="devicePassword"/>
+        <result column="device_key" jdbcType="VARCHAR" property="deviceKey"/>
+        <result column="register_address" jdbcType="VARCHAR" property="registerAddress"/>
+    </resultMap>
+
+    <sql id="Org_Column_List">
+        org_id, tenant_id, org_type, org_name, tax_code, parent_org, ORG_CODE, creater, create_time,
+        modify_user, modify_time, del_flag, use_flag, self_manage, parent_visible,  telphone,
+        bank_deposit, account_number, legal_name, reg_PROV, reg_CITY, reg_AREA, tax_prov, business_address,use_selfinfo,
+        dj_company_type, belong_industry, jrd_code, tax_quali, need_seal, seal_id, device_type, tg_type,
+        device_name, device_code, modify_lev,TAXENTITY_ID,REMARK, BACKUP,
+        EXPORT_QUALIFY, ADDRESSEE, CONTACT_NUMBER, MAILING_ADDRESS,
+        is_fetch, is_proof, is_authe, device_sn, device_password, device_key, register_address
+     </sql>
+    <!--按照税号查询组织机构-->
+    <select id="selectByTaxCode" parameterType="java.lang.String" resultMap="ZomOrgResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org_zom
+        where tax_code = #{taxCode,jdbcType=VARCHAR} AND del_flag = 'N'
+    </select>
+
+    <!--按照名称查询组织机构-->
+    <select id="selectByOrgName" parameterType="java.lang.String" resultMap="ZomOrgResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org_zom
+        where org_name = #{orgName,jdbcType=VARCHAR} AND del_flag = 'N'
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ZomOrgResultMap">
+        select
+        <include refid="Org_Column_List"/>
+        from moirai_org
+        where org_id = #{orgId,jdbcType=BIGINT} AND del_flag = 'N'
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_org
+    where org_id = #{orgId,jdbcType=BIGINT}
+  </delete>
+
+    <update id="deleteLogic" parameterType="com.baiwang.moirai.model.org.MoiraiOrg">
+        update moirai_org_zom
+        <set>
+            del_flag = 'Y',
+        </set>
+        where org_id = #{orgId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.org.MoiraiOrg">
+        update moirai_org_zom
+        <set>
+            <if test="taxCode != null and taxCode != ''">
+                tax_code = #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="orgType != null and orgType != ''">
+                org_type = #{orgType,jdbcType=INTEGER},
+            </if>
+            <if test="orgName != null and orgName != ''">
+                org_name = #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyUser != null and modifyUser != ''">
+                modify_user = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="orgCode != null and orgCode != ''">
+                ORG_CODE = #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null and modifyTime != ''">
+                modify_time = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null and useFlag != ''">
+                use_flag = #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="selfManage != null and selfManage != ''">
+                self_manage = #{selfManage,jdbcType=CHAR},
+            </if>
+            <if test="parentVisible != null and parentVisible != ''">
+                parent_visible = #{parentVisible,jdbcType=CHAR},
+            </if>
+            <if test="deviceName != null and deviceName != ''">
+                device_name = #{deviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceCode != null and deviceCode != ''">
+                device_code = #{deviceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyLev != null and modifyLev != ''">
+                modify_lev = #{modifyLev,jdbcType=CHAR},
+            </if>
+            <if test="telphone != null and telphone != ''">
+                telphone = #{telphone,jdbcType=VARCHAR},
+            </if>
+            <if test="bankDeposit != null and bankDeposit != ''">
+                bank_deposit = #{bankDeposit,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNumber != null and accountNumber != ''">
+                account_number = #{accountNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="legalName != null and legalName != ''">
+                legal_name = #{legalName,jdbcType=VARCHAR},
+            </if>
+            <if test="regProv != null and regProv != ''">
+                reg_PROV = #{regProv,jdbcType=BIGINT},
+            </if>
+            <if test="regCity != null and regCity != ''">
+                reg_CITY = #{regCity,jdbcType=BIGINT},
+            </if>
+            <if test="regArea != null and regArea != ''">
+                reg_AREA = #{regArea,jdbcType=BIGINT},
+            </if>
+            <if test="taxProv != null and taxProv != ''">
+                tax_prov = #{taxProv,jdbcType=VARCHAR},
+            </if>
+            <if test="businessAddress != null and businessAddress != ''">
+                business_address = #{businessAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="useSelfinfo != null and useSelfinfo != ''">
+                use_selfinfo = #{useSelfinfo,jdbcType=VARCHAR},
+            </if>
+            <if test="djCompanyType != null and djCompanyType != ''">
+                dj_company_type = #{djCompanyType,jdbcType=VARCHAR},
+            </if>
+            <if test="belongIndustry != null and belongIndustry != ''">
+                belong_industry = #{belongIndustry,jdbcType=VARCHAR},
+            </if>
+            <if test="jrdCode != null and jrdCode != ''">
+                jrd_code = #{jrdCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taxQuali != null and taxQuali != ''">
+                tax_quali = #{taxQuali,jdbcType=CHAR},
+            </if>
+            <if test="needSeal != null and needSeal != ''">
+                need_seal = #{needSeal,jdbcType=CHAR},
+            </if>
+            <if test="sealId != null and sealId != ''">
+                seal_id = #{sealId,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null and deviceType != ''">
+                device_type = #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="tgType != null and tgType != ''">
+                tg_type = #{tgType,jdbcType=CHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="backup != null and backup != ''">
+                BACKUP = #{backup,jdbcType=VARCHAR},
+            </if>
+            <if test="useSelfinfo != null and useSelfinfo != ''">
+                use_selfinfo = #{useSelfinfo,jdbcType=VARCHAR},
+            </if>
+            <if test="exportQualify != null and exportQualify != ''">
+                EXPORT_QUALIFY = #{exportQualify,jdbcType=VARCHAR},
+            </if>
+            <if test="contactNumber != null and contactNumber != ''">
+                CONTACT_NUMBER = #{contactNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="addressee != null and addressee != ''">
+                ADDRESSEE = #{addressee,jdbcType=VARCHAR},
+            </if>
+            <if test="moilingAddress != null and moilingAddress != ''">
+                MAILING_ADDRESS = #{moilingAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="isFetch != null">
+                is_fetch = #{isFetch,jdbcType=CHAR},
+            </if>
+            <if test="isProof != null">
+                is_proof = #{isProof,jdbcType=CHAR},
+            </if>
+            <if test="isAuthe != null">
+                is_authe = #{isAuthe,jdbcType=CHAR},
+            </if>
+            <if test="deviceSn != null">
+                device_sn = #{deviceSn,jdbcType=VARCHAR},
+            </if>
+            <if test="devicePassword != null">
+                device_password = #{devicePassword,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceKey != null">
+                device_key = #{deviceKey,jdbcType=VARCHAR},
+            </if>
+            <if test="registerAddress != null">
+                register_address = #{registerAddress,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where org_id = #{orgId,jdbcType=BIGINT}
+    </update>
+
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.org.MoiraiOrg">
+        insert into moirai_org_zom
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="orgType != null">
+                org_type,
+            </if>
+            <if test="orgName != null">
+                org_name,
+            </if>
+            <if test="taxCode != null">
+                tax_code,
+            </if>
+            <if test="parentOrg != null">
+                parent_org,
+            </if>
+            <if test="orgCode != null">
+                ORG_CODE,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyUser != null">
+                modify_user,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="parentVisible != null">
+                parent_visible,
+            </if>
+            <if test="deviceName != null">
+                device_name,
+            </if>
+            <if test="deviceCode != null">
+                device_code,
+            </if>
+            <if test="modifyLev != null">
+                modify_lev,
+            </if>
+            <if test="telphone != null">
+                telphone,
+            </if>
+            <if test="bankDeposit != null">
+                bank_deposit,
+            </if>
+            <if test="accountNumber != null">
+                account_number,
+            </if>
+            <if test="legalName != null">
+                legal_name,
+            </if>
+            <if test="regProv != null">
+                reg_PROV,
+            </if>
+            <if test="regCity != null">
+                reg_CITY,
+            </if>
+            <if test="regArea != null">
+                reg_AREA,
+            </if>
+            <if test="taxProv != null">
+                tax_prov,
+            </if>
+            <if test="businessAddress != null">
+                business_address,
+            </if>
+            <if test="djCompanyType != null">
+                dj_company_type,
+            </if>
+            <if test="belongIndustry != null">
+                belong_industry,
+            </if>
+            <if test="jrdCode != null">
+                jrd_code,
+            </if>
+            <if test="taxQuali != null">
+                tax_quali,
+            </if>
+            <if test="needSeal != null">
+                need_seal,
+            </if>
+            <if test="sealId != null">
+                seal_id,
+            </if>
+            <if test="deviceType != null">
+                device_type,
+            </if>
+            <if test="tgType != null">
+                tg_type,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="backup != null">
+                BACKUP,
+            </if>
+
+            <if test="useSelfinfo != null">
+                use_selfinfo,
+            </if>
+            <if test="exportQualify != null">
+                EXPORT_QUALIFY,
+            </if>
+            <if test="contactNumber != null">
+                CONTACT_NUMBER,
+            </if>
+            <if test="addressee != null">
+                ADDRESSEE,
+            </if>
+            <if test="moilingAddress != null">
+                MAILING_ADDRESS,
+            </if>
+            <if test="isProof != null">
+                is_proof,
+            </if>
+            <if test="isAuthe != null">
+                is_authe,
+            </if>
+            <if test="isFetch != null">
+                is_fetch,
+            </if>
+            <if test="deviceSn != null">
+                device_sn,
+            </if>
+            <if test="devicePassword != null">
+                device_password,
+            </if>
+            <if test="deviceKey != null">
+                device_key,
+            </if>
+            <if test="registerAddress != null">
+                register_address,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgType != null">
+                #{orgType,jdbcType=INTEGER},
+            </if>
+            <if test="orgName != null">
+                #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="taxCode != null">
+                #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOrg != null">
+                #{parentOrg,jdbcType=BIGINT},
+            </if>
+            <if test="orgCode != null">
+                #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="parentVisible != null">
+                #{parentVisible,jdbcType=CHAR},
+            </if>
+            <if test="deviceName != null">
+                #{deviceName,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceCode != null">
+                #{deviceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyLev != null">
+                #{modifyLev,jdbcType=CHAR},
+            </if>
+            <if test="telphone != null">
+                #{telphone,jdbcType=VARCHAR},
+            </if>
+            <if test="bankDeposit != null">
+                #{bankDeposit,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNumber != null">
+                #{accountNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="legalName != null">
+                #{legalName,jdbcType=VARCHAR},
+            </if>
+            <if test="regProv != null">
+                #{regProv,jdbcType=BIGINT},
+            </if>
+            <if test="regCity != null">
+                #{regCity,jdbcType=BIGINT},
+            </if>
+            <if test="regArea != null">
+                #{regArea,jdbcType=BIGINT},
+            </if>
+            <if test="taxProv != null">
+                #{taxProv,jdbcType=VARCHAR},
+            </if>
+            <if test="businessAddress != null">
+                #{businessAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="djCompanyType != null">
+                #{djCompanyType,jdbcType=VARCHAR},
+            </if>
+            <if test="belongIndustry != null">
+                #{belongIndustry,jdbcType=VARCHAR},
+            </if>
+            <if test="jrdCode != null">
+                #{jrdCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taxQuali != null">
+                #{taxQuali,jdbcType=CHAR},
+            </if>
+            <if test="needSeal != null">
+                #{needSeal,jdbcType=CHAR},
+            </if>
+            <if test="sealId != null">
+                #{sealId,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="tgType != null">
+                #{tgType,jdbcType=CHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=CHAR},
+            </if>
+            <if test="backup != null">
+                #{backup,jdbcType=CHAR},
+            </if>
+
+            <if test="useSelfinfo != null">
+                #{useSelfinfo,jdbcType=CHAR},
+            </if>
+            <if test="exportQualify != null">
+                #{exportQualify,jdbcType=CHAR},
+            </if>
+            <if test="contactNumber != null">
+                #{contactNumber,jdbcType=CHAR},
+            </if>
+            <if test="addressee != null">
+                #{addressee,jdbcType=CHAR},
+            </if>
+            <if test="moilingAddress != null">
+                #{moilingAddress,jdbcType=CHAR},
+            </if>
+            <if test="isProof != null">
+                #{isProof,jdbcType=CHAR},
+            </if>
+            <if test="isAuthe != null">
+                #{isAuthe,jdbcType=CHAR},
+            </if>
+            <if test="isFetch != null">
+                #{isFetch,jdbcType=CHAR},
+            </if>
+            <if test="deviceSn != null">
+                #{deviceSn,jdbcType=VARCHAR},
+            </if>
+            <if test="devicePassword != null">
+                #{devicePassword,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceKey != null">
+                #{deviceKey,jdbcType=VARCHAR},
+            </if>
+            <if test="registerAddress != null">
+                #{registerAddress,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

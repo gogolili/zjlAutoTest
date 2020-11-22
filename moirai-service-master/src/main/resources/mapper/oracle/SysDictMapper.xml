@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.SysDictMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.sys.SysDict">
+        <id column="ID" jdbcType="BIGINT" property="id"/>
+        <result column="DICT_TYPE" jdbcType="VARCHAR" property="dictType"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="DICT_TYPENAME" jdbcType="VARCHAR" property="dictTypeName"/>
+        <result column="USE_TYPE" jdbcType="VARCHAR" property="useType"/>
+    </resultMap>
+    <resultMap id="DetailResultMap" extends="BaseResultMap" type="com.baiwang.moirai.model.sys.SysDict">
+        <id column="DICT_DETAIL_ID" jdbcType="BIGINT" property="dictDetailId"/>
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="DICT_CODE" jdbcType="VARCHAR" property="dictCode"/>
+        <result column="DICT_NAME" jdbcType="VARCHAR" property="dictName"/>
+        <result column="ORDER_INDEX" jdbcType="INTEGER" property="orderIndex"/>
+        <result column="USE_FLAG" jdbcType="VARCHAR" property="useFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, DICT_CODE, DICT_NAME, DICT_TYPE, ORDER_INDEX, REMARKS
+  </sql>
+
+    <sql id="Other_Column_List">
+          dict.ID, dict.DICT_TYPE, dict.DICT_TYPENAME, dict.USE_TYPE,dict.REMARKS,
+          detail.DICT_DETAIL_ID,detail.DICT_CODE,detail.DICT_NAME,detail.ORDER_INDEX,detail.USE_FLAG
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dict
+        where ID = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 旧版 只有该sql暴露出去-->
+    <select id="selectWholeDictInfo" parameterType="com.baiwang.moirai.model.sys.SysDict" resultMap="DetailResultMap">
+        select
+        <include refid="Other_Column_List"/>
+        from sys_dict dict LEFT JOIN sys_dict_detail detail ON dict.ID = detail.ID
+        where 1=1
+        <if test="dictCode != null">
+            AND detail.DICT_CODE = #{dictCode,jdbcType=VARCHAR}
+        </if>
+        <if test="dictName != null">
+            AND detail.DICT_NAME = #{dictName,jdbcType=VARCHAR}
+        </if>
+        <if test="orderIndex != null">
+            AND detail.ORDER_INDEX = #{orderIndex,jdbcType=INTEGER}
+        </if>
+        <if test="remarks != null">
+            AND dict.REMARKS = #{remarks,jdbcType=VARCHAR}
+        </if>
+        <if test="dictType != null">
+            AND dict.DICT_TYPE = #{dictType,jdbcType=VARCHAR}
+        </if>
+        <if test="id != null">
+            AND  dict.ID = #{id,jdbcType=BIGINT}
+        </if>
+        <if test="dictTypeName != null">
+            AND  dict.DICT_TYPENAME = #{dictTypeName,jdbcType=VARCHAR}
+        </if>
+        <if test="useType != null">
+            AND  dict.USE_TYPE = #{useType,jdbcType=VARCHAR}
+        </if>
+        and detail.use_flag = 'Y'
+        order by detail.ORDER_INDEX
+    </select>
+
+    <!-- 旧版 只有该sql暴露出去-->
+    <select id="getSysDictBatch" parameterType="com.baiwang.moirai.model.sys.SysDict" resultMap="DetailResultMap">
+        select
+        <include refid="Other_Column_List"/>
+        from sys_dict dict LEFT JOIN sys_dict_detail detail ON dict.ID = detail.ID
+        where dict.DICT_TYPE in
+        <foreach collection="list" item="dictType" open="(" separator="," close=")">
+            #{dictType,jdbcType=VARCHAR}
+        </foreach>
+        and detail.use_flag = 'Y'
+        order by dict.DICT_TYPE, detail.ORDER_INDEX
+    </select>
+
+    <select id="selectByBean" parameterType="com.baiwang.moirai.model.sys.SysDictCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dict
+        where 1=1
+        <if test="dictType != null and dictType !=''">
+            AND DICT_TYPE LIKE CONCAT(CONCAT('%',#{dictType, jdbcType=VARCHAR}),'%')
+        </if>
+        <if test="dictTypeName != null and dictTypeName !=''">
+            AND  DICT_TYPENAME LIKE CONCAT(CONCAT('%',#{dictTypeName, jdbcType=VARCHAR}),'%')
+        </if>
+        <if test="useType != null and useType !=''">
+            AND  USE_TYPE = #{useType,jdbcType=VARCHAR}
+        </if>
+        <if test="remarks != null and remarks != ''">
+            AND remarks = #{remarks,jdbcType=VARCHAR}
+        </if>
+        order by ID desc
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_dict
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="insert" parameterType="com.baiwang.moirai.model.sys.SysDict">
+    insert into sys_dict (
+        ID, DICT_TYPE, DICT_TYPENAME,REMARKS,USE_TYPE
+      )
+    values (#{id,jdbcType=BIGINT}, #{dictType,jdbcType=VARCHAR},
+       #{dictTypeName,jdbcType=VARCHAR},#{remarks,jdbcType=VARCHAR},#{useType,jdbcType=VARCHAR}
+      )
+  </insert>
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.sys.SysDict">
+        insert into sys_dict
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="dictType != null">
+                DICT_TYPE,
+            </if>
+            <if test="dictTypeName != null">
+                DICT_TYPENAME,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="useType != null">
+                USE_TYPE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dictType != null">
+                #{dictType,jdbcType=VARCHAR},
+            </if>
+            <if test="dictTypeName != null">
+                #{dictTypeName,jdbcType=VARCHAR},
+            </if>
+            <if test="dictType != null">
+                #{dictType,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="useType != null">
+                #{useType,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.sys.SysDict">
+        update sys_dict
+        <set>
+            <if test="dictType != null">
+                DICT_TYPE = #{dictType,jdbcType=VARCHAR},
+            </if>
+            <if test="dictTypeName != null">
+                DICT_TYPENAME = #{dictTypeName,jdbcType=VARCHAR},
+            </if>
+            <if test="useType != null">
+                USE_TYPE = #{useType,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.baiwang.moirai.model.sys.SysDict">
+    update sys_dict
+    set DICT_TYPE = #{dictType,jdbcType=VARCHAR},
+      DICT_TYPENAME = #{dictTypeName,jdbcType=VARCHAR},
+      USE_TYPE = #{useType,jdbcType=VARCHAR},
+      REMARKS = #{remarks,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

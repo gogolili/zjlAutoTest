@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiUserMemberMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.user.MoiraiUserMember">
+        <id column="MEMBER_ID" jdbcType="BIGINT" property="memberId"/>
+        <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId"/>
+        <result column="ORG_ID" jdbcType="BIGINT" property="orgId"/>
+        <result column="USER_ID" jdbcType="BIGINT" property="userId"/>
+        <result column="BIND_USER_ID" jdbcType="BIGINT" property="bindUserId"/>
+        <result column="DEFAULT_ORG_FLAG" jdbcType="VARCHAR" property="defaultOrgFlag"/>
+        <result column="DEFAULT_VALIDATION_FLAG" jdbcType="VARCHAR" property="defaultValidationFlag"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="ORDER_NUM" jdbcType="INTEGER" property="orderNum"/>
+        <result column="DEL_FLAG" jdbcType="VARCHAR" property="delFlag"/>
+        <result column="UPDATE_USER" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <resultMap id="NewResultMap" type="com.baiwang.moirai.model.user.MoiraiUserMemberCondition">
+        <id column="MEMBER_ID" jdbcType="BIGINT" property="memberId"/>
+        <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId"/>
+        <result column="ORG_ID" jdbcType="BIGINT" property="orgId"/>
+        <result column="USER_ID" jdbcType="BIGINT" property="userId"/>
+        <result column="BIND_USER_ID" jdbcType="BIGINT" property="bindUserId"/>
+        <result column="DEFAULT_ORG_FLAG" jdbcType="VARCHAR" property="defaultOrgFlag"/>
+        <result column="DEFAULT_VALIDATION_FLAG" jdbcType="VARCHAR" property="defaultValidationFlag"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="ORDER_NUM" jdbcType="INTEGER" property="orderNum"/>
+        <result column="DEL_FLAG" jdbcType="VARCHAR" property="delFlag"/>
+        <result column="UPDATE_USER" jdbcType="VARCHAR" property="updateUser"/>
+
+        <result column="TENANT_NAME" jdbcType="VARCHAR" property="tenantName"/>
+        <result column="TAX_CODE" jdbcType="VARCHAR" property="taxCode"/>
+        <result column="USER_ACCOUNT" jdbcType="VARCHAR" property="userAccount"/>
+        <result column="USER_EMAIL" jdbcType="VARCHAR" property="userEmail"/>
+        <result column="DUAL_FACTOR" jdbcType="VARCHAR" property="dualFactor"/>
+        <result column="USE_FLAG" jdbcType="VARCHAR" property="tUseFlag"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    MEMBER_ID, TENANT_ID, ORG_ID, USER_ID, BIND_USER_ID,
+    DEFAULT_ORG_FLAG, DEFAULT_VALIDATION_FLAG, CREATE_TIME, UPDATE_TIME, ORDER_NUM, DEL_FLAG,
+    UPDATE_USER
+    </sql>
+
+    <select id="selectLoginOrFactor" parameterType="com.baiwang.moirai.model.user.MoiraiUserMember"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user_member where DEL_FLAG = 'N'
+        and USER_ID = #{userId,jdbcType=BIGINT} and (DEFAULT_ORG_FLAG = #{defaultOrgFlag,jdbcType=VARCHAR} OR DEFAULT_VALIDATION_FLAG = #{defaultValidationFlag,jdbcType=VARCHAR})
+    </select>
+
+    <select id="selectByBean" parameterType="com.baiwang.moirai.model.user.MoiraiUserMemberCondition"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_user_member where DEL_FLAG = 'N'
+        <if test="memberId != null and memberId !=''">AND MEMBER_ID = #{memberId,jdbcType=BIGINT}</if>
+        <if test="tenantId != null and tenantId !=''">AND TENANT_ID = #{tenantId,jdbcType=BIGINT}</if>
+        <if test="orgId != null and orgId !=''">AND ORG_ID = #{orgId,jdbcType=BIGINT}</if>
+        <if test="userId != null and userId !=''">AND USER_ID = #{userId,jdbcType=BIGINT}</if>
+        <if test="bindUserId != null and bindUserId !=''">AND BIND_USER_ID = #{bindUserId,jdbcType=BIGINT}</if>
+        <if test="defaultOrgFlag != null and defaultOrgFlag !=''">AND DEFAULT_ORG_FLAG = #{defaultOrgFlag,jdbcType=VARCHAR}
+        </if>
+        <if test="defaultValidationFlag != null and defaultValidationFlag !=''">
+            AND DEFAULT_VALIDATION_FLAG = #{defaultValidationFlag,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime != null">
+            AND CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateTime != null">
+            AND UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="orderNum != null and orderNum != ''">
+            AND ORDER_NUM = #{orderNum,jdbcType=INTEGER}
+        </if>
+        <if test="updateUser != null and updateUser != ''">
+            AND UPDATE_USER = #{updateUser,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectByUnion" parameterType="com.baiwang.moirai.model.user.MoiraiUserMemberCondition"
+            resultMap="NewResultMap">
+        SELECT member.*,tenant.tenant_name as tenant_name,tenant.dual_factor as dual_factor,tenant.USE_FLAG AS use_flag
+        FROM moirai_user_member member
+        LEFT JOIN moirai_tenant tenant
+        ON member.TENANT_ID = tenant.tenant_id
+        WHERE member.USER_ID = #{userId,jdbcType=BIGINT} and member.DEL_FLAG = 'N'
+        <if test="tenantName != null and tenantName !=''">
+            and tenant.tenant_name LIKE CONCAT(#{tenantName, jdbcType=VARCHAR},'%')
+        </if>
+        order by tenant.tenant_name
+    </select>
+
+    <!--插入用户-->
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.user.MoiraiUserMember">
+        insert into moirai_user_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="bindUserId != null">
+                bind_user_id,
+            </if>
+            <if test="defaultOrgFlag != null">
+                default_org_flag,
+            </if>
+            <if test="defaultValidationFlag != null and defaultValidationFlag !=''">
+                default_validation_flag,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="orderNum != null and orderNum != ''">
+                order_num,
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag,
+            </if>
+            <if test="updateUser != null and updateUser != ''">
+                update_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">
+                #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="bindUserId != null">
+                #{bindUserId,jdbcType=BIGINT},
+            </if>
+            <if test="defaultOrgFlag != null">
+                #{defaultOrgFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultValidationFlag != null and defaultValidationFlag !=''">
+                #{defaultValidationFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderNum != null and orderNum != ''">
+                #{orderNum,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUser != null and updateUser != ''">
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.user.MoiraiUserMember">
+        update moirai_user_member
+        <set>
+            <if test="tenantId != null">
+                TENANT_ID = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                USER_ID = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="bindUserId != null">
+                BIND_USER_ID = #{bindUserId,jdbcType=BIGINT},
+            </if>
+            <if test="defaultOrgFlag != null">
+                DEFAULT_ORG_FLAG = #{defaultOrgFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultValidationFlag != null">
+                DEFAULT_VALIDATION_FLAG = #{defaultValidationFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderNum != null">
+                ORDER_NUM = #{orderNum,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                DEL_FLAG = #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER = #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where MEMBER_ID = #{memberId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateMoreMember" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE moirai_user_member
+            <set>
+                <if test="item.defaultOrgFlag != null">
+                    DEFAULT_ORG_FLAG=#{item.defaultOrgFlag},
+                </if>
+                <if test="item.defaultValidationFlag != null">
+                    DEFAULT_VALIDATION_FLAG=#{item.defaultValidationFlag},
+                </if>
+                <if test="item.updateTime != null">
+                    UPDATE_TIME=#{item.updateTime},
+                </if>
+            </set>
+            where member_id = #{item.memberId}
+        </foreach>
+    </update>
+
+    <select id="selectBindFactorTenant" parameterType="com.baiwang.moirai.model.user.MoiraiUserMember"
+            resultMap="BaseResultMap">
+        select min(member.TENANT_ID) as tenant_id, min(member.BIND_USER_ID) as bind_user_id
+        from moirai_user_member member
+        left join moirai_tenant tenant
+        on member.TENANT_ID = tenant.tenant_id
+        where member.USER_ID = #{userId,jdbcType=BIGINT} and member.DEL_FLAG = 'N'
+        and (tenant.dual_factor = '1' or tenant.dual_factor = '2')
+        group by member.USER_ID
+    </select>
+</mapper>

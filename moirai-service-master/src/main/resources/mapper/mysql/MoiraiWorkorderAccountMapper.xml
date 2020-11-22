@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiWorkorderAccountMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.workorder.MoiraiWorkorderAccount">
+        <id column="id" property="id"/>
+        <result column="tenant_name" jdbcType="VARCHAR" property="tenantName"/>
+        <result column="tax_code" jdbcType="VARCHAR" property="taxCode"/>
+        <result column="tenant_file" jdbcType="VARCHAR" property="tenantFile"/>
+        <result column="prov_file" jdbcType="VARCHAR" property="provFile"/>
+        <result column="contact_name" jdbcType="VARCHAR" property="contactName"/>
+        <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone"/>
+        <result column="contact_email" jdbcType="VARCHAR" property="contactEmail"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="audit_status" jdbcType="CHAR" property="auditStatus"/>
+        <result column="audit_msg" jdbcType="VARCHAR" property="auditMsg"/>
+        <result column="audit_user" jdbcType="VARCHAR" property="auditUser"/>
+        <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, tenant_name, tax_code, tenant_file, prov_file, contact_name, contact_phone, contact_email, 
+    description, audit_status, audit_msg, audit_user, audit_time, create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_workorder_account
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_workorder_account
+    where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.workorder.MoiraiWorkorderAccount">
+        insert into moirai_workorder_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="tenantName != null">
+                tenant_name,
+            </if>
+            <if test="taxCode != null">
+                tax_code,
+            </if>
+            <if test="tenantFile != null">
+                tenant_file,
+            </if>
+            <if test="provFile != null">
+                prov_file,
+            </if>
+            <if test="contactName != null">
+                contact_name,
+            </if>
+            <if test="contactPhone != null">
+                contact_phone,
+            </if>
+            <if test="contactEmail != null">
+                contact_email,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="auditStatus != null">
+                audit_status,
+            </if>
+            <if test="auditMsg != null">
+                audit_msg,
+            </if>
+            <if test="auditUser != null">
+                audit_user,
+            </if>
+            <if test="auditTime != null">
+                audit_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="tenantName != null">
+                #{tenantName,jdbcType=VARCHAR},
+            </if>
+            <if test="taxCode != null">
+                #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantFile != null">
+                #{tenantFile,jdbcType=VARCHAR},
+            </if>
+            <if test="provFile != null">
+                #{provFile,jdbcType=VARCHAR},
+            </if>
+            <if test="contactName != null">
+                #{contactName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="contactEmail != null">
+                #{contactEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="auditStatus != null">
+                #{auditStatus,jdbcType=CHAR},
+            </if>
+            <if test="auditMsg != null">
+                #{auditMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="auditUser != null">
+                #{auditUser,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime != null">
+                #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.workorder.MoiraiWorkorderAccount">
+        update moirai_workorder_account
+        <set>
+            <if test="tenantName != null">
+                tenant_name = #{tenantName,jdbcType=VARCHAR},
+            </if>
+            <if test="taxCode != null">
+                tax_code = #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantFile != null">
+                tenant_file = #{tenantFile,jdbcType=VARCHAR},
+            </if>
+            <if test="provFile != null">
+                prov_file = #{provFile,jdbcType=VARCHAR},
+            </if>
+            <if test="contactName != null">
+                contact_name = #{contactName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                contact_phone = #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="contactEmail != null">
+                contact_email = #{contactEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="auditStatus != null">
+                audit_status = #{auditStatus,jdbcType=CHAR},
+            </if>
+            <if test="auditMsg != null">
+                audit_msg = #{auditMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="auditUser != null">
+                audit_user = #{auditUser,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime != null">
+                audit_time = #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="queryList" resultMap="BaseResultMap"
+            parameterType="com.baiwang.moirai.model.workorder.MoiraiWorkorderAccountCondition">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_workorder_account
+        <where>
+            <if test="tenantName != null and tenantName != ''">
+                and tenant_name = #{tenantName, jdbcType=VARCHAR}
+            </if>
+            <if test="taxCode != null and taxCode != ''">
+                and tax_code = #{taxCode, jdbcType=VARCHAR}
+            </if>
+            <if test="contactPhone != null and contactPhone != ''">
+                and contact_phone = #{contactPhone, jdbcType=VARCHAR}
+            </if>
+            <if test="auditStatus != null and auditStatus != ''">
+                and audit_status = #{auditStatus, jdbcType=VARCHAR}
+            </if>
+            <if test="applyBeginTime != null and applyBeginTime != ''">
+                and create_time &gt;= #{applyBeginTime, jdbcType=TIMESTAMP}
+            </if>
+            <if test="applyrEndTime != null and applyrEndTime != ''">
+                and create_time &lt;= date_add(#{applyrEndTime, jdbcType=TIMESTAMP}, interval 1 day)
+            </if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

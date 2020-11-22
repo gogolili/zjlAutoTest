@@ -1,0 +1,8 @@
+pages:
+    - page:
+       pageName: pageObject.BaiduPage
+       value: ""
+       desc: "Baidu"
+       locators: 
+          - {type: "name",timeout: "5",value: "wd",desc: "keyword",name: "keyword"}
+          - {type: "id",timeout: "5",value: "su",desc: "submit",name: "submit"}

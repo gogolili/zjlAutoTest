@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.cloud.dao.impl.JxDkqkMapper">
+
+    <resultMap type="com.baiwang.cloud.common.model.JxDkqk" id="JxDkqk">
+        <result property="jxDkqkId" column="JX_DKQK_ID" jdbcType="BIGINT"/>
+        <result property="fpdm" column="FPDM" jdbcType="VARCHAR"/>
+        <result property="fphm" column="FPHM" jdbcType="VARCHAR"/>
+        <result property="fpzl" column="FPZL" jdbcType="VARCHAR"/>
+        <result property="fpkjsj" column="FPKJSJ" jdbcType="VARCHAR"/>
+        <result property="fpkjnf" column="FPKJNF" jdbcType="VARCHAR"/>
+        <result property="fpkjyf" column="FPKJYF" jdbcType="VARCHAR"/>
+        <result property="xfNssbh" column="XF_NSSBH" jdbcType="VARCHAR"/>
+        <result property="xfKhmc" column="XF_KHMC" jdbcType="VARCHAR"/>
+        <result property="hjje" column="HJJE" jdbcType="NUMERIC"/>
+        <result property="hjse" column="HJSE" jdbcType="NUMERIC"/>
+        <result property="jshj" column="JSHJ" jdbcType="NUMERIC"/>
+        <result property="sfgx" column="SFGX" jdbcType="VARCHAR"/>
+        <result property="gxsj" column="GXSJ" jdbcType="VARCHAR"/>
+        <result property="gxnf" column="GXNF" jdbcType="INTEGER"/>
+        <result property="gxyf" column="GXYF" jdbcType="INTEGER"/>
+        <result property="fpzt" column="FPZT" jdbcType="VARCHAR"/>
+        <result property="czzt" column="CZZT" jdbcType="VARCHAR"/>
+        <result property="sfsmrz" column="SFSMRZ" jdbcType="VARCHAR"/>
+        <result property="sfyrz" column="SFYRZ" jdbcType="VARCHAR"/>
+        <result property="rzrq" column="RZRQ" jdbcType="VARCHAR"/>
+        <result property="rznf" column="RZNF" jdbcType="VARCHAR"/>
+        <result property="rzyf" column="RZYF" jdbcType="VARCHAR"/>
+        <result property="gfNssbh" column="GF_NSSBH" jdbcType="VARCHAR"/>
+        <result property="jxFpxqZxxId" column="JX_FPXQ_ZXX_ID" jdbcType="INTEGER"/>
+        <result property="sfyq" column="SFYQ" jdbcType="VARCHAR"/>
+        <result property="yqrq" column="YQRQ" jdbcType="VARCHAR"/>
+        <result property="dqbm" column="DQBM" jdbcType="VARCHAR"/>
+        <result property="zxqqsj" column="ZXQQSJ" jdbcType="VARCHAR"/>
+        <result property="zhBm" column="ZH_BM" jdbcType="INTEGER"/>
+        <result property="zzBm" column="ZZ_BM" jdbcType="INTEGER"/>
+        <result property="smsj" column="smsj" jdbcType="VARCHAR"/>
+        <result property="updated" column="UPDATED" jdbcType="VARCHAR"/>
+        <result property="skssq" column="skssq" jdbcType="VARCHAR"/>
+        <result property="taskNo" column="TASK_NO" jdbcType="VARCHAR"/>
+        <result property="sfdbts" column="SFDBTS" jdbcType="VARCHAR"/>
+        <result property="rzlx" column="RZLX" jdbcType="VARCHAR"/>
+        <result property="jym" column="JYM" jdbcType="VARCHAR"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="glzt" column="GLZT" jdbcType="VARCHAR"/>
+        <result property="xxly" column="XXLY" jdbcType="VARCHAR"/>
+        <result property="yxse" column="YXSE" jdbcType="NUMERIC"/>
+        <result property="yqkgxbz" column="YQKGXBZ" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询抵扣情况表-->
+    <select id="queryJxDkqkByConditions" resultMap="JxDkqk">
+        select
+          JX_DKQK_ID, FPDM, FPHM, FPZL, FPKJSJ, FPKJNF, FPKJYF, XF_NSSBH, XF_KHMC, HJJE, HJSE, JSHJ, SFGX, GXSJ, GXNF, GXYF, FPZT, CZZT, SFSMRZ, SFYRZ, RZRQ, RZNF, RZYF, GF_NSSBH, JX_FPXQ_ZXX_ID, SFYQ, YQRQ, DQBM, ZXQQSJ, ZH_BM, ZZ_BM, smsj,
+        if(UPDATED=0,'未取数','已取数')  as 'UPDATED',
+        skssq, TASK_NO, SFDBTS, RZLX, JYM, CREATE_TIME, UPDATE_TIME, GLZT, XXLY, YXSE, YQKGXBZ
+        from bwcloud.jx_dkqk
+        WHERE 1=1
+        <if test="fpdm != null and fpdm != ''">
+            AND FPDM = #{fpdm}
+        </if>
+        <if test="fphm != null and fphm != ''">
+            AND FPHM = #{fphm}
+        </if>
+        <if test="fpzl != null and fpzl != ''">
+            AND FPZL = #{fpzl}
+        </if>
+    </select>
+
+
+
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="jxDkqkId" useGeneratedKeys="true">
+        insert into bwcloud.jx_dkqk(FPDM, FPHM, FPZL, FPKJSJ, FPKJNF, FPKJYF, XF_NSSBH, XF_KHMC, HJJE, HJSE, JSHJ, SFGX, GXSJ, GXNF, GXYF, FPZT, CZZT, SFSMRZ, SFYRZ, RZRQ, RZNF, RZYF, GF_NSSBH, JX_FPXQ_ZXX_ID, SFYQ, YQRQ, DQBM, ZXQQSJ, ZH_BM, ZZ_BM, smsj, UPDATED, skssq, TASK_NO, SFDBTS, RZLX, JYM, CREATE_TIME, UPDATE_TIME, GLZT, XXLY, YXSE, YQKGXBZ)
+        values (#{fpdm}, #{fphm}, #{fpzl}, #{fpkjsj}, #{fpkjnf}, #{fpkjyf}, #{xfNssbh}, #{xfKhmc}, #{hjje}, #{hjse}, #{jshj}, #{sfgx}, #{gxsj}, #{gxnf}, #{gxyf}, #{fpzt}, #{czzt}, #{sfsmrz}, #{sfyrz}, #{rzrq}, #{rznf}, #{rzyf}, #{gfNssbh}, #{jxFpxqZxxId}, #{sfyq}, #{yqrq}, #{dqbm}, #{zxqqsj}, #{zhBm}, #{zzBm}, #{smsj}, #{updated}, #{skssq}, #{taskNo}, #{sfdbts}, #{rzlx}, #{jym}, #{createTime}, #{updateTime}, #{glzt}, #{xxly}, #{yxse}, #{yqkgxbz})
+    </insert>
+
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update bwcloud.jx_dkqk
+        <set>
+            <if test="fpzl != null and fpzl != ''">
+                FPZL = #{fpzl},
+            </if>
+            <if test="fpkjsj != null and fpkjsj != ''">
+                FPKJSJ = #{fpkjsj},
+            </if>
+            <if test="fpkjnf != null and fpkjnf != ''">
+                FPKJNF = #{fpkjnf},
+            </if>
+            <if test="fpkjyf != null and fpkjyf != ''">
+                FPKJYF = #{fpkjyf},
+            </if>
+            <if test="xfNssbh != null and xfNssbh != ''">
+                XF_NSSBH = #{xfNssbh},
+            </if>
+            <if test="xfKhmc != null and xfKhmc != ''">
+                XF_KHMC = #{xfKhmc},
+            </if>
+            <if test="hjje != null">
+                HJJE = #{hjje},
+            </if>
+            <if test="hjse != null">
+                HJSE = #{hjse},
+            </if>
+            <if test="jshj != null">
+                JSHJ = #{jshj},
+            </if>
+            <if test="sfgx != null and sfgx != ''">
+                SFGX = #{sfgx},
+            </if>
+            <if test="gxsj != null and gxsj != ''">
+                GXSJ = #{gxsj},
+            </if>
+            <if test="gxnf != null">
+                GXNF = #{gxnf},
+            </if>
+            <if test="gxyf != null">
+                GXYF = #{gxyf},
+            </if>
+            <if test="fpzt != null and fpzt != ''">
+                FPZT = #{fpzt},
+            </if>
+            <if test="czzt != null and czzt != ''">
+                CZZT = #{czzt},
+            </if>
+            <if test="sfsmrz != null and sfsmrz != ''">
+                SFSMRZ = #{sfsmrz},
+            </if>
+            <if test="sfyrz != null and sfyrz != ''">
+                SFYRZ = #{sfyrz},
+            </if>
+            <if test="rzrq != null and rzrq != ''">
+                RZRQ = #{rzrq},
+            </if>
+            <if test="rznf != null and rznf != ''">
+                RZNF = #{rznf},
+            </if>
+            <if test="rzyf != null and rzyf != ''">
+                RZYF = #{rzyf},
+            </if>
+            <if test="gfNssbh != null and gfNssbh != ''">
+                GF_NSSBH = #{gfNssbh},
+            </if>
+            <if test="jxFpxqZxxId != null">
+                JX_FPXQ_ZXX_ID = #{jxFpxqZxxId},
+            </if>
+            <if test="sfyq != null and sfyq != ''">
+                SFYQ = #{sfyq},
+            </if>
+            <if test="yqrq != null and yqrq != ''">
+                YQRQ = #{yqrq},
+            </if>
+            <if test="dqbm != null and dqbm != ''">
+                DQBM = #{dqbm},
+            </if>
+            <if test="zxqqsj != null and zxqqsj != ''">
+                ZXQQSJ = #{zxqqsj},
+            </if>
+            <if test="zhBm != null">
+                ZH_BM = #{zhBm},
+            </if>
+            <if test="zzBm != null">
+                ZZ_BM = #{zzBm},
+            </if>
+            <if test="smsj != null and smsj != ''">
+                smsj = #{smsj},
+            </if>
+            <if test="updated != null and updated != ''">
+                UPDATED = #{updated},
+            </if>
+            <if test="skssq != null and skssq != ''">
+                skssq = #{skssq},
+            </if>
+            <if test="taskNo != null and taskNo != ''">
+                TASK_NO = #{taskNo},
+            </if>
+            <if test="sfdbts != null and sfdbts != ''">
+                SFDBTS = #{sfdbts},
+            </if>
+            <if test="rzlx != null and rzlx != ''">
+                RZLX = #{rzlx},
+            </if>
+            <if test="jym != null and jym != ''">
+                JYM = #{jym},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime},
+            </if>
+            <if test="glzt != null and glzt != ''">
+                GLZT = #{glzt},
+            </if>
+            <if test="xxly != null and xxly != ''">
+                XXLY = #{xxly},
+            </if>
+            <if test="yxse != null">
+                YXSE = #{yxse},
+            </if>
+            <if test="yqkgxbz != null and yqkgxbz != ''">
+                YQKGXBZ = #{yqkgxbz},
+            </if>
+        </set>
+        where JX_DKQK_ID = #{jxDkqkId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteJxDkqk" parameterType="com.baiwang.cloud.common.model.JxDkqk">
+        delete from bwcloud.jx_dkqk
+        <where>
+            JX_DKQK_ID = #{jxDkqkId}
+        </where>
+    </delete>
+
+</mapper>

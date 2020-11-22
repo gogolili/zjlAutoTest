@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.BWCloudOperationLogMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.log.BWCloudOperationLog">
+        <id column="ID" jdbcType="CHAR" property="id"/>
+        <result column="TRACE_ID" jdbcType="CHAR" property="traceId"/>
+        <result column="PARENT_SPAN_ID" jdbcType="CHAR" property="parentSpanId"/>
+        <result column="SPAN_ID" jdbcType="CHAR" property="spanId"/>
+        <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId"/>
+        <result column="ORG_ID" jdbcType="BIGINT" property="orgId"/>
+        <result column="ORG_NAME" jdbcType="VARCHAR" property="orgName"/>
+        <result column="TAX_CODE" jdbcType="VARCHAR" property="taxCode"/>
+        <result column="LOG_TYPE" jdbcType="CHAR" property="logType"/>
+        <result column="MODEL_NAME" jdbcType="VARCHAR" property="modelName"/>
+        <result column="ACTION" jdbcType="VARCHAR" property="action"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="USER_ID" jdbcType="VARCHAR" property="userId"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="CLEAR_DATE" jdbcType="VARCHAR" property="clearDate"/>
+        <result column="PARAM" jdbcType="VARCHAR" property="param"/>
+        <result column="RETURN_VALUE" jdbcType="VARCHAR" property="returnValue"/>
+        <result column="SUCCESS" jdbcType="VARCHAR" property="success"/>
+        <result column="METHOD" jdbcType="VARCHAR" property="method"/>
+        <result column="REQUEST_TYPE" jdbcType="CHAR" property="requestType"/>
+        <result column="BROWSER_NAME" jdbcType="VARCHAR" property="browserName"/>
+        <result column="CODE" jdbcType="VARCHAR" property="code"/>
+        <result column="MSG" jdbcType="VARCHAR" property="msg"/>
+        <result column="IP" jdbcType="VARCHAR" property="ip"/>
+        <result column="URL" jdbcType="VARCHAR" property="url"/>
+        <result column="LOST_TIME" jdbcType="BIGINT" property="lostTime"/>
+        <result column="BUSINESS_CODE" jdbcType="VARCHAR" property="businessCode"/>
+        <result column="STACK_TRACE" jdbcType="VARCHAR" property="stackTrace"/>
+        <result column="EXTERNAL_INFO" jdbcType="VARCHAR" property="externalInfo"/>
+        <result column="OPT_USER_ACCOUNT" jdbcType="VARCHAR" property="optUserAccount"/>
+        <result column="OPT_USER_NAME" jdbcType="VARCHAR" property="optUserName"/>
+        <result column="CREATOR" jdbcType="VARCHAR" property="creator"/>
+        <result column="CTIME" jdbcType="TIMESTAMP" property="ctime"/>
+        <result column="DEL" jdbcType="INTEGER" property="del"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, TRACE_ID, PARENT_SPAN_ID, SPAN_ID, TENANT_ID, ORG_ID, ORG_NAME, TAX_CODE, LOG_TYPE,
+    MODEL_NAME, ACTION, DESCRIPTION, USER_ID, CREATE_TIME, CLEAR_DATE, PARAM, RETURN_VALUE,
+    SUCCESS, METHOD, REQUEST_TYPE, BROWSER_NAME, CODE, MSG, IP, URL, LOST_TIME, BUSINESS_CODE,
+    STACK_TRACE, EXTERNAL_INFO, OPT_USER_ACCOUNT, OPT_USER_NAME, CREATOR, CTIME, DEL
+    </sql>
+    <sql id="My_Base_Column_List">
+    ID, MODEL_NAME, ACTION, CREATE_TIME, URL, IP, OPT_USER_ACCOUNT, OPT_USER_NAME, USER_ID, SUCCESS,
+    BROWSER_NAME, PARAM, RETURN_VALUE, MSG, LOST_TIME, TENANT_ID, ORG_ID, ORG_NAME, TAX_CODE
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="My_Base_Column_List"/>
+        from bwcloud_operation_log
+        where ID = #{id,jdbcType=CHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from bwcloud_operation_log
+    where ID = #{id,jdbcType=CHAR}
+    </delete>
+    <insert id="insert" parameterType="com.baiwang.moirai.model.log.BWCloudOperationLog">
+    insert into bwcloud_operation_log (ID, TRACE_ID, PARENT_SPAN_ID,
+      SPAN_ID, TENANT_ID, ORG_ID,
+      ORG_NAME, TAX_CODE, LOG_TYPE,
+      MODEL_NAME, ACTION, DESCRIPTION,
+      USER_ID, CREATE_TIME, CLEAR_DATE,
+      PARAM, RETURN_VALUE, SUCCESS,
+      METHOD, REQUEST_TYPE, BROWSER_NAME,
+      CODE, MSG, IP, URL,
+      LOST_TIME, BUSINESS_CODE, STACK_TRACE,
+      EXTERNAL_INFO, OPT_USER_ACCOUNT, OPT_USER_NAME,
+      CREATOR, CTIME, DEL
+      )
+    values (#{id,jdbcType=CHAR}, #{traceId,jdbcType=CHAR}, #{parentSpanId,jdbcType=CHAR},
+      #{spanId,jdbcType=CHAR}, #{tenantId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT},
+      #{orgName,jdbcType=VARCHAR}, #{taxCode,jdbcType=VARCHAR}, #{logType,jdbcType=CHAR},
+      #{modelName,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+      #{userId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{clearDate,jdbcType=VARCHAR},
+      #{param,jdbcType=VARCHAR}, #{returnValue,jdbcType=VARCHAR}, #{success,jdbcType=VARCHAR},
+      #{method,jdbcType=VARCHAR}, #{requestType,jdbcType=CHAR}, #{browserName,jdbcType=VARCHAR},
+      #{code,jdbcType=VARCHAR}, #{msg,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
+      #{lostTime,jdbcType=BIGINT}, #{businessCode,jdbcType=VARCHAR}, #{stackTrace,jdbcType=VARCHAR},
+      #{externalInfo,jdbcType=VARCHAR}, #{optUserAccount,jdbcType=VARCHAR}, #{optUserName,jdbcType=VARCHAR},
+      #{creator,jdbcType=VARCHAR}, #{ctime,jdbcType=TIMESTAMP}, #{del,jdbcType=INTEGER}
+      )
+    </insert>
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.log.BWCloudOperationLog">
+        insert into bwcloud_operation_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="traceId != null">
+                TRACE_ID,
+            </if>
+            <if test="parentSpanId != null">
+                PARENT_SPAN_ID,
+            </if>
+            <if test="spanId != null">
+                SPAN_ID,
+            </if>
+            <if test="tenantId != null">
+                TENANT_ID,
+            </if>
+            <if test="orgId != null">
+                ORG_ID,
+            </if>
+            <if test="orgName != null">
+                ORG_NAME,
+            </if>
+            <if test="taxCode != null">
+                TAX_CODE,
+            </if>
+            <if test="logType != null">
+                LOG_TYPE,
+            </if>
+            <if test="modelName != null">
+                MODEL_NAME,
+            </if>
+            <if test="action != null">
+                ACTION,
+            </if>
+            <if test="description != null">
+                DESCRIPTION,
+            </if>
+            <if test="userId != null">
+                USER_ID,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="clearDate != null">
+                CLEAR_DATE,
+            </if>
+            <if test="param != null">
+                PARAM,
+            </if>
+            <if test="returnValue != null">
+                RETURN_VALUE,
+            </if>
+            <if test="success != null">
+                SUCCESS,
+            </if>
+            <if test="method != null">
+                METHOD,
+            </if>
+            <if test="requestType != null">
+                REQUEST_TYPE,
+            </if>
+            <if test="browserName != null">
+                BROWSER_NAME,
+            </if>
+            <if test="code != null">
+                CODE,
+            </if>
+            <if test="msg != null">
+                MSG,
+            </if>
+            <if test="ip != null">
+                IP,
+            </if>
+            <if test="url != null">
+                URL,
+            </if>
+            <if test="lostTime != null">
+                LOST_TIME,
+            </if>
+            <if test="businessCode != null">
+                BUSINESS_CODE,
+            </if>
+            <if test="stackTrace != null">
+                STACK_TRACE,
+            </if>
+            <if test="externalInfo != null">
+                EXTERNAL_INFO,
+            </if>
+            <if test="optUserAccount != null">
+                OPT_USER_ACCOUNT,
+            </if>
+            <if test="optUserName != null">
+                OPT_USER_NAME,
+            </if>
+            <if test="creator != null">
+                CREATOR,
+            </if>
+            <if test="ctime != null">
+                CTIME,
+            </if>
+            <if test="del != null">
+                DEL,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=CHAR},
+            </if>
+            <if test="traceId != null">
+                #{traceId,jdbcType=CHAR},
+            </if>
+            <if test="parentSpanId != null">
+                #{parentSpanId,jdbcType=CHAR},
+            </if>
+            <if test="spanId != null">
+                #{spanId,jdbcType=CHAR},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="orgName != null">
+                #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="taxCode != null">
+                #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="logType != null">
+                #{logType,jdbcType=CHAR},
+            </if>
+            <if test="modelName != null">
+                #{modelName,jdbcType=VARCHAR},
+            </if>
+            <if test="action != null">
+                #{action,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="clearDate != null">
+                #{clearDate,jdbcType=VARCHAR},
+            </if>
+            <if test="param != null">
+                #{param,jdbcType=VARCHAR},
+            </if>
+            <if test="returnValue != null">
+                #{returnValue,jdbcType=VARCHAR},
+            </if>
+            <if test="success != null">
+                #{success,jdbcType=VARCHAR},
+            </if>
+            <if test="method != null">
+                #{method,jdbcType=VARCHAR},
+            </if>
+            <if test="requestType != null">
+                #{requestType,jdbcType=CHAR},
+            </if>
+            <if test="browserName != null">
+                #{browserName,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="msg != null">
+                #{msg,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="lostTime != null">
+                #{lostTime,jdbcType=BIGINT},
+            </if>
+            <if test="businessCode != null">
+                #{businessCode,jdbcType=VARCHAR},
+            </if>
+            <if test="stackTrace != null">
+                #{stackTrace,jdbcType=VARCHAR},
+            </if>
+            <if test="externalInfo != null">
+                #{externalInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="optUserAccount != null">
+                #{optUserAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="optUserName != null">
+                #{optUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="ctime != null">
+                #{ctime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="del != null">
+                #{del,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.log.BWCloudOperationLog">
+        update bwcloud_operation_log
+        <set>
+            <if test="traceId != null">
+                TRACE_ID = #{traceId,jdbcType=CHAR},
+            </if>
+            <if test="parentSpanId != null">
+                PARENT_SPAN_ID = #{parentSpanId,jdbcType=CHAR},
+            </if>
+            <if test="spanId != null">
+                SPAN_ID = #{spanId,jdbcType=CHAR},
+            </if>
+            <if test="tenantId != null">
+                TENANT_ID = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="orgName != null">
+                ORG_NAME = #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="taxCode != null">
+                TAX_CODE = #{taxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="logType != null">
+                LOG_TYPE = #{logType,jdbcType=CHAR},
+            </if>
+            <if test="modelName != null">
+                MODEL_NAME = #{modelName,jdbcType=VARCHAR},
+            </if>
+            <if test="action != null">
+                ACTION = #{action,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                DESCRIPTION = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                USER_ID = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="clearDate != null">
+                CLEAR_DATE = #{clearDate,jdbcType=VARCHAR},
+            </if>
+            <if test="param != null">
+                PARAM = #{param,jdbcType=VARCHAR},
+            </if>
+            <if test="returnValue != null">
+                RETURN_VALUE = #{returnValue,jdbcType=VARCHAR},
+            </if>
+            <if test="success != null">
+                SUCCESS = #{success,jdbcType=VARCHAR},
+            </if>
+            <if test="method != null">
+                METHOD = #{method,jdbcType=VARCHAR},
+            </if>
+            <if test="requestType != null">
+                REQUEST_TYPE = #{requestType,jdbcType=CHAR},
+            </if>
+            <if test="browserName != null">
+                BROWSER_NAME = #{browserName,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                CODE = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="msg != null">
+                MSG = #{msg,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                IP = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                URL = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="lostTime != null">
+                LOST_TIME = #{lostTime,jdbcType=BIGINT},
+            </if>
+            <if test="businessCode != null">
+                BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+            </if>
+            <if test="stackTrace != null">
+                STACK_TRACE = #{stackTrace,jdbcType=VARCHAR},
+            </if>
+            <if test="externalInfo != null">
+                EXTERNAL_INFO = #{externalInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="optUserAccount != null">
+                OPT_USER_ACCOUNT = #{optUserAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="optUserName != null">
+                OPT_USER_NAME = #{optUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                CREATOR = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="ctime != null">
+                CTIME = #{ctime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="del != null">
+                DEL = #{del,jdbcType=INTEGER},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=CHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.baiwang.moirai.model.log.BWCloudOperationLog">
+    update bwcloud_operation_log
+    set TRACE_ID = #{traceId,jdbcType=CHAR},
+      PARENT_SPAN_ID = #{parentSpanId,jdbcType=CHAR},
+      SPAN_ID = #{spanId,jdbcType=CHAR},
+      TENANT_ID = #{tenantId,jdbcType=BIGINT},
+      ORG_ID = #{orgId,jdbcType=BIGINT},
+      ORG_NAME = #{orgName,jdbcType=VARCHAR},
+      TAX_CODE = #{taxCode,jdbcType=VARCHAR},
+      LOG_TYPE = #{logType,jdbcType=CHAR},
+      MODEL_NAME = #{modelName,jdbcType=VARCHAR},
+      ACTION = #{action,jdbcType=VARCHAR},
+      DESCRIPTION = #{description,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      CLEAR_DATE = #{clearDate,jdbcType=VARCHAR},
+      PARAM = #{param,jdbcType=VARCHAR},
+      RETURN_VALUE = #{returnValue,jdbcType=VARCHAR},
+      SUCCESS = #{success,jdbcType=VARCHAR},
+      METHOD = #{method,jdbcType=VARCHAR},
+      REQUEST_TYPE = #{requestType,jdbcType=CHAR},
+      BROWSER_NAME = #{browserName,jdbcType=VARCHAR},
+      CODE = #{code,jdbcType=VARCHAR},
+      MSG = #{msg,jdbcType=VARCHAR},
+      IP = #{ip,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR},
+      LOST_TIME = #{lostTime,jdbcType=BIGINT},
+      BUSINESS_CODE = #{businessCode,jdbcType=VARCHAR},
+      STACK_TRACE = #{stackTrace,jdbcType=VARCHAR},
+      EXTERNAL_INFO = #{externalInfo,jdbcType=VARCHAR},
+      OPT_USER_ACCOUNT = #{optUserAccount,jdbcType=VARCHAR},
+      OPT_USER_NAME = #{optUserName,jdbcType=VARCHAR},
+      CREATOR = #{creator,jdbcType=VARCHAR},
+      CTIME = #{ctime,jdbcType=TIMESTAMP},
+      DEL = #{del,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=CHAR}
+    </update>
+    <select id="selectModelName" resultType="java.lang.String">
+        select distinct MODEL_NAME from bwcloud_operation_log
+    </select>
+    <select id="selectOperationResult" resultType="java.lang.String">
+        select distinct SUCCESS from bwcloud_operation_log
+    </select>
+    <sql id="BASIC_INFO_COLUMN_LIST">
+        ID, ACTION, MODEL_NAME, USER_ID, OPT_USER_ACCOUNT, OPT_USER_NAME, ORG_ID, LOST_TIME, IP, CREATE_TIME, SUCCESS, BROWSER_NAME
+    </sql>
+    <select id="selectLogBasicInfo" parameterType="com.baiwang.moirai.model.log.BWCloudOperationLog"
+            resultMap="BaseResultMap">
+        select
+        <include refid="BASIC_INFO_COLUMN_LIST"/>
+        from bwcloud_operation_log
+        <where>
+            DEL = 1
+            <if test="tenantId != null">
+                and TENANT_ID = #{tenantId,jdbcType=VARCHAR}
+            </if>
+            <if test="taxCode != null">
+                and TAX_CODE = #{taxCode,jdbcType=VARCHAR}
+            </if>
+            <if test="orgIdList != null and orgIdList.size > 0">
+                and ORG_ID in
+                <foreach collection="orgIdList" index="index" item="item" open="(" separator="," close=")">
+                    ${item}
+                </foreach>
+            </if>
+            <if test="modelName != null">
+                and MODEL_NAME like concat(concat('%', #{modelName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="userId != null">
+                and USER_ID like concat(concat('%', #{userId,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="optUserAccount != null">
+                and OPT_USER_ACCOUNT like concat(concat('%', #{optUserAccount,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="optUserName != null">
+                and OPT_USER_NAME like concat(concat('%', #{optUserName,jdbcType=VARCHAR}), '%')
+            </if>
+            <if test="ip != null">
+                and IP like concat(concat('%', #{ip,jdbcType=CHAR}), '%')
+            </if>
+            <if test="success != null">
+                and SUCCESS = #{success,jdbcType=VARCHAR}
+            </if>
+            <if test="operationStartTime != null and operationEndTime != null">
+                and CREATE_TIME <![CDATA[ >= ]]> #{operationStartTime,jdbcType=VARCHAR}
+                and CREATE_TIME <![CDATA[ <= ]]> #{operationEndTime,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by CREATE_TIME desc
+    </select>
+    <delete id="deleteLogTimedTask" parameterType="java.lang.String">
+        delete from bwcloud_operation_log
+    where CLEAR_DATE = #{clearDate,jdbcType=VARCHAR}
+    </delete>
+    <update id="logicDeleteLogTimedTask" parameterType="java.lang.String">
+    update bwcloud_operation_log
+    set DEL = 0
+    where CLEAR_DATE = #{clearDate,jdbcType=VARCHAR}
+    </update>
+</mapper>

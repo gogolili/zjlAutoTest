@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiResourceMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.role.MoiraiResource">
+        <id column="RESOURCE_ID" jdbcType="BIGINT" property="resourceId"/>
+        <result column="RESOURCE_CODE" jdbcType="VARCHAR" property="resourceCode"/>
+        <result column="ORDER_INDEX" jdbcType="BIGINT" property="orderIndex"/>
+        <result column="RESOURCE_NAME" jdbcType="VARCHAR" property="resourceName"/>
+        <result column="RESOURCE_URL" jdbcType="VARCHAR" property="resourceUrl"/>
+        <result column="SHOW_TYPE" jdbcType="VARCHAR" property="showType"/>
+        <result column="PID" jdbcType="BIGINT" property="pid"/>
+        <result column="RESOURCE_TYPE" jdbcType="INTEGER" property="resourceType"/>
+        <result column="CREATER" jdbcType="VARCHAR" property="creater"/>
+        <result column="CREATETIME" jdbcType="BIGINT" property="createtime"/>
+        <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="MODIFY_TIME" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="DEL_FLAG" jdbcType="CHAR" property="delFlag"/>
+        <result column="USE_FLAG" jdbcType="CHAR" property="useFlag"/>
+        <result column="RESOURCE_DESCRIBE" jdbcType="VARCHAR" property="resourceDescribe"/>
+        <result column="OPER_CODE" jdbcType="VARCHAR" property="operCode"/>
+        <result column="PLACE_CODE" jdbcType="VARCHAR" property="placeCode"/>
+        <result column="RESOURCE_ICON" jdbcType="VARCHAR" property="resourceIcon"/>
+        <result column="device_type" jdbcType="VARCHAR" property="deviceType"/>
+        <result column="JUDGE_AUTHC" jdbcType="VARCHAR" property="judgeAuthc"/>
+        <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId"/>
+        <result column="SOURCE_FLAG" jdbcType="CHAR" property="sourceFlag"/>
+    </resultMap>
+
+    <sql id="Base_Column_Select">
+    RESOURCE_ID, RESOURCE_CODE, ORDER_INDEX, RESOURCE_NAME, RESOURCE_URL, PID, RESOURCE_TYPE,
+    CREATER, CREATETIME, MODIFY_USER, MODIFY_TIME,RESOURCE_DESCRIBE,SHOW_TYPE,OPER_CODE,PLACE_CODE,
+    RESOURCE_ICON,device_type,JUDGE_AUTHC,USE_FLAG
+    </sql>
+
+    <sql id="Resource_Column">
+    RES.RESOURCE_ID, RES.RESOURCE_CODE, RES.ORDER_INDEX, RES.RESOURCE_NAME, RES.RESOURCE_URL, RES.PID, RES.RESOURCE_TYPE,
+    RES.CREATER, RES.CREATETIME, RES.MODIFY_USER, RES.MODIFY_TIME,RES.RESOURCE_DESCRIBE,RES.SHOW_TYPE,RES.OPER_CODE,
+    RES.PLACE_CODE,RES.RESOURCE_ICON,RES.device_type,RES.JUDGE_AUTHC,RES.USE_FLAG
+    </sql>
+
+    <!-- 查询所有设置权限的资源 -->
+    <select id="selectAllPermissionResource" resultMap="BaseResultMap">
+        select <include refid="Base_Column_Select"/>
+        from moirai_resource
+        where JUDGE_AUTHC is not null and JUDGE_AUTHC != ''
+        order by ORDER_INDEX
+    </select>
+
+    <!-- 查询产品拥有的资源，可以加资源过滤条件.productId（必须传）,resFilterType（可以传）-->
+    <select id="selectProductResourceList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Resource_Column"/>
+        from moirai_resource RES ,moirai_product_resource pr
+        WHERE pr.PRODUCT_ID = #{productId} AND pr.RESOURCE_ID = RES.RESOURCE_ID
+        AND RES.DEL_FLAG = 'N' AND RES.USE_FLAG = 'Y'
+        <if test="resFilterType != null and resFilterType != ''">
+            AND device_type NOT LIKE concat(concat('%|' , #{resFilterType,jdbcType=VARCHAR}) , '|%')
+        </if>
+        order by RES.ORDER_INDEX asc
+    </select>
+
+    <!-- 查询产品拥有的资源 无按钮-->
+    <select id="selectResourceNoButton" parameterType="com.baiwang.moirai.model.role.MoiraiProduct"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Resource_Column"/>
+        from moirai_resource RES ,moirai_product_resource pr
+        WHERE pr.PRODUCT_ID = #{productId} AND pr.RESOURCE_ID = RES.RESOURCE_ID
+        AND RES.DEL_FLAG = 'N' AND RES.RESOURCE_TYPE &lt;&gt; '4'
+        order by RES.ORDER_INDEX asc
+    </select>
+
+    <!-- 查询所有的按钮资源-->
+    <select id="selectButtonResource" resultType="java.util.HashMap">
+        select
+        distinct RES.JUDGE_AUTHC judgeAuthc, p.product_name productName, RES.RESOURCE_NAME resourceName
+        from moirai_resource RES left join moirai_product_resource pr on RES.RESOURCE_ID = pr.RESOURCE_ID
+        left join moirai_product p on pr.PRODUCT_ID = p.PRODUCT_ID
+        WHERE RES.DEL_FLAG = 'N' AND RES.RESOURCE_TYPE = '4' and p.product_type = '0' and RES.JUDGE_AUTHC is not null
+        AND RES.JUDGE_AUTHC &lt;&gt; ''
+        order by RES.JUDGE_AUTHC
+    </select>
+
+    <!--点击资源树，查询资源列表-->
+    <select id="queryResourceList" parameterType="com.baiwang.moirai.model.role.MoiraiResourceCondition"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Resource_Column"/>
+        from moirai_resource RES ,moirai_product_resource pr
+        where pr.RESOURCE_ID = RES.RESOURCE_ID AND RES.DEL_FLAG = 'N'
+        AND pr.PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        <if test="resourceId != null and resourceId != ''">
+            AND RES.RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceId == null or resourceId == ''">
+            AND RES.PID = 0
+        </if>
+        union
+        select
+        <include refid="Resource_Column"/>
+        from moirai_resource RES ,moirai_product_resource pr
+        where pr.RESOURCE_ID = RES.RESOURCE_ID AND RES.DEL_FLAG = 'N'
+        AND pr.PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        <if test="resourceId != null and resourceId != ''">
+            AND RES.PID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceId == null or resourceId == ''">
+            AND RES.PID = 0
+        </if>
+        ORDER BY RESOURCE_TYPE, ORDER_INDEX
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_resource
+        where RESOURCE_ID = #{resourceId,jdbcType=BIGINT} AND DEL_FLAG = 'N'
+    </select>
+
+    <!-- 批量查询 -->
+    <select id="selectBatchInfo" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_resource
+        WHERE DEL_FLAG = 'N'
+        <if test="list != null and list.size() > 0">
+            AND RESOURCE_ID IN
+            <foreach collection="list" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY ORDER_INDEX
+    </select>
+
+    <!-- 批量查询 -->
+    <select id="selectBatchInfoUsed" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_resource
+        WHERE DEL_FLAG = 'N' AND USE_FLAG = 'Y'
+        <if test="list != null and list.size() > 0">
+            AND RESOURCE_ID IN
+            <foreach collection="list" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY ORDER_INDEX
+    </select>
+
+    <select id="selectByBean" parameterType="com.baiwang.moirai.model.role.MoiraiResource" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_resource
+        where 1=1
+        <if test="resourceId != null">
+            AND RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceCode != null">
+            AND RESOURCE_CODE = #{resourceCode,jdbcType=VARCHAR}
+        </if>
+
+        <if test="showType != null">
+            AND SHOW_TYPE = #{showType,jdbcType=VARCHAR}
+        </if>
+        <if test="orderIndex != null">
+            AND ORDER_INDEX = #{orderIndex,jdbcType=BIGINT}
+        </if>
+        <if test="resourceName != null">
+            AND RESOURCE_NAME = #{resourceName,jdbcType=VARCHAR}
+        </if>
+        <if test="resourceUrl != null">
+            AND RESOURCE_URL = #{resourceUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="pid != null">
+            AND PID = #{pid,jdbcType=BIGINT}
+        </if>
+        <if test="resourceType != null">
+            AND RESOURCE_TYPE = #{resourceType,jdbcType=INTEGER}
+        </if>
+        <if test="creater != null">
+            AND CREATER = #{creater,jdbcType=VARCHAR}
+        </if>
+        <if test="createtime != null">
+            AND CREATETIME = #{createtime,jdbcType=BIGINT}
+        </if>
+        <if test="modifyUser != null">
+            AND MODIFY_USER = #{modifyUser,jdbcType=VARCHAR}
+        </if>
+        <if test="modifyTime != null">
+            AND MODIFY_TIME = #{modifyTime,jdbcType=BIGINT}
+        </if>
+        <if test="delFlag != null">
+            AND DEL_FLAG = #{delFlag,jdbcType=CHAR}
+        </if>
+        <if test="useFlag != null">
+            AND USE_FLAG = #{useFlag,jdbcType=CHAR}
+        </if>
+        <if test="delFlag == null">
+            AND DEL_FLAG = 'N'
+        </if>
+        <if test="placeCode != null">
+            AND PLACE_CODE = #{placeCode,jdbcType=VARCHAR}
+        </if>
+        <if test="operCode != null">
+            AND OPER_CODE = #{operCode,jdbcType=VARCHAR}
+        </if>
+        <if test="resourceIcon != null">
+            AND RESOURCE_ICON = #{resourceIcon,jdbcType=VARCHAR}
+        </if>
+        <if test="deviceType != null">
+            AND device_type = #{deviceType,jdbcType=VARCHAR}
+        </if>
+        <if test="judgeAuthc != null">
+            AND JUDGE_AUTHC = #{judgeAuthc,jdbcType=VARCHAR}
+        </if>
+        ORDER BY RESOURCE_ID
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_resource
+    where RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="addBatch" parameterType="java.util.List">
+        INSERT INTO moirai_resource (RESOURCE_ID, RESOURCE_CODE, ORDER_INDEX,
+        RESOURCE_NAME, RESOURCE_URL, PID,RESOURCE_TYPE, CREATER, CREATETIME,
+        MODIFY_USER, MODIFY_TIME,RESOURCE_DESCRIBE,SHOW_TYPE,OPER_CODE,PLACE_CODE,
+        RESOURCE_ICON,device_type,JUDGE_AUTHC
+        ) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.resourceId,jdbcType=BIGINT},
+            #{item.resourceCode,jdbcType=BIGINT},#{item.orderIndex,jdbcType=BIGINT},
+            #{item.resourceName,jdbcType=VARCHAR}, #{item.resourceUrl,jdbcType=VARCHAR}, #{item.pid,jdbcType=BIGINT},
+            #{item.resourceType,jdbcType=INTEGER}, #{item.creater,jdbcType=VARCHAR}, #{item.createtime,jdbcType=BIGINT},
+            #{item.modifyUser,jdbcType=VARCHAR},#{item.modifyTime,jdbcType=BIGINT},#{item.resourceDescribe,jdbcType=VARCHAR},
+            #{item.showType,jdbcType=VARCHAR},#{item.operCode,jdbcType=VARCHAR},#{item.placeCode,jdbcType=VARCHAR},
+            #{item.resourceIcon,jdbcType=VARCHAR},#{item.deviceType,jdbcType=VARCHAR},#{item.resourceId,jdbcType=BIGINT},
+            #{item.judgeAuthc,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.role.MoiraiResource">
+        insert into moirai_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resourceId != null">
+                RESOURCE_ID,
+            </if>
+            <if test="resourceCode != null">
+                RESOURCE_CODE,
+            </if>
+            <if test="showType != null">
+                SHOW_TYPE,
+            </if>
+            <if test="orderIndex != null">
+                ORDER_INDEX,
+            </if>
+            <if test="resourceName != null">
+                RESOURCE_NAME,
+            </if>
+            <if test="resourceUrl != null">
+                RESOURCE_URL,
+            </if>
+            <if test="pid != null">
+                PID,
+            </if>
+            <if test="resourceType != null">
+                RESOURCE_TYPE,
+            </if>
+            <if test="creater != null">
+                CREATER,
+            </if>
+            <if test="createtime != null">
+                CREATETIME,
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER,
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME,
+            </if>
+            <if test="delFlag != null">
+                DEL_FLAG,
+            </if>
+            <if test="useFlag != null">
+                USE_FLAG,
+            </if>
+            <if test="resourceDescribe != null">
+                RESOURCE_DESCRIBE,
+            </if>
+            <if test="operCode != null">
+                OPER_CODE,
+            </if>
+            <if test="placeCode != null">
+                PLACE_CODE,
+            </if>
+            <if test="deviceType != null">
+                device_type,
+            </if>
+            <if test="resourceIcon != null">
+                RESOURCE_ICON,
+            </if>
+            <if test="judgeAuthc != null">
+                JUDGE_AUTHC,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resourceId != null">
+                #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="resourceCode != null">
+                #{resourceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="showType != null">
+                #{showType,jdbcType=VARCHAR},
+            </if>
+            <if test="orderIndex != null">
+                #{orderIndex,jdbcType=BIGINT},
+            </if>
+            <if test="resourceName != null">
+                #{resourceName,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceUrl != null">
+                #{resourceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null">
+                #{pid,jdbcType=BIGINT},
+            </if>
+            <if test="resourceType != null">
+                #{resourceType,jdbcType=INTEGER},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="resourceDescribe != null">
+                #{resourceDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="operCode != null">
+                #{operCode,jdbcType=VARCHAR},
+            </if>
+            <if test="placeCode != null">
+                #{placeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceIcon != null">
+                #{resourceIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="judgeAuthc != null">
+                #{judgeAuthc,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.role.MoiraiResource">
+        update moirai_resource
+        <set>
+            <if test="resourceCode != null">
+                RESOURCE_CODE = #{resourceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="showType != null">
+                SHOW_TYPE = #{showType,jdbcType=VARCHAR},
+            </if>
+            <if test="orderIndex != null">
+                ORDER_INDEX = #{orderIndex,jdbcType=BIGINT},
+            </if>
+            <if test="resourceName != null">
+                RESOURCE_NAME = #{resourceName,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceUrl != null">
+                RESOURCE_URL = #{resourceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null">
+                PID = #{pid,jdbcType=BIGINT},
+            </if>
+            <if test="resourceType != null">
+                RESOURCE_TYPE = #{resourceType,jdbcType=INTEGER},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                DEL_FLAG = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                USE_FLAG = #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="resourceDescribe != null">
+                RESOURCE_DESCRIBE = #{resourceDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="operCode != null">
+                OPER_CODE = #{operCode,jdbcType=VARCHAR},
+            </if>
+            <if test="placeCode != null">
+                PLACE_CODE = #{placeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceIcon != null">
+                RESOURCE_ICON = #{resourceIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                device_type = #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="judgeAuthc != null">
+                JUDGE_AUTHC = #{judgeAuthc,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+    </update>
+
+    <!-- ==================================租户资源========================================== -->
+
+    <select id="selectTenantResourceByBean" parameterType="com.baiwang.moirai.model.role.MoiraiResource"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>
+        from moirai_resource_tenant
+        where 1=1
+        <if test="resourceId != null">
+            AND RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceCode != null">
+            AND RESOURCE_CODE = #{resourceCode,jdbcType=VARCHAR}
+        </if>
+
+        <if test="showType != null">
+            AND SHOW_TYPE = #{showType,jdbcType=VARCHAR}
+        </if>
+        <if test="orderIndex != null">
+            AND ORDER_INDEX = #{orderIndex,jdbcType=BIGINT}
+        </if>
+        <if test="resourceName != null">
+            AND RESOURCE_NAME = #{resourceName,jdbcType=VARCHAR}
+        </if>
+        <if test="resourceUrl != null">
+            AND RESOURCE_URL = #{resourceUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="pid != null">
+            AND PID = #{pid,jdbcType=BIGINT}
+        </if>
+        <if test="resourceType != null">
+            AND RESOURCE_TYPE = #{resourceType,jdbcType=INTEGER}
+        </if>
+        <if test="creater != null">
+            AND CREATER = #{creater,jdbcType=VARCHAR}
+        </if>
+        <if test="createtime != null">
+            AND CREATETIME = #{createtime,jdbcType=BIGINT}
+        </if>
+        <if test="modifyUser != null">
+            AND MODIFY_USER = #{modifyUser,jdbcType=VARCHAR}
+        </if>
+        <if test="modifyTime != null">
+            AND MODIFY_TIME = #{modifyTime,jdbcType=BIGINT}
+        </if>
+        <if test="delFlag != null">
+            AND DEL_FLAG = #{delFlag,jdbcType=CHAR}
+        </if>
+        <if test="useFlag != null">
+            AND USE_FLAG = #{useFlag,jdbcType=CHAR}
+        </if>
+        <if test="delFlag == null">
+            AND DEL_FLAG = 'N'
+        </if>
+        <if test="placeCode != null">
+            AND PLACE_CODE = #{placeCode,jdbcType=VARCHAR}
+        </if>
+        <if test="operCode != null">
+            AND OPER_CODE = #{operCode,jdbcType=VARCHAR}
+        </if>
+        <if test="resourceIcon != null">
+            AND RESOURCE_ICON = #{resourceIcon,jdbcType=VARCHAR}
+        </if>
+        <if test="deviceType != null">
+            AND device_type = #{deviceType,jdbcType=VARCHAR}
+        </if>
+        <if test="judgeAuthc != null">
+            AND JUDGE_AUTHC = #{judgeAuthc,jdbcType=VARCHAR}
+        </if>
+        <if test="tenantId != null">
+            AND TENANT_ID = #{tenantId,jdbcType=VARCHAR}
+        </if>
+        <if test="sourceFlag != null">
+            AND SOURCE_FLAG = #{sourceFlag,jdbcType=CHAR}
+        </if>
+        ORDER BY RESOURCE_ID
+    </select>
+
+    <insert id="insertResourceTenant" parameterType="com.baiwang.moirai.model.role.MoiraiResource">
+        insert into moirai_resource_tenant
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resourceId != null">
+                RESOURCE_ID,
+            </if>
+            <if test="resourceCode != null">
+                RESOURCE_CODE,
+            </if>
+            <if test="showType != null">
+                SHOW_TYPE,
+            </if>
+            <if test="orderIndex != null">
+                ORDER_INDEX,
+            </if>
+            <if test="resourceName != null">
+                RESOURCE_NAME,
+            </if>
+            <if test="resourceUrl != null">
+                RESOURCE_URL,
+            </if>
+            <if test="pid != null">
+                PID,
+            </if>
+            <if test="resourceType != null">
+                RESOURCE_TYPE,
+            </if>
+            <if test="creater != null">
+                CREATER,
+            </if>
+            <if test="createtime != null">
+                CREATETIME,
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER,
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME,
+            </if>
+            <if test="delFlag != null">
+                DEL_FLAG,
+            </if>
+            <if test="useFlag != null">
+                USE_FLAG,
+            </if>
+            <if test="resourceDescribe != null">
+                RESOURCE_DESCRIBE,
+            </if>
+            <if test="operCode != null">
+                OPER_CODE,
+            </if>
+            <if test="placeCode != null">
+                PLACE_CODE,
+            </if>
+            <if test="deviceType != null">
+                device_type,
+            </if>
+            <if test="resourceIcon != null">
+                RESOURCE_ICON,
+            </if>
+            <if test="judgeAuthc != null">
+                JUDGE_AUTHC,
+            </if>
+            <if test="tenantId != null">
+                TENANT_ID,
+            </if>
+            <if test="sourceFlag != null">
+                SOURCE_FLAG,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resourceId != null">
+                #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="resourceCode != null">
+                #{resourceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="showType != null">
+                #{showType,jdbcType=VARCHAR},
+            </if>
+            <if test="orderIndex != null">
+                #{orderIndex,jdbcType=BIGINT},
+            </if>
+            <if test="resourceName != null">
+                #{resourceName,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceUrl != null">
+                #{resourceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null">
+                #{pid,jdbcType=BIGINT},
+            </if>
+            <if test="resourceType != null">
+                #{resourceType,jdbcType=INTEGER},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="resourceDescribe != null">
+                #{resourceDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="operCode != null">
+                #{operCode,jdbcType=VARCHAR},
+            </if>
+            <if test="placeCode != null">
+                #{placeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceIcon != null">
+                #{resourceIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="judgeAuthc != null">
+                #{judgeAuthc,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="sourceFlag != null">
+                #{sourceFlag,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateResourceTenant" parameterType="com.baiwang.moirai.model.role.MoiraiResource">
+        update moirai_resource_tenant
+        <set>
+            <if test="resourceCode != null">
+                RESOURCE_CODE = #{resourceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="showType != null">
+                SHOW_TYPE = #{showType,jdbcType=VARCHAR},
+            </if>
+            <if test="orderIndex != null">
+                ORDER_INDEX = #{orderIndex,jdbcType=BIGINT},
+            </if>
+            <if test="resourceName != null">
+                RESOURCE_NAME = #{resourceName,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceUrl != null">
+                RESOURCE_URL = #{resourceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null">
+                PID = #{pid,jdbcType=BIGINT},
+            </if>
+            <if test="resourceType != null">
+                RESOURCE_TYPE = #{resourceType,jdbcType=INTEGER},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                DEL_FLAG = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                USE_FLAG = #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="resourceDescribe != null">
+                RESOURCE_DESCRIBE = #{resourceDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="operCode != null">
+                OPER_CODE = #{operCode,jdbcType=VARCHAR},
+            </if>
+            <if test="placeCode != null">
+                PLACE_CODE = #{placeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceIcon != null">
+                RESOURCE_ICON = #{resourceIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                device_type = #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="judgeAuthc != null">
+                JUDGE_AUTHC = #{judgeAuthc,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceFlag != null">
+                SOURCE_FLAG = #{sourceFlag,jdbcType=CHAR},
+            </if>
+        </set>
+        where RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        <if test="tenantId != null">
+            and TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        </if>
+    </update>
+
+    <insert id="addResourceTenantBatch" parameterType="java.util.List">
+        INSERT IGNORE INTO moirai_resource_tenant (RESOURCE_ID, RESOURCE_CODE, ORDER_INDEX,
+        RESOURCE_NAME, RESOURCE_URL, PID,RESOURCE_TYPE, CREATER, CREATETIME,
+        MODIFY_USER, MODIFY_TIME,RESOURCE_DESCRIBE,SHOW_TYPE,OPER_CODE,PLACE_CODE,
+        RESOURCE_ICON,device_type,JUDGE_AUTHC,TENANT_ID,SOURCE_FLAG
+        ) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.resourceId,jdbcType=BIGINT},#{item.resourceCode,jdbcType=BIGINT},#{item.orderIndex,jdbcType=BIGINT},
+            #{item.resourceName,jdbcType=VARCHAR}, #{item.resourceUrl,jdbcType=VARCHAR}, #{item.pid,jdbcType=BIGINT},
+            #{item.resourceType,jdbcType=INTEGER}, #{item.creater,jdbcType=VARCHAR}, #{item.createtime,jdbcType=BIGINT},
+            #{item.modifyUser,jdbcType=VARCHAR},#{item.modifyTime,jdbcType=BIGINT},#{item.resourceDescribe,jdbcType=VARCHAR},
+            #{item.showType,jdbcType=VARCHAR},#{item.operCode,jdbcType=VARCHAR},#{item.placeCode,jdbcType=VARCHAR},
+            #{item.resourceIcon,jdbcType=VARCHAR},#{item.deviceType,jdbcType=VARCHAR},
+            #{item.judgeAuthc,jdbcType=VARCHAR},#{item.tenantId,jdbcType=BIGINT},#{item.sourceFlag,jdbcType=CHAR})
+        </foreach>
+    </insert>
+
+    <delete id="deleteResourceTenant">
+        delete from moirai_resource_tenant
+        where
+        RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        <if test="tenantId != null">
+            and TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        </if>
+    </delete>
+
+    <delete id="batchDeleteResourceTenant">
+        delete from moirai_resource_tenant
+        where
+        RESOURCE_ID in
+        <foreach collection="resourceIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        and SOURCE_FLAG = '1'
+    </delete>
+
+    <!-- 批量查询 -->
+    <select id="selectResourceTenantBatch" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Select"/>, TENANT_ID
+        from moirai_resource_tenant
+        WHERE DEL_FLAG = 'N' AND TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        <if test="list != null and list.size() > 0">
+            AND RESOURCE_ID IN
+            <foreach collection="list" open="(" close=")" separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY ORDER_INDEX
+    </select>
+
+    <!--点击资源树，查询资源列表-->
+    <select id="queryResourceTenantList" parameterType="com.baiwang.moirai.model.role.MoiraiResourceCondition"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Resource_Column"/>, RES.TENANT_ID, RES.SOURCE_FLAG
+        FROM moirai_resource_tenant RES ,moirai_product_resource pr
+        WHERE pr.RESOURCE_ID = RES.RESOURCE_ID AND RES.DEL_FLAG = 'N'
+        AND pr.PRODUCT_ID = #{productId,jdbcType=BIGINT} AND RES.TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        <if test="resourceId != null and resourceId != ''">
+            AND RES.RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceId == null or resourceId == ''">
+            AND RES.PID = 0
+        </if>
+        UNION
+        SELECT
+        <include refid="Resource_Column"/>, RES.TENANT_ID, RES.SOURCE_FLAG
+        FROM moirai_resource_tenant RES ,moirai_product_resource pr
+        WHERE pr.RESOURCE_ID = RES.RESOURCE_ID AND RES.DEL_FLAG = 'N'
+        AND pr.PRODUCT_ID = #{productId,jdbcType=BIGINT} AND RES.TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        <if test="resourceId != null and resourceId != ''">
+            AND RES.PID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceId == null or resourceId == ''">
+            AND RES.PID = 0
+        </if>
+        ORDER BY RESOURCE_TYPE, ORDER_INDEX
+    </select>
+
+    <!-- 查询产品拥有的资源，可以加资源过滤条件.productId（必须传）,resFilterType（可以传）-->
+    <select id="selectTenantProductResourceList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Resource_Column"/>
+        from moirai_resource_tenant RES ,moirai_product_resource pr
+        WHERE pr.PRODUCT_ID = #{productId} AND pr.RESOURCE_ID = RES.RESOURCE_ID
+        AND RES.DEL_FLAG = 'N' AND RES.USE_FLAG = 'Y' AND RES.TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        <if test="resFilterType != null and resFilterType != ''">
+            AND device_type NOT LIKE concat(concat('%|' , #{resFilterType,jdbcType=VARCHAR}) , '|%')
+        </if>
+        order by RES.ORDER_INDEX asc
+    </select>
+
+    <!-- 查询租户开通产品拥有的资源 -->
+    <select id="selectTenantProductResource" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Resource_Column"/>
+        from moirai_resource_tenant RES ,moirai_product_resource pr
+        WHERE pr.PRODUCT_ID = #{productId} AND pr.RESOURCE_ID = RES.RESOURCE_ID
+        AND RES.DEL_FLAG = 'N' AND RES.TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        order by RES.ORDER_INDEX asc
+    </select>
+
+    <!-- 查询产品拥有的资源 无按钮-->
+    <select id="selectResourceTenantNoButton" parameterType="com.baiwang.moirai.model.role.MoiraiProductCondition"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Resource_Column"/>
+        from moirai_resource_tenant RES ,moirai_product_resource pr
+        WHERE pr.PRODUCT_ID = #{productId} AND pr.RESOURCE_ID = RES.RESOURCE_ID
+        AND RES.DEL_FLAG = 'N' AND RES.RESOURCE_TYPE <![CDATA[!=]]> '4'
+        AND RES.TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        order by RES.ORDER_INDEX asc
+    </select>
+
+    <select id="queryResourceTenantIds" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT tenant.TENANT_ID
+        FROM
+            moirai_resource_tenant tenant
+            LEFT JOIN moirai_product_resource res ON tenant.RESOURCE_ID = res.RESOURCE_ID
+        WHERE
+            res.PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        GROUP BY
+            TENANT_ID;
+    </select>
+</mapper>

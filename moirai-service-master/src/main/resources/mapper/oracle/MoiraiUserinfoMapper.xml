@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiUserinfoMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.user.MoiraiUserinfo">
+        <id column="userinfo_id" jdbcType="BIGINT" property="userinfoId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="card_id" jdbcType="VARCHAR" property="cardId"/>
+        <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+        <result column="zip_code" jdbcType="VARCHAR" property="zipCode"/>
+        <result column="post_address" jdbcType="VARCHAR" property="postAddress"/>
+        <result column="post_code" jdbcType="VARCHAR" property="postCode"/>
+        <result column="modify_user" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="modify_time" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="del_flag" jdbcType="CHAR" property="delFlag"/>
+        <result column="use_flag" jdbcType="CHAR" property="useFlag"/>
+        <result column="head_img" jdbcType="VARCHAR" property="headImg"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    userinfo_id, name, sex, card_id, birthday, zip_code, post_address, post_code, modify_user,
+    modify_time, del_flag, use_flag, head_img
+    </sql>
+
+    <select id="getUserInfoByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_userinfo
+        where userinfo_id = (select userinfo_id from moirai_user where user_id =#{userId})
+    </select>
+
+    <select id="getUserInfoById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_userinfo
+        where userinfo_id = #{userinfoId,jdbcType=BIGINT}
+    </select>
+
+    <!--删除用户详细-->
+    <delete id="deleteByUserId" parameterType="java.lang.Long">
+        delete from moirai_userinfo where userinfo_id = (select userinfo_id from moirai_user where user_id = #{userId} )
+    </delete>
+
+    <insert id="insert" parameterType="com.baiwang.moirai.model.user.MoiraiUserinfo">
+    insert into moirai_userinfo (userinfo_id, name, sex, 
+      card_id, birthday, zip_code, 
+      post_address, post_code, modify_user, 
+      modify_time)
+    values (#{userinfoId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
+      #{cardId,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{zipCode,jdbcType=VARCHAR}, 
+      #{postAddress,jdbcType=VARCHAR}, #{postCode,jdbcType=VARCHAR}, #{modifyUser,jdbcType=VARCHAR}, 
+      #{modifyTime,jdbcType=BIGINT})
+  </insert>
+
+
+    <insert id="updateByUserId" parameterType="com.baiwang.moirai.model.user.MoiraiUserinfo">
+        INSERT INTO moirai_userinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userinfoId != null">
+                userinfo_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="cardId != null">
+                card_id,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="zipCode != null">
+                zip_code,
+            </if>
+            <if test="postAddress != null">
+                post_address,
+            </if>
+            <if test="postCode != null">
+                post_code,
+            </if>
+            <if test="modifyUser != null">
+                modify_user,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+             <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="useFlag != null">
+                use_flag
+            </if>
+            <if test="headImg != null">
+                head_img,
+            </if>
+            del_flag,
+            use_flag
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userinfoId != null">
+                #{userinfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="cardId != null">
+                #{cardId,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="zipCode != null">
+                #{zipCode,jdbcType=VARCHAR},
+            </if>
+            <if test="postAddress != null">
+                #{postAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="postCode != null">
+                #{postCode,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                #{useFlag,jdbcType=CHAR}
+            </if>
+            <if test="headImg != null">
+                #{headImg,jdbcType=VARCHAR},
+            </if>
+            'N',
+            'Y'
+        </trim>
+    </insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.user.MoiraiUserinfo">
+        update moirai_userinfo
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="cardId != null">
+                card_id = #{cardId,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="zipCode != null">
+                zip_code = #{zipCode,jdbcType=VARCHAR},
+            </if>
+            <if test="postAddress != null">
+                post_address = #{postAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="postCode != null">
+                post_code = #{postCode,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                use_flag = #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="headImg != null">
+                head_img = #{headImg,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where userinfo_id = #{userinfoId,jdbcType=BIGINT}
+    </update>
+    
+    <insert id="insertUserInfoHistory" parameterType="com.baiwang.moirai.model.user.MoiraiUserinfo">
+    insert into moirai_userinfo_history
+        (userinfo_id, name, sex, card_id, birthday, zip_code, post_address, post_code, modify_user,
+          modify_time, del_flag, use_flag)
+    values (#{userinfoId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+      #{cardId,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{zipCode,jdbcType=VARCHAR},
+      #{postAddress,jdbcType=VARCHAR}, #{postCode,jdbcType=VARCHAR}, #{modifyUser,jdbcType=VARCHAR},
+      #{modifyTime,jdbcType=BIGINT}, 'N', 'Y')
+  </insert>
+
+    <insert id="addBatch" parameterType="java.util.List">
+        INSERT INTO moirai_userinfo (userinfo_id, name, sex,
+        card_id, birthday, zip_code,
+        post_address, post_code, modify_user,
+        modify_time)
+        <foreach collection="list" item="item" index="index" separator="union all">
+            select
+            #{item.userinfoId,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR}, #{item.sex,jdbcType=VARCHAR},
+            #{item.cardId,jdbcType=VARCHAR}, #{item.birthday,jdbcType=VARCHAR}, #{item.zipCode,jdbcType=VARCHAR},
+            #{item.postAddress,jdbcType=VARCHAR}, #{item.postCode,jdbcType=VARCHAR}, #{item.modifyUser,jdbcType=VARCHAR},
+            #{item.modifyTime,jdbcType=BIGINT}
+            from dual
+        </foreach>
+    </insert>
+</mapper>

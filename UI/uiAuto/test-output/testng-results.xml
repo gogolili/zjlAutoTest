@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="3" passed="3">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Suite" duration-ms="33645" started-at="2019-09-23T08:17:50Z" finished-at="2019-09-23T08:18:24Z">
+    <groups>
+    </groups>
+    <test name="Suite" duration-ms="33645" started-at="2019-09-23T08:17:50Z" finished-at="2019-09-23T08:18:24Z">
+      <class name="action.UserActionTest">
+        <test-method status="PASS" signature="setup(java.lang.String)[pri:0, instance:action.UserActionTest@46daef40]" name="setup" is-config="true" duration-ms="6202" started-at="2019-09-23T08:17:50Z" finished-at="2019-09-23T08:17:56Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[chrome]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method status="PASS" signature="testLogin(java.lang.String, java.lang.String, java.lang.String, java.lang.String)[pri:0, instance:action.UserActionTest@46daef40]" name="testLogin" duration-ms="5753" started-at="2019-09-23T08:17:57Z" description="登录页面" data-provider="loginData" finished-at="2019-09-23T08:18:02Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[http://www.baiwang.com/mainsite/src/html/login/login.html]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[cpy001]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[a123456]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[cpy001]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testLogin -->
+        <test-method status="PASS" signature="testMenu()[pri:1, instance:action.UserActionTest@46daef40]" name="testMenu" duration-ms="10617" started-at="2019-09-23T08:18:02Z" description="进入菜单" finished-at="2019-09-23T08:18:13Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testMenu -->
+        <test-method status="PASS" signature="testImportUser()[pri:4, instance:action.UserActionTest@46daef40]" name="testImportUser" duration-ms="9986" started-at="2019-09-23T08:18:13Z" description="批量导入用户" finished-at="2019-09-23T08:18:23Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testImportUser -->
+        <test-method status="PASS" signature="tearmDown()[pri:0, instance:action.UserActionTest@46daef40]" name="tearmDown" is-config="true" duration-ms="942" started-at="2019-09-23T08:18:23Z" finished-at="2019-09-23T08:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearmDown -->
+      </class> <!-- action.UserActionTest -->
+    </test> <!-- Suite -->
+  </suite> <!-- Suite -->
+</testng-results>

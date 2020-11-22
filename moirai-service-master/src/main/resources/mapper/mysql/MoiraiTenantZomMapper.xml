@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiTenantZomMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.tenant.MoiraiTenant">
+        <id column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
+        <result column="tenant_name" jdbcType="VARCHAR" property="tenantName"/>
+        <result column="tenant_type" jdbcType="CHAR" property="tenantType"/>
+        <result column="tenant_desc" jdbcType="VARCHAR" property="tenantDesc"/>
+        <result column="tenant_email" jdbcType="VARCHAR" property="tenantEmail"/>
+        <result column="tenant_phone" jdbcType="VARCHAR" property="tenantPhone"/>
+        <result column="origin_mark" jdbcType="CHAR" property="originMark"/>
+        <result column="register_time" jdbcType="BIGINT" property="registerTime"/>
+        <result column="check_sign" jdbcType="CHAR" property="checkSign"/>
+        <result column="check_time" jdbcType="BIGINT" property="checkTime"/>
+        <result column="check_user" jdbcType="VARCHAR" property="checkUser"/>
+        <result column="check_opinion" jdbcType="VARCHAR" property="checkOpinion"/>
+        <result column="use_begintime" jdbcType="BIGINT" property="useBegintime"/>
+        <result column="use_endtime" jdbcType="BIGINT" property="useEndtime"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="modify_user" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="modify_time" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="del_flag" jdbcType="CHAR" property="delFlag"/>
+        <result column="use_flag" jdbcType="CHAR" property="useFlag"/>
+        <result column="dj_mark" jdbcType="CHAR" property="djMark"/>
+        <result column="attach_bm" jdbcType="BIGINT" property="attachBm"/>
+        <result column="zjgxsqb_url" jdbcType="VARCHAR" property="zjgxsqbUrl"/>
+        <result column="quali_filePath" jdbcType="VARCHAR" property="qualiFilepath"/>
+        <result column="system_task" jdbcType="VARCHAR" property="systemTask"/>
+        <result column="qd_bm" jdbcType="BIGINT" property="qdBm"/>
+        <result column="have_zksb" jdbcType="CHAR" property="haveZksb"/>
+        <result column="company_type" jdbcType="CHAR" property="companyType"/>
+    </resultMap>
+
+    <resultMap id="MoiraiTenantListVOMap" type="com.baiwang.moirai.model.tenant.MoiraiTenantListVO">
+        <id column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="tenant_type" jdbcType="CHAR" property="tenantType"/>
+        <result column="tenant_name" jdbcType="VARCHAR" property="tenantName"/>
+        <result column="register_time" jdbcType="BIGINT" property="registerTime"/>
+        <result column="check_user" jdbcType="VARCHAR" property="checkUser"/>
+        <result column="tax_prov" jdbcType="CHAR" property="taxProv"/>
+        <result column="tax_code" jdbcType="CHAR" property="taxCode"/>
+        <result column="use_flag" jdbcType="CHAR" property="useFlag"/>
+        <result column="origin_mark" jdbcType="CHAR" property="originMark"/>
+        <result column="tenant_email" jdbcType="VARCHAR" property="tenantEmail"/>
+        <result column="tenant_phone" jdbcType="VARCHAR" property="tenantPhone"/>
+        <result column="org_id" jdbcType="BIGINT" property="orgId"/>
+
+        <result column="check_time" jdbcType="BIGINT" property="checkTime"/>
+        <result column="is_fetch" jdbcType="CHAR" property="isFetch"/>
+        <result column="is_proof" jdbcType="CHAR" property="isProof"/>
+        <result column="is_authe" jdbcType="CHAR" property="isAuthe"/>
+        <result column="check_config" jdbcType="CHAR" property="checkConfig"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    tenant_id, tenant_code, tenant_name, tenant_type, tenant_desc, tenant_email, tenant_phone, 
+    register_time, check_sign, check_time, check_user, check_opinion,company_type, have_ZKSB,
+    quali_filePath, use_begintime, use_endtime, creater, create_time, modify_user, modify_time,
+    del_flag, use_flag, system_task, attach_bm, dj_mark, origin_mark, qd_bm, zjgxsqb_url
+  </sql>
+
+    <!--根据租户名称查询租户-->
+    <select id="selectByTenantName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_tenant_zom
+        where tenant_name = #{tenantName,jdbcType=VARCHAR} AND del_flag = 'N'
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_tenant_zom
+        where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </select>
+
+    <select id="queryTenantListPage" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantListCondition"
+            resultMap="MoiraiTenantListVOMap">
+        SELECT t.tenant_id, t.tenant_name, t.origin_mark, t.register_time, t.check_user, t.tenant_phone,
+        t.tenant_email, t.use_flag, t.check_time, t.is_fetch, t.is_authe, t.is_proof, t.check_config,
+        o.tax_code, o.tax_prov, o.org_id
+        FROM moirai_tenant_zom t ,moirai_org_zom o
+        <where>
+            t.tenant_id=o.tenant_id and o.parent_org=0
+            <if test="tenantId != null and tenantId !=''">AND t.tenant_id = #{tenantId}</if>
+            <if test="tenantName != null and tenantName !=''">AND t.tenant_name LIKE concat(concat('%', #{tenantName}),
+                '%')
+            </if>
+            <if test="taxCode != null and taxCode != ''">AND o.tax_code LIKE concat(concat('%', #{taxCode}), '%')</if>
+            <if test="tenantEmail != null and tenantEmail != ''">AND t.tenant_email = #{tenantEmail}</if>
+            <if test="originMark != null and originMark != ''">AND t.origin_mark = #{originMark}</if>
+            <if test="taxProv != null and taxProv != ''">AND o.tax_prov = #{taxProv}</if>
+            <if test="useFlag != null and useFlag != ''">AND t.use_flag = #{useFlag}</if>
+            <if test="qdBm != null and qdBm != ''">AND t.qdBm = #{qdBm}</if>
+            <if test="registerBegintime != null and registerBegintime != ''">AND t.register_time &gt;=
+                #{registerBegintime ,jdbcType=BIGINT}
+            </if>
+            <if test="registerEndtime != null and registerEndtime != ''">AND t.register_time &lt;=
+                #{registerEndtime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkBegintime != null and checkBegintime != ''">AND t.check_time &gt;=
+                #{checkBegintime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkEndtime != null and checkEndtime != ''">AND t.check_time &lt;=
+                #{checkEndtime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkUser != null and checkUser != ''">AND t.check_user LIKE concat(concat('%', #{checkUser}),
+                '%')
+            </if>
+            <if test="isNeedProduct > 0">AND t.tenant_id in (select distinct(tenant_id) from moirai_org_product p
+                where
+            </if>
+            <if test="isNeedProduct >= 2 ">
+                p.product_id in
+                <foreach collection="products" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="isNeedProduct == 3">AND</if>
+            <if test="isNeedProduct == 1 or  isNeedProduct == 3">
+                p.qd_bm in
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <if test="isNeedProduct > 0">)</if>
+        </where>
+        ORDER BY t.modify_time DESC
+    </select>
+
+    <update id="deleteLogic" parameterType="java.lang.Long">
+        update moirai_tenant_zom
+        <set>
+            del_flag = 'Y',
+        </set>
+        where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </update>
+</mapper>

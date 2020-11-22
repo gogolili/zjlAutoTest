@@ -1,0 +1,10 @@
+pages:
+   - page:
+      pageName: pageObject.MenuPage
+      value: ""
+      desc: "导航栏及左侧菜单"
+      locators: 
+         - {type: "xpath",timeout: "5",value: "//li[contains(@class,'ivu-menu-item')]",desc: "导航栏",name: "menuTop"}
+         - {type: "xpath",timeout: "5",value: "//li[contains(@class,'ivu-menu-submenu')]",desc: "一级菜单",name: "menuLeftFirst"}
+         - {type: "xpath",timeout: "5",value: "//li[contains(@class,'ivu-menu-submenu-has-parent-submenu')]",desc: "二级菜单",name: "menuLeftMiddle"}
+         - {type: "xpath",timeout: "5",value: "//li[contains(@class,'ivu-menu-item')]",desc: "二级菜单",name: "menuLeftLast"}

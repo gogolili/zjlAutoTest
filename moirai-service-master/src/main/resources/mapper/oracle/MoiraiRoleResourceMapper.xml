@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiRoleResourceMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.role.MoiraiRoleResource">
+        <id column="ROLE_RESOURCE_ID" jdbcType="BIGINT" property="roleResourceId"/>
+        <result column="ROLE_ID" jdbcType="BIGINT" property="roleId"/>
+        <result column="RESOURCE_ID" jdbcType="BIGINT" property="resourceId"/>
+        <result column="ORG_ID" jdbcType="BIGINT" property="orgId"/>
+        <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId"/>
+        <result column="CREATER" jdbcType="VARCHAR" property="creater"/>
+        <result column="CREATETIME" jdbcType="BIGINT" property="createtime"/>
+        <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="MODIFY_TIME" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="PRODUCT_ID" jdbcType="BIGINT" property="productId"/>
+        <result column="INCLUDE_SON" jdbcType="BIGINT" property="includeSon"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    ROLE_RESOURCE_ID, ROLE_ID, RESOURCE_ID, ORG_ID, TENANT_ID, CREATER, CREATETIME, MODIFY_USER, 
+    MODIFY_TIME, PRODUCT_ID, INCLUDE_SON
+  </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role_resource
+        where ROLE_RESOURCE_ID = #{roleResourceId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectNoAuthRole" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role_resource
+        where RESOURCE_ID = #{pid,jdbcType=BIGINT}
+        AND ROLE_ID NOT IN (SELECT ROLE_ID FROM moirai_role_resource WHERE RESOURCE_ID = #{resourceId,jdbcType=BIGINT})
+    </select>
+
+    <!--根据用户ID机构ID租户ID获取资源ID-->
+    <select id="selectResourceIds" parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthz"
+            resultType="java.lang.Long">
+        SELECT DISTINCT re.RESOURCE_ID
+        FROM moirai_user_authz authz, moirai_role ro, moirai_role_resource re
+        WHERE
+        authz.role_id = ro.ROLE_ID
+        AND ro.ROLE_ID = re.ROLE_ID
+        AND ro.DEL_FLAG = 'N'
+        AND ro.USE_FLAG = 'Y'
+        <if test="userId != null">
+            AND authz.user_id = #{userId, jdbcType=BIGINT}
+        </if>
+        <if test="tenantId != null">
+            AND authz.tenant_id = #{tenantId, jdbcType=BIGINT}
+        </if>
+        <if test="authOrg != null">
+            AND authz.auth_org = #{authOrg, jdbcType=BIGINT}
+        </if>
+        <if test="roleId != null">
+            AND authz.role_id = #{roleId, jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <!--根据用户ID机构ID租户ID获取资源ID-->
+    <select id="selectAuthResource" parameterType="com.baiwang.moirai.model.role.MoiraiUserAuthz"
+            resultMap="BaseResultMap">
+        SELECT re.ROLE_RESOURCE_ID, re.ROLE_ID, re.RESOURCE_ID, re.ORG_ID, re.TENANT_ID, re.CREATER, re.CREATETIME,
+        re.MODIFY_USER, re.MODIFY_TIME, re.PRODUCT_ID, re.INCLUDE_SON
+        FROM moirai_role_resource re left join moirai_user_authz authz on re.ROLE_ID = authz.role_id
+        WHERE 1=1
+        <if test="userId != null">
+            AND authz.user_id = #{userId, jdbcType=BIGINT}
+        </if>
+        <if test="tenantId != null">
+            AND authz.tenant_id = #{tenantId, jdbcType=BIGINT}
+        </if>
+        <if test="authOrg != null">
+            AND authz.auth_org = #{authOrg, jdbcType=BIGINT}
+        </if>
+        <if test="roleId != null">
+            AND authz.role_id = #{roleId, jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <select id="selectByBean" parameterType="com.baiwang.moirai.model.role.MoiraiRoleResource"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_role_resource
+        where 1=1
+        <if test="roleId != null">
+            AND ROLE_ID = #{roleId,jdbcType=BIGINT}
+        </if>
+        <if test="resourceId != null">
+            AND RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="orgId != null">
+            AND ORG_ID = #{orgId,jdbcType=BIGINT}
+        </if>
+        <if test="tenantId != null">
+            AND TENANT_ID = #{tenantId,jdbcType=BIGINT}
+        </if>
+        <if test="creater != null">
+            AND CREATER = #{creater,jdbcType=VARCHAR}
+        </if>
+        <if test="createtime != null">
+            AND CREATETIME = #{createtime,jdbcType=BIGINT}
+        </if>
+        <if test="modifyUser != null">
+            AND MODIFY_USER = #{modifyUser,jdbcType=VARCHAR}
+        </if>
+        <if test="modifyTime != null">
+            AND MODIFY_TIME = #{modifyTime,jdbcType=BIGINT}
+        </if>
+        <if test="productId != null">
+            AND PRODUCT_ID = #{productId,jdbcType=BIGINT}
+        </if>
+        ORDER BY CREATETIME DESC
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from moirai_role_resource
+    where ROLE_RESOURCE_ID = #{roleResourceId,jdbcType=BIGINT}
+  </delete>
+
+    <delete id="deleteById" parameterType="com.baiwang.moirai.model.role.MoiraiRoleResource">
+        delete from moirai_role_resource
+        <where>
+            <if test="productId != null">
+                and PRODUCT_ID = #{productId,jdbcType=BIGINT}
+            </if>
+            <if test="roleId != null">
+                and ROLE_ID = #{roleId,jdbcType=BIGINT}
+            </if>
+            <if test="resourceId != null">
+                and RESOURCE_ID = #{resourceId,jdbcType=BIGINT}
+            </if>
+            <if test="roleId == null and productId == null and resourceId == null">
+                and 1 = 2
+            </if>
+        </where>
+    </delete>
+
+    <insert id="insert" parameterType="com.baiwang.moirai.model.role.MoiraiRoleResource">
+    insert into moirai_role_resource (ROLE_RESOURCE_ID, ROLE_ID, RESOURCE_ID, 
+      ORG_ID, TENANT_ID, CREATER, 
+      CREATETIME, MODIFY_USER, MODIFY_TIME, 
+      PRODUCT_ID, INCLUDE_SON)
+    values (#{roleResourceId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{resourceId,jdbcType=BIGINT}, 
+      #{orgId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, #{creater,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=BIGINT}, #{modifyUser,jdbcType=VARCHAR}, #{modifyTime,jdbcType=BIGINT}, 
+      #{productId,jdbcType=BIGINT}, #{includeSon,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.baiwang.moirai.model.role.MoiraiRoleResource">
+        insert into moirai_role_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleResourceId != null">
+                ROLE_RESOURCE_ID,
+            </if>
+            <if test="roleId != null">
+                ROLE_ID,
+            </if>
+            <if test="resourceId != null">
+                RESOURCE_ID,
+            </if>
+            <if test="orgId != null">
+                ORG_ID,
+            </if>
+            <if test="tenantId != null">
+                TENANT_ID,
+            </if>
+            <if test="creater != null">
+                CREATER,
+            </if>
+            <if test="createtime != null">
+                CREATETIME,
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER,
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME,
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID,
+            </if>
+            <if test="includeSon != null">
+                INCLUDE_SON,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleResourceId != null">
+                #{roleResourceId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="resourceId != null">
+                #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="includeSon != null">
+                #{includeSon,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.baiwang.moirai.model.role.MoiraiRoleResource">
+        update moirai_role_resource
+        <set>
+            <if test="roleId != null">
+                ROLE_ID = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="resourceId != null">
+                RESOURCE_ID = #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantId != null">
+                TENANT_ID = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID = #{productId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where ROLE_RESOURCE_ID = #{roleResourceId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.baiwang.moirai.model.role.MoiraiRoleResource">
+    update moirai_role_resource
+    set ROLE_ID = #{roleId,jdbcType=BIGINT},
+      RESOURCE_ID = #{resourceId,jdbcType=BIGINT},
+      ORG_ID = #{orgId,jdbcType=BIGINT},
+      TENANT_ID = #{tenantId,jdbcType=BIGINT},
+      CREATER = #{creater,jdbcType=VARCHAR},
+      CREATETIME = #{createtime,jdbcType=BIGINT},
+      MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+      MODIFY_TIME = #{modifyTime,jdbcType=BIGINT},
+      PRODUCT_ID = #{productId,jdbcType=BIGINT}
+    where ROLE_RESOURCE_ID = #{roleResourceId,jdbcType=BIGINT}
+  </update>
+
+    <!-- 批量添加 -->
+    <insert id="insertBatchInfo" parameterType="java.util.List">
+        insert into moirai_role_resource (ROLE_RESOURCE_ID, ROLE_ID, RESOURCE_ID,
+        ORG_ID, TENANT_ID, CREATER,
+        CREATETIME, MODIFY_USER, MODIFY_TIME,
+        PRODUCT_ID, INCLUDE_SON)
+        <foreach collection="list" item="item" index="index" separator="union all">
+            select
+            #{item.roleResourceId,jdbcType=BIGINT}, #{item.roleId,jdbcType=BIGINT}, #{item.resourceId,jdbcType=BIGINT},
+            #{item.orgId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT}, #{item.creater,jdbcType=VARCHAR},
+            #{item.createtime,jdbcType=BIGINT}, #{item.modifyUser,jdbcType=VARCHAR}, #{item.modifyTime,jdbcType=BIGINT},
+            #{item.productId,jdbcType=BIGINT}, #{item.includeSon,jdbcType=VARCHAR}
+            from dual
+        </foreach>
+    </insert>
+
+</mapper>

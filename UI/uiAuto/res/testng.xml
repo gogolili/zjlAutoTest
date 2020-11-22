@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+	<test name="Suite" preserve-order="true">
+		<parameter name="browerType" value="chrome" />
+		<classes>
+			 <class name="action.UserActionTest" />			 
+		</classes>
+	</test>
+
+	<listeners><!-- 监听器设置，生成测试报告的监听器，不要改此处代码 -->
+		<listener
+			class-name="utils.ExtentIReporterListenerUtil"></listener>
+	</listeners>
+</suite> 

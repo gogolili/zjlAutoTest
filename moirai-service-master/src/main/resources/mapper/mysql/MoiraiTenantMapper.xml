@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baiwang.moirai.mapper.MoiraiTenantMapper">
+    <resultMap id="BaseResultMap" type="com.baiwang.moirai.model.tenant.MoiraiTenant">
+        <id column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
+        <result column="tenant_name" jdbcType="VARCHAR" property="tenantName"/>
+        <result column="tenant_type" jdbcType="CHAR" property="tenantType"/>
+        <result column="tenant_desc" jdbcType="VARCHAR" property="tenantDesc"/>
+        <result column="tenant_email" jdbcType="VARCHAR" property="tenantEmail"/>
+        <result column="tenant_phone" jdbcType="VARCHAR" property="tenantPhone"/>
+        <result column="origin_mark" jdbcType="CHAR" property="originMark"/>
+        <result column="register_time" jdbcType="BIGINT" property="registerTime"/>
+        <result column="check_sign" jdbcType="CHAR" property="checkSign"/>
+        <result column="check_time" jdbcType="BIGINT" property="checkTime"/>
+        <result column="check_user" jdbcType="VARCHAR" property="checkUser"/>
+        <result column="check_opinion" jdbcType="VARCHAR" property="checkOpinion"/>
+        <result column="use_begintime" jdbcType="BIGINT" property="useBegintime"/>
+        <result column="use_endtime" jdbcType="BIGINT" property="useEndtime"/>
+        <result column="creater" jdbcType="VARCHAR" property="creater"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="modify_user" jdbcType="VARCHAR" property="modifyUser"/>
+        <result column="modify_time" jdbcType="BIGINT" property="modifyTime"/>
+        <result column="del_flag" jdbcType="CHAR" property="delFlag"/>
+        <result column="use_flag" jdbcType="CHAR" property="useFlag"/>
+        <result column="dj_mark" jdbcType="CHAR" property="djMark"/>
+        <result column="attach_bm" jdbcType="BIGINT" property="attachBm"/>
+        <result column="zjgxsqb_url" jdbcType="VARCHAR" property="zjgxsqbUrl"/>
+        <result column="quali_filePath" jdbcType="VARCHAR" property="qualiFilepath"/>
+        <result column="system_task" jdbcType="VARCHAR" property="systemTask"/>
+        <result column="qd_bm" jdbcType="BIGINT" property="qdBm"/>
+        <result column="have_zksb" jdbcType="CHAR" property="haveZksb"/>
+        <result column="company_type" jdbcType="CHAR" property="companyType"/>
+        <result column="is_fetch" jdbcType="CHAR" property="isFetch"/>
+        <result column="is_proof" jdbcType="CHAR" property="isProof"/>
+        <result column="is_authe" jdbcType="CHAR" property="isAuthe"/>
+        <result column="check_config" jdbcType="CHAR" property="checkConfig"/>
+        <result column="dual_factor" jdbcType="CHAR" property="dualFactor"/>
+        <result column="logout_url" jdbcType="VARCHAR" property="logoutUrl"/>
+        <result column="app_key" jdbcType="VARCHAR" property="appKey"/>
+        <result column="login_mark" jdbcType="VARCHAR" property="loginMark"/>
+    </resultMap>
+
+    <resultMap id="ConditionResultMap" type="com.baiwang.moirai.model.tenant.MoiraiTenantCondition"
+               extends="BaseResultMap">
+
+    </resultMap>
+
+    <resultMap id="OrgResultMap" type="com.baiwang.moirai.model.tenant.MoiraiTenantVO" extends="ConditionResultMap">
+        <result column="tax_code" jdbcType="VARCHAR" property="taxCode"/>
+        <result column="user_account" jdbcType="VARCHAR" property="userAccount"/>
+    </resultMap>
+
+    <resultMap id="MoiraiTenantListVOMap" type="com.baiwang.moirai.model.tenant.MoiraiTenantListVO">
+        <id column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="tenant_type" jdbcType="CHAR" property="tenantType"/>
+        <result column="tenant_name" jdbcType="VARCHAR" property="tenantName"/>
+        <result column="register_time" jdbcType="BIGINT" property="registerTime"/>
+        <result column="check_user" jdbcType="VARCHAR" property="checkUser"/>
+        <result column="tax_prov" jdbcType="CHAR" property="taxProv"/>
+        <result column="tax_code" jdbcType="CHAR" property="taxCode"/>
+        <result column="use_flag" jdbcType="CHAR" property="useFlag"/>
+        <result column="origin_mark" jdbcType="CHAR" property="originMark"/>
+        <result column="tenant_email" jdbcType="VARCHAR" property="tenantEmail"/>
+        <result column="tenant_phone" jdbcType="VARCHAR" property="tenantPhone"/>
+        <result column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="qd_bm" jdbcType="BIGINT" property="qdBm"/>
+        <result column="qdBms" jdbcType="VARCHAR" property="qdBms"/>
+
+        <result column="check_time" jdbcType="BIGINT" property="checkTime"/>
+        <result column="is_fetch" jdbcType="CHAR" property="isFetch"/>
+        <result column="is_proof" jdbcType="CHAR" property="isProof"/>
+        <result column="is_authe" jdbcType="CHAR" property="isAuthe"/>
+        <result column="check_config" jdbcType="CHAR" property="checkConfig"/>
+        <result column="dual_factor" jdbcType="CHAR" property="dualFactor"/>
+    </resultMap>
+
+    <!--<sql id="Base_Column_Lis_old">
+      TENANT_ID, TENANT_CODE, TENANT_NAME, TENANT_TYPE, TENANT_DESC, TENANT_EMAIL, TENANT_PHONE,
+      REGISTER_TIME, CHECK_SIGN, CHECK_TIME, CHECK_USER, CHECK_OPINION,COMPANY_TYPE, HAVE_ZKSB,
+      QUALI_FILEPATH, USE_BEGINTIME, USE_ENDTIME, CREATER, CREATE_TIME, MODIFY_USER, MODIFY_TIME,
+      DEL_FLAG, USE_FLAG, SYSTEM_TASK, ATTACH_BM, DJ_MARK, ORIGIN_MARK, QD_BM, ZJGXSQB_URL
+    </sql>-->
+
+    <sql id="Base_Column_List">
+    TENANT_ID, TENANT_CODE, TENANT_NAME, TENANT_TYPE, TENANT_DESC, TENANT_EMAIL, TENANT_PHONE,
+    ORIGIN_MARK, REGISTER_TIME, CHECK_SIGN, CHECK_TIME, CHECK_USER, CHECK_OPINION, USE_BEGINTIME,
+    USE_ENDTIME, CREATER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, DEL_FLAG, USE_FLAG,
+    DJ_MARK, ATTACH_BM, ZJGXSQB_URL, QUALI_FILEPATH, SYSTEM_TASK, QD_BM, HAVE_ZKSB, COMPANY_TYPE,IS_FETCH,IS_PROOF,IS_AUTHE,
+    CHECK_CONFIG,DUAL_FACTOR,LOGOUT_URL,LOGIN_MARK
+  </sql>
+
+    <sql id="Base_Column_List2">
+    t.TENANT_ID, t.TENANT_CODE, t.TENANT_NAME, t.TENANT_TYPE, t.TENANT_DESC, t.TENANT_EMAIL, t.TENANT_PHONE,
+    t.ORIGIN_MARK, t.REGISTER_TIME, t.CHECK_SIGN, t.CHECK_TIME, t.CHECK_USER, t.CHECK_OPINION, t.USE_BEGINTIME,
+    t.USE_ENDTIME, t.CREATER, t.CREATE_TIME, t.MODIFY_USER, t.MODIFY_TIME, t.DEL_FLAG, t.USE_FLAG,
+    t.DJ_MARK, t.ATTACH_BM, t.ZJGXSQB_URL, t.QUALI_FILEPATH, t.SYSTEM_TASK, t.HAVE_ZKSB, t.COMPANY_TYPE,t.IS_FETCH,t.IS_PROOF,t.IS_AUTHE,
+    t.CHECK_CONFIG,t.DUAL_FACTOR,t.LOGOUT_URL,t.LOGIN_MARK
+  </sql>
+
+    <!--根据条件查询租户-->
+    <select id="queryTenantByCondition" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantVO"
+            resultMap="OrgResultMap">
+        select t.* ,o.tax_code
+        from moirai_tenant t ,moirai_org o
+        <where>
+            o.tenant_id =t.tenant_id AND o.parent_org=0
+            <if test="tenantId != null">AND t.tenant_id = #{tenantId,jdbcType=BIGINT}</if>
+            <if test="tenantName != null and tenantName !=''">AND t.tenant_name LIKE concat(concat('%' ,
+                #{tenantName,jdbcType=VARCHAR}) , '%')
+            </if>
+            <if test="taxProv != null and taxProv !=''">AND o.tax_prov = #{taxProv}</if>
+            <if test="useFlag != null and useFlag !=''">AND t.use_flag = #{useFlag}</if>
+            <if test="originMark != null and originMark !=''">AND t.origin_mark = #{originMark}</if>
+            <if test="taxCode != null and taxCode !=''">AND o.tax_code = #{taxCode}</if>
+            <if test="tenantCode != null and tenantCode !=''">AND t.tenant_code = #{tenantCode,jdbcType=VARCHAR}</if>
+            <if test="tenantEmail != null and tenantEmail !=''">AND t.tenant_email = #{tenantEmail,jdbcType=VARCHAR}
+            </if>
+            <if test="tenantPhone != null and tenantPhone !=''">
+                AND t.tenant_phone = #{tenantPhone,jdbcType=VARCHAR}
+            </if>
+            <if test="modifyUser != null and modifyUser != ''">
+                AND t.modify_user = #{modifyUser,jdbcType=VARCHAR}
+            </if>
+            <if test="tenantDesc != null and tenantDesc !=''">
+                AND t.tenant_desc = #{tenantDesc,jdbcType=VARCHAR}
+            </if>
+            <if test="attachBm != null and attachBm != ''">
+                AND t.ATTACH_BM = #{attachBm,jdbcType=BIGINT}
+            </if>
+            <if test="djMark != null and djMark != ''">
+                AND t.dj_mark = #{djMark,jdbcType=CHAR}
+            </if>
+            <if test="zjgxsqbUrl != null and zjgxsqbUrl != ''">
+                AND t.ZJGXSQB_URL = #{zjgxsqbUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="qualiFilepath != null and qualiFilepath != ''">
+                AND t.quali_filepath = #{qualiFilepath,jdbcType=VARCHAR}
+            </if>
+            <if test="systemTask != null and systemTask != ''">
+                AND t.system_task = #{systemTask,jdbcType=VARCHAR}
+            </if>
+            <if test="haveZksb != null and haveZksb != ''">
+                AND t.have_ZKSB = #{haveZksb,jdbcType=CHAR}
+            </if>
+            <if test="companyType != null and companyType != ''">
+                AND t.company_type = #{companyType,jdbcType=CHAR}
+            </if>
+            <if test="qdBm != null and qdBm != ''">
+                AND t.qd_bm = #{qdBm,jdbcType=BIGINT}
+            </if>
+            <if test="dualFactor != null and dualFactor != ''">
+                AND t.dual_factor = #{dualFactor,jdbcType=CHAR}
+            </if>
+        </where>
+        order by t.create_time desc
+    </select>
+
+    <!--新增租户-->
+    <insert id="insertTenant" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantVO">
+        insert into moirai_tenant
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="tenantCode != null">
+                tenant_code,
+            </if>
+            <if test="tenantName != null">
+                tenant_name,
+            </if>
+            <if test="tenantType != null">
+                tenant_type,
+            </if>
+            <if test="tenantDesc != null">
+                tenant_desc,
+            </if>
+            <if test="tenantEmail != null">
+                tenant_email,
+            </if>
+            <if test="tenantPhone != null">
+                tenant_phone,
+            </if>
+            <if test="registerTime != null">
+                register_time,
+            </if>
+            <if test="checkSign != null">
+                check_sign,
+            </if>
+            <if test="checkTime != null">
+                check_time,
+            </if>
+            <if test="checkUser != null">
+                check_user,
+            </if>
+            <if test="checkOpinion != null">
+                check_opinion,
+            </if>
+            <if test="qualiFilepath != null">
+                quali_filePath,
+            </if>
+            <if test="useBegintime != null">
+                use_begintime,
+            </if>
+            <if test="useEndtime != null">
+                use_endtime,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyUser != null">
+                modify_user,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="useFlag != null">
+                use_flag,
+            </if>
+            <if test="systemTask != null">
+                system_task,
+            </if>
+            <if test="attachBm != null">
+                attach_bm,
+            </if>
+            <if test="djMark != null">
+                dj_mark,
+            </if>
+            <if test="originMark != null">
+                origin_mark,
+            </if>
+            <if test="zjgxsqbUrl != null">
+                zjgxsqb_url,
+            </if>
+            <if test="qdBm != null">
+                qd_bm,
+            </if>
+            <if test="haveZksb != null">
+                have_ZKSB,
+            </if>
+            <if test="companyType != null">
+                company_type,
+            </if>
+            <if test="isFetch != null">
+                is_fetch,
+            </if>
+            <if test="isProof != null">
+                is_proof,
+            </if>
+            <if test="isAuthe != null">
+                is_authe,
+            </if>
+            <if test="checkConfig != null">
+                check_config,
+            </if>
+            <if test="dualFactor != null">
+                dual_factor,
+            </if>
+            <if test="appKey != null">
+                app_key,
+            </if>
+            <if test="loginMark != null">
+                login_mark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="tenantCode != null">
+                #{tenantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantName != null">
+                #{tenantName,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantType != null">
+                #{tenantType,jdbcType=CHAR},
+            </if>
+            <if test="tenantDesc != null">
+                #{tenantDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantEmail != null">
+                #{tenantEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantPhone != null">
+                #{tenantPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="registerTime != null">
+                #{registerTime,jdbcType=BIGINT},
+            </if>
+            <if test="checkSign != null">
+                #{checkSign,jdbcType=CHAR},
+            </if>
+            <if test="checkTime != null">
+                #{checkTime,jdbcType=BIGINT},
+            </if>
+            <if test="checkUser != null">
+                #{checkUser,jdbcType=VARCHAR},
+            </if>
+            <if test="checkOpinion != null">
+                #{checkOpinion,jdbcType=VARCHAR},
+            </if>
+            <if test="qualiFilepath != null">
+                #{qualiFilepath,jdbcType=VARCHAR},
+            </if>
+            <if test="useBegintime != null">
+                #{useBegintime,jdbcType=BIGINT},
+            </if>
+            <if test="useEndtime != null">
+                #{useEndtime,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="useFlag != null">
+                #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="systemTask != null">
+                #{systemTask,jdbcType=VARCHAR},
+            </if>
+            <if test="attachBm != null">
+                #{attachBm,jdbcType=BIGINT},
+            </if>
+            <if test="djMark != null">
+                #{djMark,jdbcType=CHAR},
+            </if>
+            <if test="originMark != null">
+                #{originMark,jdbcType=CHAR},
+            </if>
+            <if test="zjgxsqbUrl != null">
+                #{zjgxsqbUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="qdBm != null">
+                #{qdBm,jdbcType=BIGINT},
+            </if>
+            <if test="haveZksb != null">
+                #{haveZksb,jdbcType=CHAR},
+            </if>
+            <if test="companyType != null">
+                #{companyType,jdbcType=CHAR},
+            </if>
+            <if test="isFetch != null">
+                #{isFetch,jdbcType=CHAR},
+            </if>
+            <if test="isProof != null">
+                #{isProof,jdbcType=CHAR},
+            </if>
+            <if test="isAuthe != null">
+                #{isAuthe,jdbcType=CHAR},
+            </if>
+            <if test="checkConfig != null">
+                #{checkConfig,jdbcType=CHAR},
+            </if>
+            <if test="dualFactor != null">
+                #{dualFactor,jdbcType=CHAR},
+            </if>
+            <if test="appKey != null">
+                #{appKey,jdbcType=CHAR},
+            </if>
+            <if test="loginMark != null">
+                #{loginMark,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from moirai_tenant
+        where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </select>
+
+    <select id="batchQueryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT * FROM moirai_tenant where tenant_id in
+        <foreach collection="list" item="tenantId" open="(" separator="," close=")">
+            #{tenantId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <!--更新完善租户相关信息-->
+    <update id="updateTenant" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantVO">
+        update moirai_tenant
+        <set>
+            <if test="tenantCode != null">
+                tenant_code = #{tenantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantName != null">
+                tenant_name = #{tenantName,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantEmail != null">
+                tenant_email = #{tenantEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="tenantPhone != null">
+                tenant_phone = #{tenantPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="useBegintime != null">
+                use_begintime = #{useBegintime,jdbcType=BIGINT},
+            </if>
+            <if test="useEndtime != null">
+                use_endtime = #{useEndtime,jdbcType=BIGINT},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=BIGINT},
+            </if>
+            <if test="useFlag != null">
+                use_flag = #{useFlag,jdbcType=CHAR},
+            </if>
+            <if test="tenantDesc != null">
+                tenant_desc = #{tenantDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="attachBm != null">
+                ATTACH_BM = #{attachBm,jdbcType=BIGINT},
+            </if>
+            <if test="djMark != null">
+                dj_mark = #{djMark,jdbcType=CHAR},
+            </if>
+            <if test="zjgxsqbUrl != null">
+                ZJGXSQB_URL = #{zjgxsqbUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="qualiFilepath != null">
+                quali_filepath = #{qualiFilepath,jdbcType=VARCHAR},
+            </if>
+            <if test="systemTask != null">
+                system_task = #{systemTask,jdbcType=VARCHAR},
+            </if>
+            <if test="haveZksb != null">
+                have_ZKSB = #{haveZksb,jdbcType=CHAR},
+            </if>
+            <if test="companyType != null">
+                company_type = #{companyType,jdbcType=CHAR},
+            </if>
+            <if test="qdBm != null">
+                qd_bm = #{qdBm,jdbcType=BIGINT},
+            </if>
+            <if test="isFetch != null">
+                is_fetch = #{isFetch,jdbcType=CHAR},
+            </if>
+            <if test="isProof != null">
+                is_proof = #{isProof,jdbcType=CHAR},
+            </if>
+            <if test="isAuthe != null">
+                is_authe = #{isAuthe,jdbcType=CHAR},
+            </if>
+            <if test="checkConfig != null">
+                check_config = #{checkConfig,jdbcType=CHAR},
+            </if>
+            <if test="dualFactor != null">
+                dual_factor = #{dualFactor,jdbcType=CHAR},
+            </if>
+            <if test="loginMark != null">
+                login_mark = #{loginMark,jdbcType=CHAR},
+            </if>
+        </set>
+        where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </update>
+
+    <select id="queryTenantListPage" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantListCondition"
+            resultMap="MoiraiTenantListVOMap">
+        SELECT t.tenant_id, t.tenant_name, t.origin_mark, t.register_time, t.check_user, t.tenant_phone, t.dual_factor,
+        t.tenant_email, t.use_flag, t.check_time, t.is_fetch, t.is_authe, t.is_proof, t.check_config, t.qd_bm,
+        o.tax_code, o.tax_prov, o.org_id, o.device_type, o.device_code
+        FROM moirai_tenant t ,moirai_org o
+        <where>
+            t.tenant_id=o.tenant_id and o.parent_org=0
+            <if test="tenantId != null">AND t.tenant_id = #{tenantId}</if>
+            <if test="tenantName != null and tenantName !=''">AND t.tenant_name LIKE concat(concat('%', #{tenantName}),
+                '%')
+            </if>
+            <if test="taxCode != null and taxCode != ''">AND o.tax_code LIKE concat(concat('%', #{taxCode}), '%')</if>
+            <if test="tenantEmail != null and tenantEmail != ''">AND t.tenant_email = #{tenantEmail}</if>
+            <if test="originMark != null and originMark != ''">AND t.origin_mark = #{originMark}</if>
+            <if test="taxProv != null and taxProv != ''">AND o.tax_prov = #{taxProv}</if>
+            <if test="useFlag != null and useFlag != ''">AND t.use_flag = #{useFlag}</if>
+            <if test="qdBm != null and qdBm != ''">AND t.qd_bm = #{qdBm}</if>
+            <if test="registerBegintime != null and registerBegintime != ''">AND t.register_time &gt;=
+                #{registerBegintime ,jdbcType=BIGINT}
+            </if>
+            <if test="registerEndtime != null and registerEndtime != ''">AND t.register_time &lt;=
+                #{registerEndtime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkBegintime != null and checkBegintime != ''">AND t.check_time &gt;=
+                #{checkBegintime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkEndtime != null and checkEndtime != ''">AND t.check_time &lt;=
+                #{checkEndtime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkUser != null and checkUser != ''">AND t.check_user LIKE concat(concat('%', #{checkUser}),
+                '%')
+            </if>
+            <if test="qdBms != null and qdBms.size > 0">
+                AND t.qd_bm IN
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+
+            <if test="isNeedProduct > 0">AND t.tenant_id in (select distinct(tenant_id) from moirai_org_product p
+                where
+            </if>
+            <if test="isNeedProduct >= 2 ">
+                p.product_id in
+                <foreach collection="products" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <!--<if test="isNeedProduct == 3">AND</if>-->
+            <!--<if test="isNeedProduct == 1 or  isNeedProduct == 3">-->
+            <!--p.qd_bm in-->
+            <!--<foreach collection="qdBms" item="list" open="(" separator="," close=")">-->
+            <!--#{list}-->
+            <!--</foreach>-->
+            <!--</if>-->
+            <if test="isNeedProduct > 0">)</if>
+        </where>
+        ORDER BY t.modify_time DESC
+    </select>
+
+    <!-- 查询租户信息 单表查询 -->
+    <select id="queryTenantList2Page" parameterType="com.baiwang.moirai.model.tenant.MoiraiTenantListCondition"
+            resultMap="MoiraiTenantListVOMap">
+        SELECT t.tenant_id, t.tenant_name, t.origin_mark, t.register_time, t.check_user, t.tenant_phone, t.dual_factor,
+        t.tenant_email, t.use_flag, t.check_time, t.is_fetch, t.is_authe, t.is_proof, t.check_config
+        FROM moirai_tenant t
+        <where>
+            <if test="tenantId != null">AND t.tenant_id = #{tenantId}</if>
+            <if test="tenantName != null and tenantName !=''">AND t.tenant_name LIKE concat(#{tenantName}, '%')
+            </if>
+            <if test="(taxCode != null and taxCode != '') or (taxProv != null and taxProv != '')
+            or (deviceType != null and deviceType != '') or (tgType != null and tgType != '')
+            or (contractNum != null and contractNum != '')">
+                and t.tenant_id in (
+                select o.tenant_id from moirai_org o
+                <where>
+                    o.parent_org=0
+                    <if test="taxCode != null and taxCode != ''">AND o.tax_code LIKE concat(#{taxCode}, '%')</if>
+                    <if test="taxProv != null and taxProv != ''">AND o.tax_prov = #{taxProv}</if>
+                    <if test="deviceType != null and deviceType != ''">AND o.device_type = #{deviceType}</if>
+                    <if test="tgType != null and tgType != ''">AND o.tg_type = #{tgType}</if>
+                    <if test="contractNum != null and contractNum != ''">AND o.contract_num LIKE concat(#{contractNum},
+                        '%')
+                    </if>
+                </where>
+                )
+            </if>
+            <if test="tenantEmail != null and tenantEmail != ''">AND t.tenant_email = #{tenantEmail}</if>
+            <if test="originMark != null and originMark != ''">AND t.origin_mark = #{originMark}</if>
+            <if test="useFlag != null and useFlag != ''">AND t.use_flag = #{useFlag}</if>
+            <if test="registerBegintime != null and registerBegintime != ''">AND t.register_time &gt;=
+                #{registerBegintime ,jdbcType=BIGINT}
+            </if>
+            <if test="registerEndtime != null and registerEndtime != ''">AND t.register_time &lt;=
+                #{registerEndtime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkBegintime != null and checkBegintime != ''">AND t.check_time &gt;=
+                #{checkBegintime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkEndtime != null and checkEndtime != ''">AND t.check_time &lt;=
+                #{checkEndtime ,jdbcType=BIGINT}
+            </if>
+            <if test="checkUser != null and checkUser != ''">AND t.check_user LIKE concat(concat('%', #{checkUser}),
+                '%')
+            </if>
+            <if test="qdBms != null and qdBms.size > 0">
+                and t.tenant_id in (
+                select distinct ct.tenant_id
+                from moirai_channel_tenant ct
+                where ct.qd_bm IN
+                <foreach collection="qdBms" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+                )
+            </if>
+
+            <if test="isNeedProduct > 0">AND t.tenant_id in (select distinct(tenant_id) from moirai_org_product p
+                where
+            </if>
+            <if test="isNeedProduct >= 2 ">
+                p.product_id in
+                <foreach collection="products" item="list" open="(" separator="," close=")">
+                    #{list}
+                </foreach>
+            </if>
+            <!--<if test="isNeedProduct == 3">AND</if>-->
+            <!--<if test="isNeedProduct == 1 or  isNeedProduct == 3">-->
+            <!--p.qd_bm in-->
+            <!--<foreach collection="qdBms" item="list" open="(" separator="," close=")">-->
+            <!--#{list}-->
+            <!--</foreach>-->
+            <!--</if>-->
+            <if test="isNeedProduct > 0">)</if>
+        </where>
+        ORDER BY t.modify_time DESC
+    </select>
+
+    <!--批量添加租户-->
+    <insert id="addTenantList" parameterType="java.util.List">
+        insert into moirai_tenant
+        (tenant_id, tenant_code, tenant_name, tenant_type, tenant_desc, tenant_email, tenant_phone,
+        origin_mark, register_time, check_sign, check_time, check_user, check_opinion, use_begintime,
+        use_endtime, creater, create_time, modify_user, modify_time,
+        dj_mark, attach_bm, zjgxsqb_url, quali_filepath, system_task, qd_bm, have_zksb, company_type)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.tenantId,jdbcType=BIGINT},
+            #{item.tenantCode,jdbcType=VARCHAR},
+            #{item.tenantName,jdbcType=VARCHAR},
+            #{item.tenantType,jdbcType=CHAR},
+            #{item.tenantDesc,jdbcType=VARCHAR},
+            #{item.tenantEmail,jdbcType=VARCHAR},
+            #{item.tenantPhone,jdbcType=VARCHAR},
+            #{item.originMark,jdbcType=CHAR},
+            #{item.registerTime,jdbcType=BIGINT},
+            #{item.checkSign,jdbcType=CHAR},
+            #{item.checkTime,jdbcType=BIGINT},
+            #{item.checkUser,jdbcType=VARCHAR},
+            #{item.checkOpinion,jdbcType=VARCHAR},
+            #{item.useBegintime,jdbcType=BIGINT},
+            #{item.useEndtime,jdbcType=BIGINT},
+            #{item.creater,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=BIGINT},
+            #{item.modifyUser,jdbcType=VARCHAR},
+            #{item.modifyTime,jdbcType=BIGINT},
+            #{item.djMark,jdbcType=CHAR},
+            #{item.attachBm,jdbcType=BIGINT},
+            #{item.zjgxsqbUrl,jdbcType=VARCHAR},
+            #{item.qualiFilepath,jdbcType=VARCHAR},
+            #{item.systemTask,jdbcType=VARCHAR},
+            #{item.qdBm,jdbcType=BIGINT},
+            #{item.haveZksb,jdbcType=CHAR},
+            #{item.companyType,jdbcType=CHAR}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectEmail" resultMap="BaseResultMap">
+        select tenant_id, tenant_email
+        from moirai_tenant
+        where
+        <if test="list != null and list.size() > 0">
+            tenant_id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        <if test="list == null or list.size == 0">
+            1 = 2
+        </if>
+    </select>
+
+    <delete id="deleteTenantByTenantId" parameterType="java.lang.Long">
+        delete from moirai_tenant where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteUserByTenantId" parameterType="java.lang.Long">
+        delete from moirai_user where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteOrgByTenantId" parameterType="java.lang.Long">
+        delete from moirai_org where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteOrgProductByTenantId" parameterType="java.lang.Long">
+        delete from moirai_org_product where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteUserAuthByExample" parameterType="java.lang.Long">
+        delete from moirai_user_authz where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteRoleByTenantId" parameterType="java.lang.Long">
+        delete from moirai_role where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteRoleResourceByTenantId" parameterType="java.lang.Long">
+        delete from moirai_role_resource where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteOrgConfigByTenantId" parameterType="java.lang.Long">
+        delete from moirai_org_config where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteUserMember" parameterType="java.lang.Long">
+        delete from moirai_user_member where tenant_id = #{tenantId,jdbcType=BIGINT}
+    </delete>
+</mapper>
